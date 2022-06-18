@@ -1,0 +1,40 @@
+<%= render 'commons/pdf' %>
+<% columns = @report.columns %>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <table style="width: 100%" border="1">
+    <thead>
+    <tr>
+      <%= "<th>IBL Ref</th>".html_safe if columns.include? "1" %>
+      <%= "<th>Booking No</th>".html_safe if columns.include? "2" %>
+      <%= "<th>Carrier</th>".html_safe if columns.include? "3" %>
+      <%= "<th>Shipper</th>".html_safe if columns.include? "4" %>
+      <%= "<th>POL</th>".html_safe if columns.include? "5" %>
+      <%= "<th>Destination</th>".html_safe if columns.include? "6" %>
+      <%= "<th>Amount</th>".html_safe if columns.include? "7" %>
+      <%= "<th>Payment Date</th>".html_safe if columns.include? "8" %>
+      <%= "<th>ETD Vessel</th>".html_safe if columns.include? "9" %>
+      <%= "<th>BL Status</th>".html_safe if columns.include? "10" %>
+    </tr>
+    </thead>
+    <tbody>
+      <% @invoices.each do |reference| %>
+      <%# cache(["si_report", row]) do %>
+      <% row = reference.shipping_instruction %>
+        <tr>
+          <%= "<td>#{row.ibl_ref_with_status}</td>".html_safe if columns.include? "1" %>
+          <%= "<td>#{row.booking_no}</td>".html_safe if columns.include? "2" %>
+          <%= "<td>#{row.carrier}</td>".html_safe if columns.include? "3" %>
+          <%= "<td>#{row.shipper_company_name}</td>".html_safe if columns.include? "4" %>
+          <%= "<td>#{row.port_of_loading}</td>".html_safe if columns.include? "5" %>
+          <%= "<td>#{row.final_destination}</td>".html_safe if columns.include? "6" %>
+          <%= "<td style=\"text-align:right\">#{money_format reference.total_invoice}</td>".html_safe if columns.include? "7" %>
+          <%= "<td>#{si_date_format reference.payment_date}</td>".html_safe if columns.include? "8" %>
+          <%= "<td>#{si_date_format row.first_etd_date}</td>".html_safe if columns.include? "9" %>
+          <%= "<td>#{row.bl_status}</td>".html_safe if columns.include? "10" %>
+        </tr>
+      <%# end %>
+    <% end %>
+    </tbody>
+  </table>
+</div>

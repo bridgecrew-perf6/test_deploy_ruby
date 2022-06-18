@@ -1,0 +1,24 @@
+<h1 style="font-weight:300">&nbsp;</h1>
+<% if !notice.nil? %>
+<p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+<div class="row-fluid">
+	<div class="span6">
+		<div class="page-header">
+			<h3>Backup Database</h3>
+		</div>
+		<span class="help-block">To run the backup the database, just click big button below. Store in the safe place without knowing someone who restricted to access these file. If any problem someday, you can reupload the file on the beside form to restore the database.</span>
+		<%= link_to 'Big Backup Button', db_backup_path, class: "btn btn-primary btn-large", target: "_blank" %>	
+	</div>
+	<div class="span6">
+		<div class="page-header">
+			<h3>Restore Database</h3>
+		</div>
+		<%= form_tag(db_restore_path, method: "POST", multipart: true) do %>
+			<div><%= file_field_tag :name %></div>
+			<span class="help-block">Select the necessarily file and press the big button below to process the restore database.</span>
+			<button type="submit" class="btn btn-danger btn-large">Big Restore Button</button>
+		<% end %>
+		
+	</div>
+</div>

@@ -1,0 +1,128 @@
+<tr class="<%= "error cancel" if invoice.is_cancel == 1 %>">
+  <%
+    no_invoice = invoice.try(:no_invoice) || invoice.try(:no_dbn) || invoice.try(:no_note)
+
+     if invoice.kind_of? Invoice
+       show_link, show_text = invoice_path(invoice), "Show Invoice"
+       edit_link, edit_text = edit_invoice_path(invoice), "Edit Invoice"
+       cancel_link, uncancel_link = cancel_invoice_path(invoice), uncancel_invoice_path(invoice)
+       
+       modals = '#invModal'
+       btn_paid = 'btn-invoice'
+       btn_unpaid = 'btn-unpaid-inv'
+       link_unpaid = unpaid_invoices_path
+       btn_class = "INV"
+
+     elsif invoice.kind_of? Note
+       show_link, show_text = note_path(invoice), "Show Note"
+       edit_link, edit_text = edit_note_path(invoice), "Edit Note"
+       cancel_link, uncancel_link = cancel_note_path(invoice), uncancel_note_path(invoice)
+       
+       modals = '#noteModal'
+       btn_paid = 'btn-note'
+       btn_unpaid = 'btn-unpaid-note'
+       link_unpaid = unpaid_notes_path
+       btn_class = "CRN"
+
+     else
+       show_link, show_text = debit_note_path(invoice), "Show Debit Note"
+       edit_link, edit_text = edit_debit_note_path(invoice), "Edit Debit Note"
+       cancel_link, uncancel_link = cancel_debit_note_path(invoice), uncancel_debit_note_path(invoice)
+       
+       modals = '#dbnModal'
+       btn_paid = 'btn-dbn'
+       btn_unpaid = 'btn-unpaid-dbn'
+       link_unpaid = unpaid_debit_notes_path
+       btn_class = "DBN"
+     end
+     
+       tax_issued = invoice.tax_issued
+       vat_10_no = invoice.vat_10_no
+       vat_1_no = invoice.vat_1_no
+       pph_23_no = invoice.pph_23_no
+       status_tax = invoice.status_tax
+  %>
+  <td>
+    <%= link_to '<i class="icon-eye-open icon-large"></i>'.html_safe, show_link,
+                title: show_text %>
+    <%= link_to '<i class="icon-edit-sign icon-large"></i>'.html_safe, edit_link,
+                title: edit_text if (invoice.is_cancel != 1 && invoice.status != 3) %>
+    <div>
+      <% if invoice.is_cancel == 0 && invoice.status != 3 %>
+        <%= link_to 'Cancel Invoice', cancel_link, data: {confirm: 'Are you sure?'} %>
+      <% elsif invoice.status != 3 %>
+        <%= link_to 'Uncancel Invoice', uncancel_link, data: {confirm: 'Are you sure?'} %>
+      <% end %>
+    </div>
+    <%= '<span class="label label-warning">Cancel SI</span>'.html_safe if invoice.bill_of_lading.shipping_instruction.is_cancel == 1 %>
+    
+    <a id="<%= "#{invoice.id}-#{no_invoice}" %>" href="<%= modals %>" role="button" class="btn btn-info btn-small <%= btn_paid %>" data-toggle="modal" data-tax_issued="<%= "#{tax_issued}" %>" data-vat_10_no="<%= "#{vat_10_no}" %>" data-vat_1_no="<%= "#{vat_1_no}" %>" data-pph_23_no="<%= "#{pph_23_no}" %>" data-status_tax="<%= "#{status_tax}" %>">Tax</a>
+  </td>
+  <td>
+    <%= invoice.try(:no_invoice) || invoice.try(:no_note) || invoice.try(:no_dbn) %>
+    <%= '<span class="label label-warning">Cancel Inv</span>'.html_safe if invoice.is_cancel == 1 %>
+  </td>
+  <td>
+    <%= invoice.bill_of_lading.shipping_instruction.si_no %>
+    <%= '<span class="label label-error">Closed</span>'.html_safe if invoice.bill_of_lading.shipping_instruction.status == 1 %>
+  </td>
+  <td class="currency_code"><%= invoice.currency_code %></td>
+  <td><%= invoice.customer_ori %></td>
+  <td><%= invoice.to_shipper %></td>
+  <!-- <td><%= invoice.destination %></td> -->
+  <!-- <td> -->
+    <!-- # Revisi 1 Dec 2015 -->
+    <%#
+        invoice.bill_of_lading.shipping_instruction.si_containers.map { |c| (c.container.container_type == "LCL" ?
+                "#{number_with_precision(c.volum, precision: 3, delimiter: ',')} M3 #{c.container.container_type}" :
+                "#{c.volum}x#{c.container.container_type}") }.join(" & ")
+    %>
+    <%# invoice.volume %>
+  <!-- </td> -->
+  <!-- <td><%= invoice.bill_of_lading.shipping_instruction.order_type_text %></td> -->
+  <td><%= invoice.status_text(invoice.status) %></td>
+  <td style="text-align:right" class="vat_10_column">
+    <div class="color_blue"<%= " style=color:black;" unless invoice.vat_10_no.blank? %>>
+      <% 
+      if invoice.kind_of? Invoice
+        vat10 = invoice.invoice_details.find_by(description: "VAT 10%") 
+      elsif invoice.kind_of? Note 
+        vat10 = invoice.note_details.find_by(description: "VAT 10%")
+      else
+        vat10 = invoice.debit_note_details.find_by(description: "VAT 10%")
+      end
+      %>
+      <%= number_with_precision(vat10.subtotal, precision: 2, delimiter: ',') unless vat10.blank? %> <%# invoice.currency_code %>
+    </div>
+  </td>
+  <td style="text-align:right" class="vat_1_column">
+    <div class="color_blue"<%= " style=color:black;" unless invoice.vat_1_no.blank? %>>  
+      <% 
+      if invoice.kind_of? Invoice
+        vat1 = invoice.invoice_details.find_by(description: "VAT 1%") 
+      elsif invoice.kind_of? Note 
+        vat1 = invoice.note_details.find_by(description: "VAT 1%") 
+      else
+        vat1 = invoice.debit_note_details.find_by(description: "VAT 1%") 
+      end
+      %>
+      <%= number_with_precision(vat1.subtotal, precision: 2, delimiter: ',') unless vat1.blank? %> <%# invoice.currency_code %>
+    </div>
+  </td>
+  <td style="text-align:right" class="pph_23_column">
+    <div class="color_blue"<%= " style=color:black;" unless invoice.pph_23_no.blank? %>>  
+      <% 
+      if invoice.kind_of? Invoice
+        pph23 = invoice.invoice_details.find_by(description: "PPH 23")
+      elsif invoice.kind_of? Note 
+        pph23 = invoice.note_details.find_by(description: "PPH 23")
+      else
+        pph23 = invoice.debit_note_details.find_by(description: "PPH 23")
+      end
+      %>
+      <%= number_with_precision(pph23.subtotal, precision: 2, delimiter: ',') unless pph23.blank? %> <%# invoice.currency_code %>
+    </div>
+  </td>
+  <td class="tax_status_column"><%= invoice.status_tax.humanize %></td>
+  <td><%= paid_month_date_format invoice.date_of_payment %></td>
+</tr>

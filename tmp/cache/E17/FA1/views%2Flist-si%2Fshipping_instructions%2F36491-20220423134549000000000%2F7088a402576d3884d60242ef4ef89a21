@@ -1,0 +1,45 @@
+o: ActiveSupport::Cache::Entry:@valueI"•  <tr class="">
+    <td>
+      <a href="/shipping_instructions/36491?year=2022" title="Show Shipping Instruction"><i class="icon-eye-open icon-large"></i></a>
+
+      <a href="/shipping_instructions/36491/edit?year=2022" title="Edit Shipping Instruction"><i class="icon-edit-sign icon-large"></i></a>
+
+      <a href="/shipping_instructions/36491/email?year=2022" target="_blank" title="Email"><i class="icon icon-envelope"></i></a>
+
+          <div>
+              <a data-confirm="Already update SI data?" href="/createBL/36491">Create BL</a>
+          </div>
+          <div>
+            <a data-confirm="Are you sure?" href="/shipping_instructions/36491/cancel?year=2022">Cancel SI</a>
+          </div>
+    </td>
+    <td>
+      IBL221276
+      
+      
+    </td>
+    <td></td>
+    <td>PT. ASIANAGRO AGUNGJAYA</td>
+    <td>2x20FT</td>
+    <td>HAIPHONG, VIETNAM</td>
+    <td>30-Apr-2022</td>
+    <td>23-Apr-2022</td>
+    <td>SITC</td>
+    <td>TBA</td>
+    <td>T.M.A CO., LTD</td>
+    <td>TANJUNG PRIOK, JAKARTA, INDONESIA</td>
+    <td></td>
+    <td></td>
+    <td>EXPORT (OCEAN FREIGHT)</td>
+    <td>Dewi</td>
+    <td class="hidden disable">April 2022</td>
+    <td class="hidden disable">04/30/2022</td>
+    <td class="hidden disable row_id">36491</td>
+    <td class="hidden disable ibl_ref">IBL221276</td>
+    <td class="hidden disable status">
+      
+      
+    </td>
+    <td class="hidden disable additional_si">false</td>
+  </tr>
+:ET:@created_atf1651329346.9734843:@expires_in0

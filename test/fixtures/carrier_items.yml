@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  carrier_id: 
+  description: MyString
+  amount_usd: MyString
+  amount_idr: MyString
+  is_deleted: false
+
+two:
+  carrier_id: 
+  description: MyString
+  amount_usd: MyString
+  amount_idr: MyString
+  is_deleted: false

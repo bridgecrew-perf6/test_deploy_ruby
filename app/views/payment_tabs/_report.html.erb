@@ -1,0 +1,52 @@
+<% @payment_invoices.group_by(&:payment_date).each do |date, invoices| %>
+  <table class="table table-striped table-bordered" width="100%">
+    <thead>
+      <tr>
+        <th width="75">IBL REF</th>
+        <th width="75">Booking No</th>
+        <th width="75">MBL No</th>
+        <th width="75">Volume</th>
+        <th width="100">Carrier</th>
+        <th width="100">Shipper</th>
+        <th width="100">POL</th>
+        <th width="100">Destination</th>
+        <th width="100">Amount</th>
+        <th width="75">Payment Date</th>
+        <th width="75">ETD Vessel</th>
+        <th width="75">BL Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= render partial: 'payment_reports/row', :collection => invoices, :as => :row %>
+      </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="8">
+          <strong>TOTAL</strong>
+          <%# carriers = invoices.map(&:carrier).uniq.delete_if{|e| e.squish.length == 0} %>
+          <% carriers = invoices.map(&:carrier).uniq %>
+          <%= ("<br>"+carriers.map{|e| e.blank? ? "No Carrier": e}.join('<br>')).html_safe if carriers.count > 1 %>
+        </td>
+        <td style="text-align: right;">
+          <strong><%= money_format invoices.map{|p| p.total_invoice}.sum(&:to_f) %></strong>
+          <% carriers.each do |carrier| %>
+            <br><%= money_format invoices.map{|p| p.carrier == carrier ? p.total_invoice : 0}.sum(&:to_f) %>
+          <% end if carriers.count > 1 %>
+        </td>
+        <td colspan="3"></td>
+      <tr>
+    </tfoot>
+  </table>
+  <br>
+  <div class="clearfix"></div>
+<% end %>
+<div class="row-fluid">
+  <div class="span6">
+    <div class="control-group">
+      <strong>TOTAL REQ FUND :</strong>
+      <%= money_format @payment_invoices.map{|p| p.total_invoice}.sum(&:to_f) %>
+    </div>
+  </div>
+  <div class="span6">
+  </div>
+</div>

@@ -1,0 +1,121 @@
+body, pre, div, table{
+	font-family: "Ubuntu", "Arial";
+  font-size: 8pt;
+}
+pre{
+  margin-top: 0;
+}
+.sidebar-nav, .navbar, .page-header, .btn-group {
+	display: none;
+}
+h3{
+  font-family: "Ubuntu", "Arial";
+  font-size: 14pt;
+}
+label{
+  display: block;
+}
+table{
+  border-collapse: collapse;
+}
+table tr td{
+  vertical-align: top;
+}
+
+#size-a4 #shipping-schedule-wrapper{
+  overflow-y: scroll;
+  height: 231px;
+}
+
+#size-a4 .span6, #size-a4-print .span6{
+  width: 50%;
+}
+
+#size-a4 .span3, #size-a4-print .span3{
+  width: 25%;
+}
+
+#size-a4 [class^=span], #size-a4-print [class^=span]{
+  margin-left: 0;
+}
+
+.border{
+  padding: 5px;
+  border-style: solid;
+}
+
+.border.border-none{
+  border: none;
+}
+
+.border-full{
+  border-width: 1px;
+}
+
+.border-left{
+  border-width: 1px 1px 0 1px;
+}
+
+.border-right{
+  border-width: 1px 1px 0 0;
+}
+
+.border-right-full{
+  border-width: 1px 1px 1px 0; 
+}
+
+#size-a4-print label{
+  margin-bottom: 0;
+}
+
+#size-a4-print .no-padding{
+  padding: 0;
+}
+
+#size-a4-print{
+  margin: 40px auto 0;
+  padding: 0 40px;
+  background: #fff;
+  font-family: "Ubuntu", "Arial"
+}
+
+#size-a4-print #logo{
+  display: block;
+  margin-bottom: -40px;
+  min-height: 50px;
+}
+#size-a4-print label{
+  line-height: normal;
+}
+#size-a4-print pre {
+  line-height: normal;
+}
+#size-a4-print table tr td{
+  vertical-align: top;
+}
+
+#size-a4-print .inline-group{
+  min-height: 20px;
+}
+
+#size-a4-print .inline-group > label{
+  float: left;
+  width: 130px;
+  margin-right: 10px;
+  font-weight: 700;
+}
+
+#size-a4-print .inline-group > div{
+  font-weight: 700;
+  line-height: normal;
+  margin-left: 140px;
+  padding: 2px 0;
+}
+
+.pull-right{
+  float: right;
+}
+
+address{
+  font-family: "Comic Sans MS", "cursive";
+}

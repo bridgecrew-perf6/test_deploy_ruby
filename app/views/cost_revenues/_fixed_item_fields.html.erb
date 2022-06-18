@@ -1,0 +1,19 @@
+<tr>
+  <td colspan="2">
+    <%= f.object.description %>
+    <%= f.hidden_field :description, class: "span12", autocomplete: "off" %>
+    <%= f.hidden_field :item_type, class: "span12" %>
+  </td>
+
+  <td class="text-right"><%= f.hidden_field :selling_volume, class: "span12", autocomplete: "off" %></td>
+  <td><%= f.text_field :selling_usd, class: "cost_revenue_field money_text selling_usd", autocomplete: "off" %></td>
+  <td><%= f.text_field :selling_idr, class: "cost_revenue_field money_text selling_idr", autocomplete: "off" %></td>
+  <td class="text-right cost_revenue_static"></td>
+  <td class="text-right cost_revenue_static"></td>
+  
+  <td class="text-right"><%= f.hidden_field :buying_volume, class: "span12", autocomplete: "off" %></td>
+  <td><%= f.text_field :buying_usd, class: "cost_revenue_field money_text buying_usd", autocomplete: "off" %></td>
+  <td><%= f.text_field :buying_idr, class: "cost_revenue_field money_text buying_idr", autocomplete: "off" %></td>
+  <td class="text-right cost_revenue_static"></td>
+  <td class="text-right cost_revenue_static"></td>
+</tr>

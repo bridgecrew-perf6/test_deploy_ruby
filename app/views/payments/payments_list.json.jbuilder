@@ -1,0 +1,1 @@
+json.extract! @payments, :payment_no

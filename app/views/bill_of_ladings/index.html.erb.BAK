@@ -1,0 +1,144 @@
+<div class="page-header">
+  <h3>List Bill of Lading</h3>
+</div>
+
+<% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<form action="<%= bill_of_ladings_path %>" method="get" class="form-inline" data-turboform>
+  <div>
+    <%= link_to 'New Part of BL', new_part_bl_bill_of_ladings_path, :class => "btn btn-primary pull-left", "data-no-turbolink" => true %> &nbsp;
+    <!--<a href="#myModal" role="button" class="btn" data-toggle="modal">Show / Hide Columns</a>-->
+  </div>
+  <!--
+  <fieldset>
+    <div style="margin-top: 15px">
+      <input type="text" name="query" placeholder="Search Keywords" value="<%= params[:query] %>"/>
+      <label class="checkbox">
+        <input type="checkbox" name="closed" value="1" <%= 'checked="checked"' if params[:closed].to_i == 1 %>>
+        Closed
+      </label>
+      <label class="checkbox">
+        <input type="checkbox" name="cancel" value="1" <%= 'checked="checked"' if params[:cancel].to_i == 1 %>>
+        Cancel
+      </label>
+      <button type="submit" class="btn btn-success" data-disable-with="Searching...">Search</button>
+      <%= link_to 'Remove Search', bill_of_ladings_path, :class => "btn" %>
+    </div>
+  </fieldset>
+  -->
+</form>
+
+<!-- Modal -->
+<!--<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Show / Hide Columns</h3>
+  </div>
+  <div class="modal-body">
+    <ul class="unstyled columns">
+      <li><label><input type="checkbox" id="2" checked/> HBL No</label></li>
+      <li><label><input type="checkbox" id="3" checked/> MBL No</label></li>
+      <li><label><input type="checkbox" id="4" checked/> Shipper</label></li>
+      <li><label><input type="checkbox" id="5"/> Consignee</label></li>
+      <li><label><input type="checkbox" id="6"/> Notify Party</label></li>
+      <li><label><input type="checkbox" id="7" checked/> Destination</label></li>
+      <li><label><input type="checkbox" id="8" checked/> Invoice</label></li>
+      <li><label><input type="checkbox" id="9" checked/> Volume</label></li>
+      <li><label><input type="checkbox" id="10" checked/> Order Type</label></li>
+      <li><label><input type="checkbox" id="11"/> POL</label></li>
+    </ul>
+    <style type="text/css">
+      .unstyled li {
+        float: left;
+        width: 50%;
+      }
+    </style>
+  </div>
+</div>
+<div class="clearfix"></div>-->
+
+<%# will_paginate @collection, renderer: BootstrapPagination::Rails %>
+
+<!-- # Revisi 1 Dec 2015 -->
+<table class="table table-striped table-bordered" id="bill-of-ladings">
+  <thead>
+  <tr>
+    <th width="10%">Actions</th>
+    <!-- <th class="hidden">&nbsp;</th> -->
+    <!-- <th>HBL No</th> -->
+    <!-- <th>IBL Ref</th>
+    <th>MBL No</th>
+    <th>Shipper</th>
+    <th>Consignee</th>
+    <th>Notify Party</th>
+    <th>Destination</th>
+    <th>Invoice</th>
+    <th>Volume</th>
+    <th>Order Type</th>
+    <th>POL</th> -->
+
+    <th>IBL Ref</th>
+    <th>MBL No</th>
+    <th>Carrier</th>
+    <th>Shipper</th>
+    <th>Consignee</th>
+    <th>Notify Party</th>
+    <th>Destination</th>
+    <th>Invoice</th>
+    <th>Volume</th>
+    <th>Order Type</th>
+    <th>Payment</th>
+    <th>POL</th>
+    <th>Etd Vessel</th>
+    <th>Delivery Doc</th>
+  </tr>
+  </thead>
+
+  <tbody>
+    <%= render partial: 'row', collection: @bill_of_ladings %>
+  </tbody>
+</table>
+
+<%# will_paginate @collection, renderer: BootstrapPagination::Rails %>
+
+<script type="text/javascript">
+
+  $( ".status_delivery_doc" ).change(function() {
+    var url = '<%= update_delivery_doc_path %>';
+    var status = false;
+    if ($(this).val() == "Not Yet")
+      status = false;      
+    else if ($(this).val() == "Done")
+      status = true;
+    else{
+      alert("Invalid Status");
+      return;
+    }
+    $("#loading").show();
+    $.ajax({
+          url: url,
+          // type: 'GET',
+          // dataType: "json",
+          data: {bl_id: $(this).data('id'), status: status},
+          success: function(data){
+            $("#loading").hide();
+            // if(data.success){
+            //   if(data.status_delivery_doc == $(this).val()) {
+                // alert("Delivery Doc "+ data.ibl_ref +" status "+data.status_delivery_doc);
+            //   }
+            // }
+            // if(data != ''){
+            //   if(data.status_delivery_doc == $(this).val()) {
+            //     alert("Delivery Doc "+ data.ibl_ref +" status "+data.status_delivery_doc);
+            //   }
+            // }
+            // else{
+            //   alert("Invalid Status");
+            // }
+          }
+        });
+  })
+  // .trigger( "change" );
+</script>

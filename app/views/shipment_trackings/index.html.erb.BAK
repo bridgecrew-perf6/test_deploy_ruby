@@ -1,0 +1,149 @@
+<div class="page-header">
+  <h3>Shipments Tracking</h3>
+</div>
+<% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+<style type="text/css">
+  .collapsed {
+    height: 20px;
+    overflow: hidden
+  }
+</style>
+<!--
+<form action="<%= shipment_trackings_path %>" method="get" class="form-inline" data-turboform>
+  <fieldset>
+    <div style="margin-top: 15px">
+      <input type="text" name="query" placeholder="Search Keywords" value="<%= params[:query] %>"/>
+      <select name="free_status" id="sort" style="margin-bottom: 0">
+        <option value="">All</option>
+        <option value="0" <%= 'selected' if params[:free_status] == "0" %>>Request</option>
+        <option value="1" <%= 'selected' if params[:free_status] == "1" %>>Approved</option>
+        <option value="2" <%= 'selected' if params[:free_status] == "2" %>>No Request</option>
+      </select>
+      <button type="submit" class="btn btn-success" data-disable-with="Searching...">Search</button>
+      <%= link_to 'Remove Search', shipment_trackings_path, :class => "btn" %>
+    </div>
+  </fieldset>
+</form>
+-->
+<%# will_paginate @shipments, renderer: BootstrapPagination::Rails %>
+<!-- <a style="margin-left: 10px" href="#myModal" role="button" class="btn" data-toggle="modal">Show / Hide Columns</a> -->
+<!-- <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Show / Hide Columns</h3>
+  </div>
+  <div class="modal-body">
+    <ul class="unstyled columns">
+      <li><label><input type="checkbox" id="1" checked/> IBL Ref</label></li>
+      <li><label><input type="checkbox" id="2" checked/> Shipper</label></li>
+      <li><label><input type="checkbox" id="3"/> Shipper SI #</label></li>
+      <li><label><input type="checkbox" id="4"/> MBL #</label></li>
+      <li><label><input type="checkbox" id="5" checked/> Carrier</label></li>
+      <li><label><input type="checkbox" id="6"/> Volume</label></li>
+      <li><label><input type="checkbox" id="7"/> Destination</label></li>
+      <li><label><input type="checkbox" id="8" checked/> Feeder ETD</label></li>
+      <li><label><input type="checkbox" id="9" checked/> Feeder ATD</label></li>
+      <li><label><input type="checkbox" id="10" checked/> Connecting ETD</label></li>
+      <li><label><input type="checkbox" id="11" checked/> Connecting ATD</label></li>
+      <li><label><input type="checkbox" id="12" checked/> Destination ETA</label></li>
+      <li><label><input type="checkbox" id="13" checked/> Destination ATA</label></li>
+      <li><label><input type="checkbox" id="14" checked/> Free Time Status</label></li>
+      <li><label><input type="checkbox" id="15" checked/> Notes</label></li>
+      <li><label><input type="checkbox" id="16" checked/> FU Date</label></li>
+    </ul>
+    <style type="text/css">
+      .unstyled li {
+        float: left;
+        width: 50%;
+      }
+    </style>
+  </div>
+</div> -->
+<div class="pull-left" style="padding: 5px 5px 5px 0;">
+  FU Date:
+  <input type="text" id="fu_date" style="margin-bottom: 0; margin-left: 5px" class="fu-datepicker" value="<%= params[:fu_date] %>"/>
+  <script type="text/javascript">
+      $("#fu_date").change(function(){
+        link = '/shipment_trackings';
+        if($(this).val() != ''){
+          var year = parseInt(location.search.split('year=')[1]);
+          // var fu_date = $.datepicker.formatDate('yy-mm-dd', new Date($(this).val()));
+          var fu_date = $(this).val();
+          if(year == undefined)
+            Turbolinks.visit(link + '?fu_date=' + fu_date);
+          else
+            Turbolinks.visit(link + '?year='+ year +'&fu_date=' + fu_date);
+        }
+        else
+          Turbolinks.visit(link);
+      });
+    </script>
+</div>
+<br/>
+<div class="clearfix"></div>
+<!-- # Revisi 1 Dec 2015 -->
+<table class="table table-striped table-bordered" id="shipments-tracking">
+  <thead>
+  <tr>
+    <th class="hidden" width="10%">&nbsp;</th>
+    <!-- <th>IBL REF</th>
+    <th>Shipper</th>
+    <th>Shipper SI #</th>
+    <th>MBL #</th>
+    <th>Carrier</th>
+    <th>Volume</th>
+    <th>Destination</th>
+    <th>Feeder ETD</th>
+    <th>Feeder ATD</th>
+    <th>Connect. ETD</th>
+    <th>Connect. ATD</th>
+    <th>Dest. ETA</th>
+    <th>Dest. ATA</th>
+    <th>Free Time Status</th>
+    <th>Notes</th>
+    <th>FU DATE</th> -->
+
+    <th>IBL REF</th>
+    <th>Shipper</th>
+    <!-- <th>Shipper SI #</th> -->
+    <!-- <th>MBL #</th> -->
+    <th>Carrier</th>
+    <th>Feeder</th>
+    <!-- <th>Volume</th> -->
+    <!-- <th>Destination</th> -->
+    <th>ETD Feeder</th>
+    <!-- <th>Feeder ATD</th> -->
+    <!-- <th>Connect. ETD</th> -->
+    <!-- <th>Connect. ATD</th> -->
+    <th>POL</th>
+    <th>Dest.</th>
+    <th>ETA Dest.</th>
+    <!-- <th>Dest. ATA</th> -->
+    <th>Shipper REF</th>
+    <th>Booking No</th>
+    <th>MBL</th>
+    <th>Transit Time</th>
+    <th>Free Time Status</th>
+    <th>Notes</th>
+    <th>FU DATE</th>
+    <th class="hidden">Vessel Name</th>
+  </tr>
+  </thead>
+  <tbody>
+    <%= render @shipments %>
+  </tbody>
+</table>
+<%# will_paginate @shipments, renderer: BootstrapPagination::Rails %>
+<script type="text/javascript">
+  $(".adjust").click(function (e) {
+    $(this).prev().toggleClass("collapsed");
+    if ($(this).prev().hasClass("collapsed")) {
+      $(this).text("- More")
+    } else {
+      $(this).text("+ Less")
+    }
+    e.preventDefault();
+  });
+</script>

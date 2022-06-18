@@ -1,0 +1,56 @@
+<div class="page-header">
+  <h3>&nbsp;</h3>
+</div>
+
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th>Carrier</th>
+      <th>MBL</th>
+      <th>IBL Deposit</th>
+      <th>Deposit Balance</th>
+      <th>Use Deposit</th>
+      <th>IBL Ref</th>
+      <th>Req No</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%
+      deposit_idr = 0
+      deposit_usd = 0
+    %>
+    <% @payment_references.sort_by(&:payment_date).each do |row|  %>
+      <%
+        deposit_idr += row.amount_deposit.to_f if row.currency == "IDR"
+        deposit_usd += row.amount_deposit.to_f if row.currency == "USD"
+      %>
+      <tr>
+        <td><%= row.carrier %></td>
+        <td><%=  %></td>
+        <td><%= row.ibl_ref %></td>
+        <td style="text-align:right;"><%= number_format (row.currency == "USD") ? deposit_usd : deposit_idr %> <%= row.currency %></td>
+        <td style="text-align:right;"><%=  %></td>
+        <td><%=  %></td>
+        <td><%= row.payment_no %></td>
+      </tr>
+    <% end %>
+    <% @payment_deposits.sort_by(&:payment_date).each do |row|  %>
+      <%
+        deposit_idr -= row.amount.to_f if row.currency == "IDR"
+        deposit_usd -= row.amount.to_f if row.currency == "USD"
+      %>
+      <tr>
+        <td><%= row.carrier %></td>
+        <td><%= row.mbl_no %></td>
+        <td><%= row.ibl_deposit %></td>
+        <td style="text-align:right;"><%= number_format (row.currency == "USD") ? deposit_usd : deposit_idr %> <%= row.currency %></td>
+        <td style="text-align:right;"><%= number_format row.amount %> <%= row.currency %></td>
+        <td><%= row.ibl_ref %></td>
+        <td><%= row.payment_no %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<div class="actions" style="margin-top: 20px">
+  <a class="btn" href="<%= deposit_payments_path %>"><i class="icon-reply"></i> Back</a>
+</div>

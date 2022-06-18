@@ -1,0 +1,14 @@
+<tr>
+	<td align="center"><%= count %></td>
+	<td>
+		<%= f.text_field :description, class: "cost_revenue_description cost_revenue_field", autocomplete: "off" %>
+		<%= f.hidden_field :_destroy, class: "span12" %>
+		<a onclick="remove_revenue_fields(this); return false;" tabindex="-1" href="#" title="Remove"><i class="icon-remove-sign"></i></a>
+	</td>
+	<td><%= f.text_field :selling_usd, class: "cost_revenue_field money_text selling_usd", autocomplete: "off" %></td>
+	<td><%= f.text_field :selling_idr, class: "cost_revenue_field money_text selling_idr", autocomplete: "off" %></td>
+	<td><%= f.text_field :buying_usd, class: "cost_revenue_field money_text buying_usd", autocomplete: "off" %></td>
+	<td><%= f.text_field :buying_idr, class: "cost_revenue_field money_text buying_idr", autocomplete: "off" %></td>
+	<td><%= f.text_field :profit_usd, class: "cost_revenue_field money_text profit_usd", disabled: "disabled" %></td>
+	<td><%= f.text_field :profit_idr, class: "cost_revenue_field money_text profit_idr", disabled: "disabled" %></td>
+</tr>

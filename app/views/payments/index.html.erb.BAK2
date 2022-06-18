@@ -1,0 +1,112 @@
+<div class="page-header">
+  <h3>List Payment</h3>
+</div>
+<% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<!-- <form action="<%= payments_path %>" method="get" class="form-inline" data-turboform> -->
+  <div class="pull-right" style="padding: 5px;">
+    Sort Data:
+    <select name="sort_data" id="sort_data" style="margin-bottom: 0">
+      <option value="">All</option>
+      <option value="USD" <%= 'selected' if params[:sort] == "USD" %>>USD</option>
+      <option value="IDR" <%= 'selected' if params[:sort] == "IDR" %>>IDR</option>
+    </select>
+    <script type="text/javascript">
+      $("#sort_data").change(function(){
+        link = '/payments';
+        if($(this).val() != ''){
+          var year = parseInt(location.search.split('year=')[1]);
+          if(year == undefined)
+            Turbolinks.visit(link + '?sort=' + $(this).val());
+          else
+            Turbolinks.visit(link + '?year='+ year +'&sort=' + $(this).val());
+        }
+        else
+          Turbolinks.visit(link);
+      })
+    </script>
+  </div>
+  <div>
+    <%= link_to 'Add Payment', new_payment_path, :class => "btn btn-primary", data: {"no-turbolink" => "true"} %>
+    <!-- <a style="margin-left: 10px" href="#myModal" role="button" class="btn" data-toggle="modal">Show / Hide Columns</a> -->
+  </div>
+  <br/>
+  <!--
+  <fieldset>
+    <div style="margin-top: 15px">
+      <input type="text" name="query" placeholder="Search Keywords" value="<%= params[:query] %>"/>
+      <select name="sort" id="sort" style="margin-bottom: 0">
+        <option value="">All</option>
+        <option value="USD" <%= 'selected' if params[:sort] == "USD" %>>USD</option>
+        <option value="IDR" <%= 'selected' if params[:sort] == "IDR" %>>IDR</option>
+      </select>
+      <label class="checkbox">
+        <input type="checkbox" name="cancel" value="1" <%= 'checked="checked"' if params[:cancel].to_i == 1 %>>
+        Cancel
+      </label>
+      <button type="submit" class="btn btn-success" data-disable-with="Searching...">Search</button>
+      <%= link_to 'Remove Search', payments_path, :class => "btn" %>
+    </div>
+  </fieldset>
+  -->
+<!-- </form> -->
+
+<!-- Modal -->
+<!-- <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Show / Hide Columns</h3>
+  </div>
+  <div class="modal-body">
+    <ul class="unstyled columns">
+      <li><label><input type="checkbox" id="1" checked/> Payment No</label></li>
+      <li><label><input type="checkbox" id="2" checked/> IBL REF</label></li>
+      <li><label><input type="checkbox" id="3"/> Booking No</label></li>
+      <li><label><input type="checkbox" id="4" checked/> Shipper</label></li>
+      <li><label><input type="checkbox" id="5" checked/> Destination</label></li>
+      <li><label><input type="checkbox" id="6"/> Volume</label></li>
+      <li><label><input type="checkbox" id="7" checked/> Carrier</label></li>
+      <li><label><input type="checkbox" id="8" checked/> Amount</label></li>
+      <li><label><input type="checkbox" id="9"/> Notes</label></li>
+      <li><label><input type="checkbox" id="10" checked/> ETD Vessel</label></li>
+      <li><label><input type="checkbox" id="11" checked/> Payment Date</label></li>
+      <li><label><input type="checkbox" id="12" checked/> Status</label></li>
+    </ul>
+    <style type="text/css">
+      .unstyled li {
+        float: left;
+        width: 50%;
+      }
+    </style>
+  </div>
+</div> -->
+<div class="clearfix"></div>
+
+<%# will_paginate @collection, renderer: BootstrapPagination::Rails %>
+
+<table class="table table-striped table-bordered" id="payments">
+  <thead>
+  <tr>
+    <th width="10%">Actions</th>
+    <th>Payment NO</th>
+    <th>IBL REF</th>
+    <th>Booking No</th>
+    <th>Shipper</th>
+    <th>Destination</th>
+    <th>Volume</th>
+    <th>Carrier</th>
+    <th>Amount</th>
+    <th>Notes</th>
+    <th>ETD Vessel</th>
+    <th>Payment Date</th>
+    <th>Status</th>
+  </tr>
+  </thead>
+  <tbody>
+  <%= render @payments %>
+  </tbody>
+</table>
+
+<%# will_paginate @collection, renderer: BootstrapPagination::Rails %>

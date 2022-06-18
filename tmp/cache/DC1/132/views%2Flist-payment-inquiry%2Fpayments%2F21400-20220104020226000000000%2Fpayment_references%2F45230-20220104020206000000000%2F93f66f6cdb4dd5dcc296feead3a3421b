@@ -1,0 +1,33 @@
+o: ActiveSupport::Cache::Entry:@valueI"4  <tr>
+    <td data-no-turbolink="true">
+      <a href="/payments/21400?year=2022" title="Show Payment"><i class="icon-eye-open icon-large"></i></a>
+    </td>
+    <td data-order="004">
+      004/IDR/2022
+      
+    </td>
+    <td>IBL220082</td>
+    <td>GOSUSUB8075560</td>
+    <td>PT. BATARA ELOK SEMESTA TERPADU </td>
+    <td>SURABAYA, INDONESIA</td>
+    <td>QINGDAO, CHINA</td>
+    <td>3x20FT</td>
+    <td>PT. LAYAR SENTOSA SHIPPING</td>
+    <td style="text-align: right;">17,067,850 IDR</td>
+    <td></td>
+    <td>02-Jan-2022</td>
+    <td>04-Jan-2022</td>
+    <td>Sent</td>
+    <td class="hidden disable">January 2022</td>
+    <td class="hidden disable">01/02/2022</td>
+    <td class="hidden disable row_id">21400</td>
+    <td class="hidden disable ibl_ref">IBL220082</td>
+    <td class="hidden disable currency">IDR</td>
+    <td class="hidden disable row_ref_id">45230</td>
+    <td class="hidden disable">January 2022</td>
+    <td class="hidden disable">01/04/2022</td>
+    <td class="hidden disable">BANK TRANSACTION</td>
+    <td></td>
+    <td>17,067,850 IDR</td>
+  </tr>
+:ET:@created_atf1648209478.1809602:@expires_in0

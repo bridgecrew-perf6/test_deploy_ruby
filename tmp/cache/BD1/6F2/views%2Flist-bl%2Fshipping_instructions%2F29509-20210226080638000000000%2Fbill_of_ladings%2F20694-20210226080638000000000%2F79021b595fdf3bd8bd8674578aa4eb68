@@ -1,0 +1,58 @@
+o: ActiveSupport::Cache::Entry:@valueI"ï  <tr class="success ">
+    <td>
+      <a href="/bill_of_ladings/20694?year=2020" title="Show Bill of Lading"><i class="icon-eye-open icon-large"></i></a>
+      &nbsp;
+
+      
+      &nbsp;
+
+          <a href="/bill_of_ladings/view_calculate_invoice?sid=29509&amp;year=2020" title="Calculate Invoice"><i class="icon-file icon-large"></i></a>
+        &nbsp;
+
+
+      
+      <a href="/cost_revenues/29509/print_cover?year=2020" target="_blank" title="Print"><i class="icon-print icon-large"></i></a>
+      &nbsp;
+      
+    </td>
+    <td>
+      IBL204661
+      
+      
+      <span class="label label-error">Closed CR</span>
+        
+    </td>
+    <td>-</td>
+    <td>-</td>
+    <td>PT. INDOLOGISTIK  SAKTI TEGUH</td>
+    <td>TBA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+        <ul>
+            <li><a href="/invoices/27624?year=2020">IBLINV205265</a></li>
+        </ul>
+    </td>
+    <td>1x20FT</td>
+    <td></td>
+    <td>
+        No Payment Yet
+    </td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>31-Dec-2020</td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="20694">
+        <option selected="selected" value="Not Yet">Not Yet</option>
+<option value="Done">Done</option>
+      </select>
+    </td>
+    <td class="hidden disable">December 2020</td>
+    <td class="hidden disable">12/31/2020</td>
+    <td class="hidden disable reference_id">20694</td>
+    <td class="hidden disable ibl_ref">IBL204661</td>
+    <td class="hidden disable invoice">IBLINV205265</td>
+    <td class="hidden disable payment">No Payment Yet</td>
+    <td class="hidden disable delivery_doc">Not Yet</td>
+  </tr>
+:ET:@created_atf1649082870.008841:@expires_in0

@@ -1,0 +1,62 @@
+<% columns = @report.columns %>
+<% base = [] %>
+<% 9.times{ |i| base.push i.to_s } %>
+<%
+  head = []
+  head.push ""
+  head.push "Payment Date\t"
+  head.push "Customer\t"
+  head.push "IBL Ref\t"
+  head.push "Invoice No\t"
+  head.push "IDR Balance\t"
+  head.push "USD Balance\t"
+  head.push "Status\t"
+  head.push "Closing Date\t"
+  head.push "Note\t"
+%>
+<% (base-columns).reverse_each{ |column| head.delete_at(column.to_i) } %>
+<%= head.join("").html_safe %>
+<%
+  total_usd = 0
+  total_idr = 0
+%>
+<% @results.each do |reference| %>
+  <%
+    # total_usd += reference.short_paid.to_f if reference.close_payment.currency == "USD"
+    # total_idr += reference.short_paid.to_f if reference.close_payment.currency == "IDR"
+    # total_idr += reference.short_paid.to_f
+    total_idr += reference.short_paid.to_f if reference.currency_2 == "IDR" && reference.is_short_paid_open?
+    total_usd += reference.short_paid.to_f if reference.currency_2 == "USD" && reference.is_short_paid_open?
+  %>
+  <% body = report_list_cc_short_paid(reference, "xls") %>
+  <% (base-columns).reverse_each{ |column| body.delete_at(column.to_i) } unless body.blank? %>
+<%= body.join("").html_safe unless body.blank? %>
+<% end %>
+<%
+  total = []
+  total.push "#{money_with_currency_format(total_usd, 'USD')}" if total_usd != 0
+  total.push "#{money_with_currency_format(total_idr, 'IDR')}" if total_idr != 0
+%>
+<%# index = columns.index("5") %>
+<%#
+  foots = []
+  total.each_with_index do |v, i|
+    foot = []
+    foot.push "#{i==0 ? 'Total' : ''}\t"
+    (index-1).times{ foot.push "\t" } 
+    foot.push v.html_safe
+    foots.push foot.join("")
+  end
+%>
+<%# foots.join("\r\n").html_safe %>
+<% index = columns.index("5").presence || columns.index("6").presence %>
+<% unless index.blank? %>
+<% 
+  foot = []
+  foot.push "Total\t"
+  (index-1).times{ foot.push "\t" }
+  foot.push "#{money_with_currency_format(total_idr, "IDR")}\t" if columns.index("5")
+  foot.push "#{money_with_currency_format(total_usd, "USD")}\t" if columns.index("6")
+%>
+<%= foot.join("").html_safe %>
+<% end %>

@@ -1,0 +1,25 @@
+<h3>Details Invoice</h3>
+<table class="table table-striped table-bordered">
+	<tr>
+		<th><%= @invoice.no_invoice %></th>
+		<th align="right"><%= @invoice.currency_code %> <%= number_with_delimiter @invoice.total_invoice %></th>
+	</tr>
+	<% @invoice.invoice_details.each do |d| %>
+	<tr>
+		<td><%= d.description %> (<%= d.volume %> x <%= @invoice.currency_code %> <%= number_with_delimiter d.amount %>)</td>
+		<td><%= @invoice.currency_code %> <%= number_with_delimiter d.subtotal %></td>
+	</tr>
+	<% end %>
+</table>
+
+<% if @invoice.payments.any? %>
+<h3>Payment History</h3>
+	<table class="table table-striped table-bordered">
+		<% @invoice.payments.each do |p| %>
+		<tr>
+			<td><%= p.payment_date %></td>
+			<td><%= @invoice.currency_code %> <%= number_with_delimiter p.amount %></td>
+		</tr>
+		<% end %>
+	</table>
+<% end %>

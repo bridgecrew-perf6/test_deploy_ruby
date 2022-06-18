@@ -1,0 +1,25 @@
+o: ActiveSupport::Cache::Entry:@valueI"6    <tr>
+      <td data-no-turbolink="true">
+                <a data-confirm="Detail cost is empty. Proceed?" href="/payments/calculate_invoice?sid=35949&amp;year=2022">Input</a>
+          
+      </td>
+      <td>IBL220853</td>
+      <td>EBKG02822373</td>
+      <td>MEDUI0614418</td>
+      <td>1x40HQ</td>
+      <td>MSC</td>
+      <td>PT. HAGIHARA WESTJAVA INDUSTRIES</td>
+      <td>TANJUNG PRIOK, JAKARTA, INDONESIA</td>
+      <td>ADELAIDE, AUSTRALIA</td>
+      <td></td>
+      <td></td>
+      <td>30-Mar-2022</td>
+      <td>No</td>
+      <td>On Going</td>
+      <td class="hidden disable">March 2022</td>
+      <td class="hidden disable">03/30/2022</td>
+      <td class="hidden disable row_id">35949</td>
+      <td class="hidden disable ibl_ref">IBL220853</td>
+      <td class="hidden disable row_ref_id"></td>
+    </tr>
+:ET:@created_atf1648209446.5868716:@expires_in0

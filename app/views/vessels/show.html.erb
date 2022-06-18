@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Shipping instruction:</strong>
+  <%= @vessel.shipping_instruction_id %>
+</p>
+
+<p>
+  <strong>Vessel name:</strong>
+  <%= @vessel.vessel_name %>
+</p>
+
+<p>
+  <strong>Etd no:</strong>
+  <%= @vessel.etd_no %>
+</p>
+
+<p>
+  <strong>Etd city:</strong>
+  <%= @vessel.etd_city %>
+</p>
+
+<p>
+  <strong>Etd date:</strong>
+  <%= @vessel.etd_date %>
+</p>
+
+<p>
+  <strong>Eta no:</strong>
+  <%= @vessel.eta_no %>
+</p>
+
+<p>
+  <strong>Eta city:</strong>
+  <%= @vessel.eta_city %>
+</p>
+
+<p>
+  <strong>Eta date:</strong>
+  <%= @vessel.eta_date %>
+</p>
+
+<%= link_to 'Edit', edit_vessel_path(@vessel) %> |
+<%= link_to 'Back', vessels_path %>

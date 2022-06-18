@@ -1,0 +1,299 @@
+<div id="size-a4">
+<%= form_for(@bill_of_lading, html: { class: "form-horizontal"}) do |f| %>
+  <% if @bill_of_lading.errors.any? %>
+  <div class="alert alert-error">
+    <ul class="unstyled">
+      <% @bill_of_lading.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+  <% end %>
+
+  <div class="row-fluid">
+    <div class="span6">
+      <div class="border border-left">
+        <label>Shipper : <a id="find_shipper" data-toggle="modal" href="#shippersModal" data-no-turbolink="true" class="btn btn-small">Find Shipper</a></label>
+        <%= f.text_area :shipper_name, class: "span12", style: "height:130px" %>
+        <%= f.hidden_field :shipper_id %>
+      </div>
+      <div class="border border-left">
+        <label>Consignee : <a id="find_consignee" data-toggle="modal" href="#consigneesModal" data-no-turbolink="true" class="btn btn-small">Find Consignee</a></label>
+        <%= f.text_area :consignee_name, class: "span12", style: "height:130px" %>
+        <%= f.hidden_field :consignee_id %>
+      </div>
+      <div class="border border-left">
+        <label>Notify Party :</label>
+        <%= f.text_area :notify_party, class: "span12", style: "height: 130px" %>
+      </div>
+    </div>
+    <div class="span6">
+      <div class="row-fluid">
+        <div class="span6 border border-right">
+          <label>Export References :</label>
+          <%= f.text_field :shipper_reference, class: "span12" %>
+        </div>
+        <div class="span6 border border-right">
+          <label>Bill of Lading No. :</label>
+          <%= f.text_field :bl_number, class: "span12", disabled: "disabled" %>
+          <%= f.hidden_field :bl_number %>
+        </div>
+      </div>
+      <div class="border border-right">
+        <label>Country of Origin</label>
+        <%= f.text_field :country_of_origin, class: "span12 typehead" %>
+      </div>
+      <div class="border border-right">
+        <label>Also Notify Party :</label>
+        <%= f.text_area :also_notify_party, class: "span12", style: "height: 144px" %>
+      </div>
+      <div class="row-fluid">
+        <div class="span6">
+          <div class="border border-right">
+            <label>Place of Receipt :</label>
+            <%= f.text_field :place_of_receipt, class: "span12" %>
+          </div>
+          <div class="border border-right">
+            <label>Port of Loading :</label>
+            <%= f.text_field :port_of_loading, class: "span12" %>
+          </div>
+          <div class="border border-right">
+            <label>Pre-carriage by :</label>
+            <%= f.text_field :connection_vessel, class: "span12" %>
+          </div>
+        </div>
+        <div class="span6">
+          <div class="border border-right">
+            <label>Port of Discharge :</label>
+            <%= f.text_field :port_of_discharge, class: "span12" %>
+          </div>
+          <div class="border border-right">
+            <label>Final Destination :</label>
+            <%= f.text_field :final_destination, class: "span12" %>
+          </div>
+          <div class="border border-right">
+            <label>Ocean Vessel :</label>
+            <%= f.text_field :feeder_vessel, class: "span12" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row-fluid">
+    <div class="span12 text-center border border-left"><label>PARTICULAR FURNISED BY SHIPPER</label></div>
+    <div class="row-fluid">
+      <div class="span3 border border-left">
+        <div>
+          <label>Marks & Nos.</label>
+          <%= f.text_area :marks_no, class: "span12", style: "height: 275px" %>
+        </div>
+        <div>
+          <%= f.text_area :freight, class: "span12", style: "height: 50px; margin-top: 5px;" %>
+        </div>
+      </div>
+      <div class="span6 border border-right">
+        <div>
+          <label>Kind of Packages & Description of Goods</label>
+          <label style="float: right;">&nbsp;
+          <% unless @bill_of_lading.shipping_instruction.nil? %>
+            <%= "SHIPPER'S LOAD, STOW AND COUNT" if @bill_of_lading.shipping_instruction.freight.include? ("FCL - FCL") %>
+          <% end %>
+          </label>
+          <%= f.text_area :description_packages, class: "span12", style: "height: 305px" %>
+        </div>
+      </div>
+      <div class="span3 border border-right">
+        <div class="row-fluid">
+          <div class="span6">
+            <label>GW (KGS)</label>
+            <%= f.text_field :gw, class: "span12" %>
+          </div>
+          <div class="span6">
+            <label>MEAS (CBM)</label>
+            <%= f.text_field :measurement, class: "span12" %>
+          </div>
+        </div>
+        <div class="row-fluid">
+          <div class="span12">
+            <label>Container / Seal No. :</label>
+            <%= f.text_area :container_no, class: "span12", style: "height: 110px" %>
+          </div>
+        </div>
+        <div class="row-fluid">
+          <div class="span12">
+            <label style="margin-top: 5px;">Agent Details <a id="find_agent" data-toggle="modal" href="#agentsModal" data-no-turbolink="true" class="btn btn-small">Find Agent</a></label>
+            <label><%= f.check_box :hide_agent %> Hide Agent</label>
+            <%= f.text_area :agent_name, class: "span12", style: "height: 130px" %>
+            <%= f.hidden_field :agent_id %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row-fluid">
+    <div class="span6">
+      <div class="border border-full">
+        <label>Special Clause</label>
+        <%= f.text_area :special_clause, class: "span12", style: "height: 90px", disabled: "disabled" %>
+        <%= f.hidden_field :special_clause %>
+        <label>Shipped on Board</label>
+        <%= f.text_area :shipped_on_board, class: "span12", style: "height: 67px" %>
+      </div>
+    </div>
+    <div class="span6">
+      <div class="border border-right">
+        <label>Freight Details, charges, etc:</label>
+        <%= f.text_area :freight_details, class: "span12", style: "height: 50px" %>
+      </div>
+      <div class="border border-right">
+        <label>Number of Original BL :</label>
+        <%= f.text_field :no_of_obl, class: "span12" %>
+      </div>
+      <div class="border border-right-full">
+        <label>Place and Date of Issue</label>
+        <div class="row-fluid">
+          <%= f.text_field :place_of_issue, class: "span5" %>
+          <%= f.text_field :date_of_issue, class: "span5 datepicker", value: normal_date_format(@bill_of_lading.date_of_issue) %>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div class="row-fluid" id="attachment-wrapper">
+      <div class="span6" id="attachments">
+        <h4>Attachments <%= @count %></h4>
+        <span class="help-block">Specify the attachment name and browse the file</span>
+        <%= f.fields_for :attachments do |builder| %>
+          <%= render 'attachments_fields', :f => builder %>
+        <% end %>
+      </div>
+      <div class="span6">
+        <h4>View / Download Attachment</h4>
+        <ul>
+          <% @bill_of_lading.attachments.each do |attach| %>
+            <% if !attach.name.blank? && !attach.asset.nil? %>
+            <li><%= attach.name %> : <%= link_to "View", attach.asset.url, target: "_blank" %></li>
+            <% end %>
+          <% end %>
+        </ul>
+      </div>
+      <div class="clearfix"></div>
+      <div class="row-fluid">
+        <br/>
+        <a onclick="add_attachment_fields('bill_of_lading')" class="btn btn-default">Add More Attachment</a>
+      </div>
+    </div>
+  <div class="row-fluid" style="margin-top: 20px">
+    <%= f.hidden_field :is_shadow %>
+    <%= f.hidden_field :shipping_instruction_id %>
+    <%= f.hidden_field :master_bl_no %>
+    <div class="pull-right">
+      <button type="submit" class="btn btn-primary"><i class="icon-save"></i> Save</button>
+      <a href="<%= bill_of_ladings_path %>" class="btn"><i class="icon-reply"></i> Back</a>
+    </div>
+  </div>
+<% end %>
+<div class="row-fluid">
+<%= render "shippers/modal", :@shippers => @shippers, :field => "bill_of_lading_shipper_name", :reference => "bill_of_lading_shipper_reference" %>
+<%= render "consignees/modal", :@consignees => @consignees, :field => "bill_of_lading_consignee_name", :dup_field => "bill_of_lading_notify_party" %>
+<%= render "agents/modal", :@agents => @agents, :field => "bill_of_lading_agent_name", :reference => "bill_of_lading_agent_reference" %>
+</div>
+<script type="text/javascript">
+  // $(document).ready(function(){
+    // $(function(){
+    //   if($("#bill_of_lading_gw").val() != ''){
+    //     $("#bill_of_lading_gw").val(money_with_decimal_format($("#bill_of_lading_gw").val()));
+    //   }
+
+    //   if($("#bill_of_lading_measurement").val() != ''){
+    //     $("#bill_of_lading_measurement").val(volume_with_decimal_format($("#bill_of_lading_measurement").val()));
+    //   }
+    // });
+
+    $("#bill_of_lading_measurement")
+    .focus(function(){
+      $(this).val(number_format($(this).val()));
+    })
+    .focusout(function(){
+      $(this).val(volume_with_decimal_format($(this).val()));
+    });
+
+    $("#bill_of_lading_gw")
+    .focus(function(){
+      $(this).val(number_format($(this).val()));
+    })
+    .focusout(function(){
+      $(this).val(money_with_decimal_format($(this).val()));
+    });
+
+    $('#bill_of_lading_country_of_origin').typeahead({
+      source: [
+        <% @countries.each do |c| %>
+          "<%= c.name %>",
+        <% end %>
+      ]
+    });
+    
+    $(".container-fluid input[type=text], .container-fluid textarea").on("change", function(){
+      $(this).val($(this).val().toUpperCase())
+    });
+
+    $("#bill_of_lading_shipper_name, #bill_of_lading_consignee_name, #bill_of_lading_notify_party, #bill_of_lading_also_notify_party, #bill_of_lading_agent_name").keypress(function(e){
+      var t = $(this);
+      var length = t.val().substr(0, t.selectionStart).split("\n").length;
+
+      if(length >= 6 && ((e.keyCode || e.which) == 13)){
+        e.preventDefault();
+      }
+    });
+
+    $("#bill_of_lading_marks_no").keypress(function(e){
+      var t = $(this);
+      var length = t.val().substr(0, t.selectionStart).split("\n").length;
+
+      if(length >= 38 && ((e.keyCode || e.which) == 13)){
+        e.preventDefault();
+      }
+    });
+
+    $("#bill_of_lading_freight, #bill_of_lading_shipped_on_board, #bill_of_lading_freight_details").keypress(function(e){
+      var t = $(this);
+      var length = t.val().substr(0, t.selectionStart).split("\n").length;
+
+      if(length >= 2 && ((e.keyCode || e.which) == 13)){
+        e.preventDefault();
+      }
+    });
+
+    $("#bill_of_lading_description_packages").keypress(function(e){
+      var t = $(this);
+      var length = t.val().substr(0, t.selectionStart).split("\n").length;
+
+      if(length >= 38 && ((e.keyCode || e.which) == 13)){
+        e.preventDefault();
+      }
+    });
+
+    $("#bill_of_lading_container_no").keypress(function(e){
+      var t = $(this);
+      var length = t.val().substr(0, t.selectionStart).split("\n").length;
+
+      if(length >= 10 && ((e.keyCode || e.which) == 13)){
+        e.preventDefault();
+      }
+    });
+
+    $("#bill_of_lading_agent_name").keypress(function(e){
+      var t = $(this);
+      var length = t.val().substr(0, t.selectionStart).split("\n").length;
+
+      if(length >= 8 && ((e.keyCode || e.which) == 13)){
+        e.preventDefault();
+      }
+    });
+
+    $("#bill_of_lading_feeder_vessel, #bill_of_lading_date_of_issue").change(function(){
+      $("#bill_of_lading_shipped_on_board").val($("#bill_of_lading_feeder_vessel").val() + " AT TG. PRIOK JAKARTA INDONESIA\nDATE : " + $("#bill_of_lading_date_of_issue").val())
+    });
+  // })
+</script>
+</div>

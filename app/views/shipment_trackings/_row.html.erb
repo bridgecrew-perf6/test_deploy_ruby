@@ -1,0 +1,33 @@
+<% cache ["list-st", reference.shipping_instruction, reference, expires_in: 6.hours] do %>
+  <% row = reference.shipping_instruction %>
+  <tr>
+    <td class="hidden">&nbsp;</td>
+    <td>
+      <%= link_to row.ibl_ref, edit_shipment_tracking_path(reference) %>
+      <%= '<span class="label label-warning">Cancel</span>'.html_safe if row.is_cancel? %>
+      <%= '<span class="label label-info">Connecting!</span>'.html_safe if row.is_connecting? %>
+      <%= '<span class="label label-success">Arrived!</span>'.html_safe if row.is_arrived? %>
+    </td>
+    <td><%= row.shipper_company_name %></td>
+    <td><%= row.consignee_company_name %></td>
+    <td><%= row.carrier %></td>
+    <td><%= row.feeder_vessel %></td>
+    <td><%= si_date_format row.feeder.try(:etd_date) %></td>
+    <td><%= row.port_of_loading %></td>
+    <td><%= row.final_destination %></td>
+    <td><%= si_date_format row.destination.try(:eta_date) %></td>
+    <td><%= row.shipper_reference %></td>
+    <td><%= row.booking_no %></td>
+    <td><%= row.master_bl_no %></td>
+    <td><%= transit_time_format(row.transit_time) %></td>
+    <td><%= reference.status_free_time %></td>
+    <td><%= collapse_note(reference.notes) %></td>
+    <td><%= si_date_format(reference.fu_date.presence || row.feeder.try(:etd_date)) %></td>
+    <td class="hidden disable"><%= monthly_format row.first_etd_date %></td>
+    <td class="hidden disable"><%= datepicker_format row.first_etd_date %></td>
+    <td class="hidden disable row_id"><%= reference.id %></td>
+    <td class="hidden disable ibl_ref"><%= row.ibl_ref %></td>
+    <td class="hidden disable notes"><%= reference.notes %></td>
+    <td class="hidden disable vessel_name"><%= row.vessel_name.join('<br>').html_safe %></td>
+  </tr>
+<% end %>

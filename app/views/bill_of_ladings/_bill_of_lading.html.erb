@@ -1,0 +1,158 @@
+<%= form_for("", html: { class: "form-horizontal"}) do |f| %>
+	<table border="1" style="width: 1100px; margin-left: -45px; margin-top: 100px;">
+		<tr>
+			<td colspan="2" rowspan="2" style="width:50%; height: 130px">
+				<label>Shipper / Exporter </label>
+				<pre class="free"><%= @bill_of_lading.shipper_name %></pre>
+			</td>
+			<td style="width:25%; height: 45px;">
+				<label>Export References </label>
+				<span><%= @bill_of_lading.shipper_reference %></span>
+			</td>
+			<td style="width: 25%; height: 45px;">
+				<label>Bill of Lading No. </label>
+				<span><%= @bill_of_lading.bl_number %></span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<label>Country of Origin </label>
+				<span><%= @bill_of_lading.country_of_origin %></span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="height: 130px">
+				<label>Consignee </label>
+				<pre class="free"><%= @bill_of_lading.consignee_name %></pre>
+			</td>
+			<td colspan="2" width="50%">
+				<label>Also Notify Party </label>
+				<pre class="free"><%= @bill_of_lading.also_notify_party %></pre>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="3">
+				<label>Notify Party </label>
+				<pre class="free"><%= @bill_of_lading.notify_party %></pre>
+			</td>
+			<td style="height: 45px">
+				<label>Place of Receipt </label>
+				<span><%= @bill_of_lading.place_of_receipt %></span>
+			</td>
+			<td>
+				<label>Port of Discharge </label>
+				<span><%= @bill_of_lading.port_of_discharge %></span>
+			</td>
+		</tr>
+		<tr>
+			<td style="height: 45px">
+				<label>Port of Loading </label>
+				<span><%= @bill_of_lading.port_of_loading %></span>
+			</td>
+			<td>
+				<label>Final Destination </label>
+				<span><%= @bill_of_lading.final_destination %></span>
+			</td>
+		</tr>
+		<tr>
+			<td style="height: 45px">
+				<label>Pre-carriage by </label>
+				<span><%= @bill_of_lading.connection_vessel %></span>
+			</td>
+			<td>
+				<label>Ocean Vessel </label>
+				<span><%= @bill_of_lading.feeder_vessel %></span>
+			</td>
+		</tr>
+		<tr align="center">
+			<td colspan="4" class="text-center"><h2 style="margin: 5px 0;"><label style="font-size: 12pt">PARTICULAR FURNISHED BY SHIPPER</label></h2></td>
+		</tr>
+		<tr>
+			<td colspan="1" style="width: 25%">
+				<div style="min-height: 655px;">
+					<label>Marks & Nos. </label><br/>
+					<pre class="free"><%= @bill_of_lading.marks_no %></pre>
+				</div>
+				<div style="min-height: 40px;">
+					<pre class="free"><%= @bill_of_lading.freight %></pre>
+				</div>
+			</td>
+			<td colspan="3" style="height: 50px; width: 75%">
+				<div style="float:left; width:60%">
+					<label>Kind of Packages & Description of Goods </label>
+      				<label style="text-align: right; padding-right: 20px">&nbsp;
+			          <% unless @bill_of_lading.shipping_instruction.nil? %>
+			            <%= "SHIPPER'S LOAD, STOW AND COUNT" if @bill_of_lading.shipping_instruction.freight.include? ("FCL - FCL") %>
+			          <% end %>
+      				</label>
+					<pre class="free"><%= @bill_of_lading.description_packages %></pre>
+				</div>
+				<div style="float:left; width:40%">
+					<table border="1" style="width:100%;margin: -2px 0px 0px 2px;">
+						<tr align="center">
+							<td width="50%" height="30" style="vertical-align: middle"><label><strong>GW (KGS)</strong></label></td>
+							<td width="50%" height="30" style="vertical-align: middle"><label><strong>MEAS (CBM)</strong></label></td>
+						</tr>
+						<tr align="center">
+							<td height="30" style="vertical-align: middle; font-weight: normal"><%# number_to_currency(@bill_of_lading.gw, unit: "") %><%= money_with_decimal_format(@bill_of_lading.gw) %>&nbsp;</td>
+							<td height="30" style="vertical-align: middle; font-weight: normal"><%# number_to_currency(@bill_of_lading.measurement, unit: "", precision: 3) %><%= volume_with_decimal_format(@bill_of_lading.measurement) %>&nbsp;</td>
+						</tr>
+					</table>
+					<div style="margin-top:10px; height: 220px">
+						<label>Container / Seal Nos. :</label>
+						<pre class="free" style="word-wrap: break-word; width: 330px"><%= @bill_of_lading.container_no %></pre>
+					</div>
+					<div style="margin-top:10px; height: 180px">
+						<% unless @bill_of_lading.hide_agent %>
+						<label>Agent at Destination :</label>
+						<pre class="free" style="word-wrap: break-word; width: 330px"><%= @bill_of_lading.agent_name %></pre>
+						<% end %>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="3" style="width: 50%">
+				<div style="margin-bottom: 20px; height: 160px;">
+					<label>Special Clause</label>
+					<small style="text-align: justify; display: block; font-size: 10pt"><%= @bill_of_lading.special_clause %></small>
+				</div>
+				<div style="height: 70px">
+					<hr style="border-color: #9D9D9D"/>
+					<label>Shipped on Board:</label>
+					<pre class="free"><%= @bill_of_lading.shipped_on_board %>&nbsp;</pre>
+				</div>
+			</td>
+			<td colspan="2" height="50" style="width: 50%">
+				<div class="inline-group">
+					<label style="width: 280px">Freight Details, charges, etc <span class="pull-right">:</span></label>
+					<div>
+						<span><%= @bill_of_lading.freight_details %>&nbsp;</span>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" height="50">
+				<div class="inline-group">
+					<label style="width: 280px">No. of Original BL <span class="pull-right">:</span></label>
+					<div>
+						<span><%= @bill_of_lading.no_of_obl %>&nbsp;</span>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" height="150">
+				<div class="inline-group">
+					<label style="width: 230px">Place and date of Issue<br/>Signed and Stamp</label>
+					<div style="font-weight: normal">
+						<%= @bill_of_lading.place_of_issue %>, <%= @bill_of_lading.date_of_issue.to_time.strftime('%d %b %Y').upcase unless @bill_of_lading.date_of_issue.nil? %>
+					</div>
+				</div>
+				<br/><br/><br/><br/><br/><br/><br/><br/><br/>
+				<p align="center">PT INTERBENUA LOGISTINDO</p>
+			</td>
+		</tr>
+	</table>
+<% end %>

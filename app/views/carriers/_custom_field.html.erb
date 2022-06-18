@@ -1,0 +1,8 @@
+<div>
+	<strong><%= cf.field_name %> :</strong>
+	<% if cf.field_key == "address" %>
+		<pre class="free"><%= cf.field_value %></pre>
+	<% else %>
+		<span><%= cf.field_value %></span>
+	<% end %>
+</div>

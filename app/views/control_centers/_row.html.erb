@@ -1,0 +1,37 @@
+<% cache ["list-cc", reference.shipping_instruction, reference, reference.close_payment_histories.last] do %>
+  <% row = reference.shipping_instruction %>
+  <tr class="<%= "error" if reference.is_canceled? %>">
+    <td>
+      <%= link_to "Edit", edit_close_payment_control_centers_path(:close_ref => reference.invoice_inquiry.close_ref) unless reference.invoice_inquiry.blank? if @current_user.administrator? %>
+      <%= link_to "View", view_control_centers_path(:invoice_no => reference.invoice_no) %>
+    </td>
+    <td><%= reference.invoice_inquiry.try(:close_ref) %></td>
+    <td><%= row.ibl_ref %></td>
+    <td><%= reference.customer %></td>
+    <td><%= reference.shipper_company_name %></td>
+    <td><%= reference.shipper_reference %></td>
+    <td><%= reference.master_bl_no %></td>
+    <td><%= reference.invoice_no %>
+      <%= '<span class="label label-warning">Cancel</span>'.html_safe if reference.is_canceled? %></td>
+    <td><%= reference.volume %></td>
+    <td><%= reference.port_of_loading %></td>
+    <td><%= reference.final_destination %></td>
+    <td style="text-align:right"><%= "#{money_format(reference.grand_total)}" if reference.currency_code == "USD" %></td>
+    <td style="text-align:right"><%= "#{money_format(reference.grand_total)}" if reference.currency_code == "IDR" %></td>  
+    <td><%= si_date_format reference.invoice_date %></td>
+    <td><%= si_date_format reference.etd %></td>
+    <td><%= si_date_format reference.due_date %></td>
+    <td><%= si_date_format reference.payment_date %></td>
+    <td><%= reference.payment_status_text %></td>
+    <td><%= collapse_note(reference.payment_note) %></td>
+    <td><%= check_box_tag 'invoice_no', reference.invoice_no if reference.is_close_payment? -%></td>
+    <td class="hidden disable"><%= monthly_format row.first_etd_date %></td>
+    <td class="hidden disable"><%= datepicker_format row.first_etd_date %></td>
+    <td class="hidden disable row_id"><%= reference.id %></td>
+    <td class="hidden disable ibl_ref"><%= row.ibl_ref %></td>
+    <td class="hidden disable invoice_no"><%= reference.invoice_no %></td>
+    <td class="hidden disable head_letter"><%= reference.head_letter %></td>
+    <td class="hidden disable"><%= datepicker_format reference.due_date %></td>
+    <td class="hidden disable"><%= datepicker_format reference.payment_date %></td>
+  </tr>
+<% end %>

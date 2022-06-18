@@ -1,0 +1,91 @@
+<div class="row-fluid">
+  <form id="form-invoices-unpaid" method="get" action="<%= invoices_unpaid_reports_path %>" class="form-horizontal span6" target="_blank">
+    <fieldset>
+      <legend>Report Total Invoices Unpaid</legend>
+      <div class="control-group">
+        <label for="" class="control-label">Format</label>
+        <div class="controls">
+          <select name="format" id="format">
+            <option value="pdf">PDF</option>
+            <option value="xls">XLS</option>
+          </select>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Filter by</label>
+        <div class="controls">
+          <select id="filter_unpaid_by" name="filter_unpaid_by">
+            <%= options_for_select(Constant::SORTED_BY) %>
+          </select>
+        </div>
+      </div>
+      <div class="control-group" id="sort-data-unpaid">
+        <label for="" class="control-label">Filter Data</label>
+        <div class="controls">
+          <select id="filter_unpaid_yearly" name="filter_unpaid_yearly">
+            <option value="">Select a Year...</option>
+            <%= options_for_select(Constant.years_range) %>
+          </select>
+          <input type="text" id="filter_unpaid_monthly" class="filter_my hidden" name="filter_unpaid_monthly">
+        </div>
+      </div>
+      <!-- <div class="control-group">
+        <label for="" class="control-label">Years</label>
+        <div class="controls">
+          <input type="number" name="year" placeholder="E.g: '2014'. Set blank to display all">
+        </div>
+      </div> -->
+      <div class="control-group">
+        <label for="" class="control-label">&nbsp;</label>
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">View Report</button>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#filter_unpaid_by").on("change", function(){
+      var value = $(this).val();
+      $("#sort-data-unpaid").removeClass("hidden");
+      $("#filter_unpaid_yearly").val("");
+      $("#filter_unpaid_monthly").val("");
+
+      if(value == "all")
+      {
+        $("#sort-data-unpaid").addClass("hidden");
+      } 
+      else if(value == "monthly")
+      {
+        $("#filter_unpaid_monthly").removeClass("hidden");
+        $("#filter_unpaid_yearly").addClass("hidden");
+      }
+      else if(value == "yearly")
+      {
+        $("#filter_unpaid_monthly").addClass("hidden");
+        $("#filter_unpaid_yearly").removeClass("hidden");
+      }
+    });
+
+    $("#form-invoices-unpaid").on("submit", function(e){
+      var filter_by = $("#filter_unpaid_by").val();
+      if (filter_by == "yearly")
+      {
+        if ($("#filter_unpaid_yearly").val() == "")
+        {
+          alert("Filter Data Yearly can't empty!");
+          return false;
+        }
+      }
+      else if(filter_by == "monthly")
+      {
+        if ($("#filter_unpaid_monthly").val() == "")
+        {
+          alert("Filter Data Monthly can't empty!");
+          return false;
+        }
+      }
+    })
+  })
+</script>

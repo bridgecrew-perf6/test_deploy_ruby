@@ -1,0 +1,45 @@
+o: ActiveSupport::Cache::Entry:@valueI"  <tr class="">
+    <td>
+      <a href="/shipping_instructions/36080?year=2022" title="Show Shipping Instruction"><i class="icon-eye-open icon-large"></i></a>
+
+      <a href="/shipping_instructions/36080/edit?year=2022" title="Edit Shipping Instruction"><i class="icon-edit-sign icon-large"></i></a>
+
+      <a href="/shipping_instructions/36080/email?year=2022" target="_blank" title="Email"><i class="icon icon-envelope"></i></a>
+
+          <div>
+              <a data-confirm="Already update SI data?" href="/createBL/36080">Create BL</a>
+          </div>
+          <div>
+            <a data-confirm="Are you sure?" href="/shipping_instructions/36080/cancel?year=2022">Cancel SI</a>
+          </div>
+    </td>
+    <td>
+      IBL220959
+      
+      
+    </td>
+    <td>4550011152 </td>
+    <td>PT. INTERBENUA LOGISTINDO</td>
+    <td>13.000 M3 LCL</td>
+    <td>FELIXSTOWE, UNITED KINGDOM</td>
+    <td>03-Apr-2022</td>
+    <td>28-Mar-2022</td>
+    <td>PT. MENTARI FREIGHT SERVICES</td>
+    <td>PHOENIX AROMAS EUROPE LIMITED</td>
+    <td>RIF WORLDWIDE PLC-(FELIXSTOWE)</td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>NO TRUCKING</td>
+    <td></td>
+    <td>EXPORT (OCEAN FREIGHT, COO, TRUCKING, FIAT PEB)</td>
+    <td>Awalia</td>
+    <td class="hidden disable">April 2022</td>
+    <td class="hidden disable">04/03/2022</td>
+    <td class="hidden disable row_id">36080</td>
+    <td class="hidden disable ibl_ref">IBL220959</td>
+    <td class="hidden disable status">
+      
+      
+    </td>
+    <td class="hidden disable additional_si">false</td>
+  </tr>
+:ET:@created_atf1648566411.058845:@expires_in0

@@ -1,0 +1,58 @@
+<tr>
+  <td data-no-turbolink="true">
+    <%= link_to '<i class="icon-eye-open icon-large"></i>'.html_safe, payment, title: "Show Payment" %>
+    <% if payment.status == 0 && payment.is_cancel == 0 %>
+      <%= link_to '<i class="icon-edit-sign icon-large"></i>'.html_safe, edit_payment_path(payment), title: "Edit Payment" %>
+    <% end %>
+    <% if payment.is_cancel == 0 && payment.status == 0 %>
+      <%= link_to 'Cancel', cancel_payment_path(payment), data: {confirm: "Are you sure?"} %>
+    <% end %>
+    <% if payment.is_cancel == 1 %>
+      <%= link_to 'Uncancel', uncancel_payment_path(payment), data: {confirm: "Are you sure?"} %>
+    <% end %>
+  </td>
+  <td>
+    <%= payment.payment_no %>
+    <%= '<span class="label label-warning">Cancel</span>'.html_safe if payment.is_cancel == 1 %>
+  </td>
+  <% cache payment_reference do %>
+    <td><%= payment_reference.ibl_ref %></td>
+    <td><%= payment_reference.booking_no %></td>
+    <td><%= payment_reference.shipping_instruction.shipper.company_name unless payment_reference.shipping_instruction.nil? %></td>
+    <td><%= payment_reference.shipping_instruction.final_destination unless payment_reference.shipping_instruction.nil? %></td>
+    <td>
+      <% unless payment_reference.shipping_instruction.nil? %>
+        <%=
+            payment_reference.shipping_instruction.si_containers.map { |c| (c.container.container_type == "LCL" ?
+                    "#{number_with_precision(c.volum, precision: 3, delimiter: ',')} M3 #{c.container.container_type}" :
+                    "#{c.volum}x#{c.container.container_type}") }.join(" & ")
+        %>
+      <% end %>
+    </td>
+  <% end %>
+  <td>
+    <% if payment.carrier_bank_id == 0 %>
+      CASH by: <%= payment.cash_carrier_name %>
+    <% elsif payment.carrier_bank_id == -1 %>
+      DEPOSIT by: <%= payment.cash_carrier_name %>
+    <% else %>
+      <%= payment.carrier_bank.carrier.name %>
+    <% end %>
+  </td>
+  <td>
+    <%= number_with_precision(payment_reference.amount, precision: 2, delimiter: ",") %>
+    <% if payment.payment_no.to_s.include? 'USD' %>
+      USD
+    <% else %>
+      IDR
+    <% end %>
+  </td>
+  <td><%= payment.notes %></td>
+  <td>
+    <% if !payment_reference.shipping_instruction.nil? && payment_reference.shipping_instruction.vessels.any? %>
+      <%= normal_date_format payment_reference.shipping_instruction.vessels.first.etd_date %>
+    <% end %>
+  </td>
+  <td><%= normal_date_format payment.payment_date %></td>
+  <td><%= payment.status_text %></td>
+</tr>

@@ -1,0 +1,95 @@
+<div class="page-header">
+  <h3>Reports</h3>
+</div>
+
+<% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<style>
+/*  .ui-datepicker-calendar {
+    display: none;
+  }*/
+</style>
+
+View Report:
+<select id="report_type" style="margin-bottom: 0">
+  <option value="">Select Report Type</option>
+  <option value="#COST-REVENUE-ANALYSIS">C&R Analysis</option>
+  <option value="#BALANCE">Balance</option>
+  <option value="#DETAIL-SHIPMENT">Detail Shipment</option>
+</select>
+
+<div id="COST-REVENUE-ANALYSIS" class="hidden report-wrapper">
+  <%= render 'reports/form/cost_revenue_analysis' %>
+</div>
+
+<div id="BALANCE" class="hidden report-wrapper">
+  <%= render 'reports/form/balance' %>
+</div>
+
+<div id="DETAIL-SHIPMENT" class="hidden report-wrapper">
+  <%= render 'reports/form/detail_shipment' %>
+</div>
+
+<script type="text/javascript">
+  jQuery(document).ready(function () {
+    jQuery("#report_type").on("change", function () {
+      jQuery(".report-wrapper").addClass("hidden");
+      jQuery(jQuery(this).val()).removeClass("hidden");
+    });
+
+    // jQuery(".filter_monthly").datepicker({
+    //   changeMonth: true,
+    //   changeYear: true,
+    //   showButtonPanel: true,
+    //   dateFormat: 'MM yy',
+    //   onClose: function (dateText, inst) {
+    //     var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+    //     var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+    //     $(this).datepicker('setDate', new Date(year, month, 1));
+    //   }
+    // });
+
+    // $( ".filter_monthly" ).datepicker({
+    //   changeMonth: true,
+    //   changeYear: true,
+    //   showButtonPanel: true,
+    //   dateFormat: 'MM yy',
+    //   minDate: new Date(year, 0, 1),
+    //   onClose: function(dateText, inst) { 
+    //       var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+    //       var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+    //       $(this).datepicker('setDate', new Date(year, month, 1));
+    //   }
+    // }).focus(function () {
+    //   $(".ui-datepicker-calendar").css("display", "none");
+    // });
+
+    // $( ".filter_from" ).datepicker({
+    //   defaultDate: "+1w",
+    //   changeMonth: true,
+    //   changeYear: true,
+    //   dateFormat: 'dd MM yy',
+    //   minDate: new Date(year, 0, 1),
+    //   onClose: function( selectedDate ) {
+    //     $( ".filter_to" ).datepicker( "option", "minDate", selectedDate );
+    //   }
+    // }).focus(function () {
+    //   // $(".ui-datepicker-calendar").css("display", "block");
+    // });
+
+    // $( ".filter_to" ).datepicker({
+    //   defaultDate: "+1w",
+    //   changeMonth: true,
+    //   changeYear: true,
+    //   dateFormat: 'dd MM yy',
+    //   minDate: new Date(year, 0, 1),
+    //   onClose: function( selectedDate ) {
+    //     $( ".filter_from" ).datepicker( "option", "maxDate", selectedDate );
+    //   }
+    // }).focus(function () {
+    //   // $(".ui-datepicker-calendar").css("display", "block");
+    // });
+  })
+</script>

@@ -1,0 +1,128 @@
+<div id="costRevenueAnalysisModal" class="modal container hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3>Cost & Revenue Analysis</h3>
+  </div>
+  <div class="modal-body">
+    <table width="100%" border="1">
+      <thead>
+        <tr>
+          <th>SELLING</th>
+          <th>BUYING</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="vertical-align: top;">
+            <%
+              ibl_ref = @cost_revenue.ibl_ref
+              invoices = Invoice.where(ibl_no: ibl_ref)
+              debit_notes = DebitNote.where(ibl_no: ibl_ref)
+              notes = Note.where(ibl_no: ibl_ref)
+              invoices += debit_notes+notes
+
+              total_invoice_usd = 0
+              total_invoice_idr = 0
+            %>
+            <% invoices.sort_by(&:invoice_date).each do |invoice| %>
+              <% unless invoice.is_canceled? %>
+                <%= "#{invoice.invoice_no_with_status} : #{money_with_currency_format(invoice.total_invoice, invoice.currency_code)}<br>".html_safe %> 
+                  <%                    
+                    total_invoice_usd += number_format(invoice.grand_total) if invoice.currency_code == "USD"
+                    total_invoice_idr += number_format(invoice.grand_total) if invoice.currency_code == "IDR"
+                  %>
+                  <%
+                    vat_text = []
+                    vat_text.push "VAT 10% : "
+                    vat_text.push "#{money_with_currency_format(invoice.vat_10, invoice.currency_code)} "
+                    vat_text.push "(NO. #{invoice.vat_10_no})<br>"
+                  %>
+                  <%= vat_text.join('').html_safe unless invoice.vat_10.to_f == 0 %>
+
+                  <%
+                    vat_text = []
+                    vat_text.push "VAT 1% : "
+                    vat_text.push "#{money_with_currency_format(invoice.vat_1, invoice.currency_code)} "
+                    vat_text.push "(NO. #{invoice.vat_1_no})<br>"
+                  %>
+                  <%= vat_text.join('').html_safe unless invoice.vat_1.to_f == 0 %>
+
+                  <%
+                    vat_text = []
+                    vat_text.push "PPH 23 : "
+                    vat_text.push "#{money_with_currency_format(invoice.pph_23, invoice.currency_code)} "
+                    vat_text.push "(NO. #{invoice.pph_23_no})<br>"
+                  %>
+                  <%= vat_text.join('').html_safe unless invoice.pph_23.to_f == 0 %>
+
+                <% end %>
+              <% else %>
+                <%= "#{invoice.invoice_no_with_status}<br>".html_safe %>
+              <% end %>
+              <br>
+            <% end %>
+          </td>
+          <td style="vertical-align: top;">
+            <%
+              ibl_ref = @cost_revenue.ibl_ref
+              references = PaymentReference.where(ibl_ref: ibl_ref)
+
+              total_payment_usd = 0
+              total_payment_idr = 0
+            %>
+            <% references.sort_by(&:payment_date).each do |reference| %>
+              <% unless reference.is_cancel == 1 %>
+                <% 
+                  total_payment_idr += number_format(reference.amount).to_f if reference.currency == "IDR"
+                  total_payment_usd += number_format(reference.amount).to_f if reference.currency == "USD"
+                %>
+                <%= "#{reference.payment_no.split("/")[0]}/#{reference.currency} : #{money_with_currency_format(reference.amount, reference.currency)}<br>".html_safe %>
+                <% reference.payment.payment_deposits.each do |deposit| %>
+                  <%
+                    deposit_text = []
+                    deposit_text.push "USING DEPOSIT : "
+                    deposit_text.push "#{money_with_currency_format(deposit.amount, deposit.currency)} "
+                    # deposit_text.push "(#{deposit.ibl_deposit})<br>"
+                    deposit_text.push "<br>"
+                  %>
+                  <%= deposit_text.join('').html_safe %>
+
+                <% end %>
+              <% else %> 
+                <%= "#{reference.payment_no.split("/")[0]}/#{reference.currency}<br>".html_safe %>
+              <% end %>
+              <br>
+            <% end %>
+            <br>
+            DEPOSIT : <br>
+            <%
+              references = PaymentReference.where(ibl_ref: ibl_ref).where.not(amount_invoice: nil)
+            %>
+            <% references.sort_by(&:payment_date).each do |reference| %>
+              <%= "#{reference.payment_no.split("/")[0]}/#{reference.currency} : #{money_with_currency_format(reference.amount_overpaid, reference.currency)}<br>".html_safe %>
+            <% end %>
+
+          </td>
+        </tr>
+        </tbody>
+      <tfoot>
+        <tr>
+          <th style="text-align: left;">
+            TOTAL INVOICE : 
+            <%= "#{money_with_currency_format(total_invoice_usd, "USD")}<br>" unless total_invoice_usd == 0 %>
+            <%= "#{money_with_currency_format(total_invoice_idr, "IDR")}<br>" unless total_invoice_idr == 0 %>
+          </th>
+          <th style="text-align: left;">
+            TOTAL PAYMENT : 
+            <%= "#{money_with_currency_format(total_payment_usd, "USD")}<br>" unless total_payment_usd == 0 %>
+            <%= "#{money_with_currency_format(total_payment_idr, "IDR")}<br>" unless total_payment_idr == 0 %>
+          </th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <%= link_to 'Print', print_cost_revenues_path(ibl_ref: @cost_revenue.ibl_ref), target: "_blank", :class => "btn btn-primary" %>
+  </div>
+</div>

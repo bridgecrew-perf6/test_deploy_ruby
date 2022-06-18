@@ -1,0 +1,37 @@
+<div class="page-header">
+  <h3>Debit Note: <%= @debit_note.no_dbn %> (<%= @debit_note.status_info %>)</h3>
+</div>
+<% if !notice.nil? %>
+<p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<div class="btn-group ">
+  <% if @debit_note.is_open? && @debit_note.bill_of_lading.shipping_instruction.is_open? && @debit_note.is_uncanceled? %>
+  <a href="<%= edit_debit_note_path(@debit_note) %>" class="btn btn-small" title="Edit: <%= @debit_note.no_dbn %>"><i class="icon-edit-sign"></i> Edit</a>
+  <a data-no-turbolink="true" target="_blank" href="<%= debit_note_path(@debit_note, format: "pdf") %>" class="btn btn-small" title="Print: <%= @debit_note.no_dbn %>"><i class="icon-print"></i> Print</a>
+  <% end %>
+  <a href="/list-inv-dbn" class="btn btn-small" title="Back to Lists"><i class="icon-reply"></i> Back</a>
+</div>
+
+<div class="details" style="margin-top: 20px;">
+  <div>
+    <strong>Status</strong>
+    <span>
+      <%= form_for @debit_note, url: update_status_debit_note_path(@debit_note.id) do |f| %>
+        <%= select_tag "status", options_for_select([["Open", "0"], ["Printed", "3"]], @debit_note.status.to_s), style: "margin-bottom: 0; width: 100px" %>
+        <%= f.submit "Update Status", class: "btn btn-info" %>
+        
+        <% if @debit_note.is_cancel == 0 && @debit_note.status != 3 %>
+          OR <%= link_to 'Cancel Invoice', cancel_debit_note_path(@debit_note), data: {confirm: 'Are you sure?'} %>
+        <% elsif @debit_note.status != 3 %>
+          OR <%= link_to 'Uncancel Invoice', uncancel_debit_note_path(@debit_note), data: {confirm: 'Are you sure?'} %>
+        <% end %>
+      <% end %>
+    </span>
+  </div>
+</div>
+
+<div id="size-a4-print">
+  <%# render "debit_note" %>
+  <%= render "invoices/invoice", :@invoice => @debit_note %>
+</div>

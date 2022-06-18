@@ -1,0 +1,1 @@
+json.array! @invoices, :no_invoice, :currency_code

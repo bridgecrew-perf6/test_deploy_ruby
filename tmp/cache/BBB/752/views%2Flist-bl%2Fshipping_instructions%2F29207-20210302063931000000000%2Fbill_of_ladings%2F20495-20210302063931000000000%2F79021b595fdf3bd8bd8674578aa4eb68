@@ -1,0 +1,62 @@
+o: ActiveSupport::Cache::Entry:@valueI"C  <tr class="success ">
+    <td>
+      <a href="/bill_of_ladings/20495?year=2020" title="Show Bill of Lading"><i class="icon-eye-open icon-large"></i></a>
+      &nbsp;
+
+      
+      &nbsp;
+
+          <a href="/bill_of_ladings/view_calculate_invoice?sid=29207&amp;year=2020" title="Calculate Invoice"><i class="icon-file icon-large"></i></a>
+        &nbsp;
+
+
+      
+      <a href="/cost_revenues/29207/print_cover?year=2020" target="_blank" title="Print"><i class="icon-print icon-large"></i></a>
+      &nbsp;
+      
+    </td>
+    <td>
+      IBL204656
+      
+      
+      <span class="label label-error">Closed CR</span>
+        
+    </td>
+    <td>207087974</td>
+    <td>SEALAND</td>
+    <td>PT.SINARMAS BIO ENERGY</td>
+    <td>TBA</td>
+    <td>ZHEJIANG OVER SEA OIL TRADING COMPANY LIMITED</td>
+    <td>FUZHOU JIANGYIN, CHINA</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+        <ul>
+            <li><a href="/invoices/27381?year=2020">IBLINV205189</a></li>
+            <li><a href="/invoices/27427?year=2020">IBLINV205225</a></li>
+            <li><a href="/debit_notes/11331?year=2020">IBLDBN202374</a></li>
+        </ul>
+    </td>
+    <td>21x20FT FLEXIBAG</td>
+    <td>EXPORT (OCEAN FREIGHT, FLEXI BAG)</td>
+    <td>
+        <ul>
+            <li><a href="/payments/17803?year=2020">3705/IDR/2020</a></li>
+        </ul>
+    </td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>31-Dec-2020</td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="20495">
+        <option value="Not Yet">Not Yet</option>
+<option selected="selected" value="Done">Done</option>
+      </select>
+    </td>
+    <td class="hidden disable">December 2020</td>
+    <td class="hidden disable">12/31/2020</td>
+    <td class="hidden disable reference_id">20495</td>
+    <td class="hidden disable ibl_ref">IBL204656</td>
+    <td class="hidden disable invoice">IBLINV205189<br>IBLINV205225<br>IBLDBN202374</td>
+    <td class="hidden disable payment">3705/IDR/2020</td>
+    <td class="hidden disable delivery_doc">Done</td>
+  </tr>
+:ET:@created_atf1649082870.381308:@expires_in0

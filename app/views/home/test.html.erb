@@ -1,0 +1,51 @@
+<% if !notice.nil? %>
+<p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+<% if !alert.nil? %>
+<p id="notice" class="alert alert-success"><%= alert %></p>
+<% end %>
+<%# image_tag "IBL-Smartbook.jpg", style: "width: 100%" %>
+<% params[:year] = params[:year].presence || Date.today.year.to_s %>
+<div class="panel-container">
+  <div class="row">
+    <div class="span5">
+      <%= form_tag '', method: 'get', style: 'padding: 10px; margin-bottom: -20px;' do %>
+        <select name="year" class="form-control">
+          <option value="2014" <%= 'selected="selected"' if params[:year] == "2014" %>>2014</option>
+          <option value="2015" <%= 'selected="selected"' if params[:year] == "2015" %>>2015</option>
+        </select>
+        <input type="submit" class="btn btn-default" value="Submit" style="margin-bottom: 10px;" />
+      <% end %>
+    </div>
+    <div class="span8">
+      <input style="margin: 10px 0 0 0; width: 100%" type="text" class="form-control" id="search-text" placeholder="Search by IBL SI #..."/>
+      <script type="text/javascript">
+      $(document).ready(function(){
+        $("#search-text").on("keyup", function(){
+          var search = $(this).val().toLowerCase();
+          $(".panel li:not(.heading)").each(function(){
+            if($(this).find("a").text().toLowerCase().indexOf(search) != -1){
+              $(this).removeClass("hidden");
+            }
+            else{
+              $(this).addClass("hidden");
+            }
+          });
+        })
+      })
+      </script>
+    </div>
+  </div>
+  <%= render 'commons/home_panel', models: @si_monitorings, the_name: :si_no,
+      title: 'SI Waiting to be BL', the_id: :shipping_instruction_id, type: :SI, count: nil %>
+  <%= render 'commons/home_panel', models: @grouped_not_invoiced, the_name: :name,
+      title: 'BL Waiting to be Invoiced', the_id: :bill_of_lading_id, type: :BL_INV, count: @grouped_not_invoiced_count %>
+  <%= render 'commons/home_panel', models: @grouped_not_closed, the_name: :name,
+      title: 'BL Waiting to be Closed', the_id: :bill_of_lading_id, type: :BL_CLS, count: @grouped_not_closed_count %>
+  <div style="clear: both"></div>
+  <% if current_user.administrator? %>
+    <%= render 'commons/home_panel', models: @cr_monitorings, the_name: :name,
+        title: 'C&R Waiting to be Completed', type: :SI_CNR, count: nil %>
+    <%= render 'commons/home_panel', models: @commision_monitorings, the_name: :name,
+        title: 'Commision & Profit', the_id: :shipping_instruction_id, type: :SI_CNP, count: nil %>
+  <% end %>

@@ -1,0 +1,33 @@
+o: ActiveSupport::Cache::Entry:@valueI"*  <tr>
+    <td data-no-turbolink="true">
+      <a href="/payments/21403?year=2022" title="Show Payment"><i class="icon-eye-open icon-large"></i></a>
+    </td>
+    <td data-order="006">
+      006/IDR/2022
+      
+    </td>
+    <td>IBL220069</td>
+    <td> EGLV080100825581</td>
+    <td>PT. MECOINDO</td>
+    <td>TG. PRIOK, JAKARTA, INDONESIA</td>
+    <td>HAI PHONG PORT, VIETNAM</td>
+    <td>2x20FT</td>
+    <td>EVERGREEN LINE</td>
+    <td style="text-align: right;">14,475,200 IDR</td>
+    <td></td>
+    <td>02-Jan-2022</td>
+    <td>04-Jan-2022</td>
+    <td>Sent</td>
+    <td class="hidden disable">January 2022</td>
+    <td class="hidden disable">01/02/2022</td>
+    <td class="hidden disable row_id">21403</td>
+    <td class="hidden disable ibl_ref">IBL220069</td>
+    <td class="hidden disable currency">IDR</td>
+    <td class="hidden disable row_ref_id">45236</td>
+    <td class="hidden disable">January 2022</td>
+    <td class="hidden disable">01/04/2022</td>
+    <td class="hidden disable">BANK TRANSACTION</td>
+    <td></td>
+    <td>14,475,200 IDR</td>
+  </tr>
+:ET:@created_atf1648209477.6685252:@expires_in0

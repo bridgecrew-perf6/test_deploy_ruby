@@ -1,0 +1,558 @@
+<div id="costComparisonModal" class="modal container hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3>Cost Comparison</h3>
+  </div>
+  <div class="modal-body">
+    <table width="100%" border="1">
+      <thead>
+      </thead>
+      <tbody>
+        <tr>
+          <td valign="top">
+            <table width="100%" border="1" class="cost-table">
+              <thead>
+                <tr>
+                  <th colspan="7">COST</th>
+                </tr>
+                <tr style="height:43px;">
+                  <td class="hidden"></td>
+                  <th>DESCRIPTION</th>
+                  <th>QTY</th>
+                  <th>AMOUNT USD</th>
+                  <th>AMOUNT IDR</th>
+                  <th>TOTAL</th>
+                  <th class="hidden">TOTAL AFTER TAX</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+              <tfoot>
+              </tfoot>
+            </table>
+          </td>
+          <td valign="top">
+            <table width="100%" border="1" class="invoice-table">
+              <thead>
+                <tr>
+                  <th colspan="7">INVOICE</th>
+                </tr>
+                <tr style="height:43px;">
+                  <td class="hidden"></td>
+                  <th>DESCRIPTION</th>
+                  <th>QTY</th>
+                  <th>AMOUNT USD</th>
+                  <th>AMOUNT IDR</th>
+                  <th>TOTAL</th>
+                  <th class="hidden">TOTAL AFTER TAX</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+              <tfoot>
+              </tfoot>
+            </table>
+          </td>
+        </tr>
+        </tbody>
+      <tfoot>
+      </tfoot>
+  </table>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <button class="btn btn-primary" id="update_cost_comparison" data-dismiss="modal" aria-hidden="true">Update</button>
+    <!-- <button class="btn btn-primary" id="update_cost_comparison" data-dismiss="modal" aria-hidden="true" onclick="update_cost_comparison(); return false;">Update</button> -->
+  </div>
+</div>
+<script type="text/javascript">
+  // $(document).ready(function(){
+    function cost_table_data() {
+      var revenue_table = $(".revenue-table");
+      var cost_table = $("#costComparisonModal .cost-table");
+      cost_table.find('tbody').html('');
+      // console.log(cost_table.find('tbody').html());
+      var tbody = []
+      revenue_table.find("tbody tr:not('.hidden')").each(function(){
+        parent = $(this);
+        description = parent.find(".cost_revenue_description").val();
+        volume = number_format(parent.find(".buying_volume").val());
+        amount_usd = number_format(parent.find(".buying_usd").val());
+        amount_idr = number_format(parent.find(".buying_idr").val());
+        total = number_format(parent.find(".buying_total").val());
+        total_after_tax = number_format(parent.find(".buying_total_after_tax").val());
+        
+        var hide = '';
+        if(volume == 0 && amount_usd == 0 && amount_idr == 0 && total_after_tax == 0)
+          hide = ' class="hidden"';      
+        tmp = '' +
+          '<tr'+hide+'>' +
+            '<td class="hidden"></td>' +
+            '<td>' + description + '</td>' +
+            '<td class="text-right">' + volume_format(volume) + '</td>' +
+            '<td class="text-right">' + parentheses_format(amount_usd) + '</td>' +
+            '<td class="text-right">' + parentheses_format(amount_idr) + '</td>' +
+            '<td class="text-right">' + parentheses_format(total) + '</td>' +
+            '<td class="text-right hidden">' + parentheses_format(total_after_tax) + '</td>' +
+          '</tr>';
+        tbody.push(tmp);
+      });
+      cost_table.find('tbody').html(tbody.join(""));
+      // console.log(cost_table.find('tbody').html());
+      
+      other = number_format(revenue_table.find("tfoot tr td .buying_other").val());
+      rate = number_format(revenue_table.find("tfoot tr td .buying_rate").val());
+      vat_10 = number_format(revenue_table.find("tfoot tr td .buying_vat_10").val());
+      vat_1 = number_format(revenue_table.find("tfoot tr td .buying_vat_1").val());
+      pph_23 = number_format(revenue_table.find("tfoot tr td .buying_pph_23").val());
+      // total_invoice = number_format(revenue_table.find("tfoot tr td .buying_total_invoice").val());
+      total_invoice = number_format(revenue_table.find("tfoot tr td .default_buying_total_invoice").val());
+
+      var tfoot = [];
+      tmp = '' +
+        '<tr>' +
+          '<td class="hidden"></td>' +
+          '<td colspan="4" class="text-left">OTHER</td>' +
+          '<td class="text-right">' + parentheses_format(other) + '</td>' +
+          '<td class="text-right hidden"></td>' +
+        '</tr>';
+      tfoot.push(tmp);
+
+      tmp = '' +
+        '<tr>' +
+          '<td class="hidden"></td>' +
+          '<td colspan="4" class="text-left">RATE</td>' +
+          '<td class="text-right">' + parentheses_format(rate) + '</td>' +
+          '<td class="text-right hidden"></td>' +
+        '</tr>';
+      tfoot.push(tmp);
+
+      tmp = '' +
+        '<tr>' +
+          '<td class="hidden"></td>' +
+          '<td colspan="4" class="text-left">VAT 10%</td>' +
+          '<td class="text-right">' + parentheses_format(vat_10) + '</td>' +
+          '<td class="text-right hidden"></td>' +
+        '</tr>';
+      tfoot.push(tmp);
+
+      tmp = '' +
+        '<tr>' +
+          '<td class="hidden"></td>' +
+          '<td colspan="4" class="text-left">VAT 1%</td>' +
+          '<td class="text-right">' + parentheses_format(vat_1) + '</td>' +
+          '<td class="text-right hidden"></td>' +
+        '</tr>';
+      tfoot.push(tmp);
+
+      tmp = '' +
+        '<tr>' +
+          '<td class="hidden"></td>' +
+          '<td colspan="4" class="text-left">PPH 23</td>' +
+          '<td class="text-right">' + parentheses_format(pph_23) + '</td>' +
+          '<td class="text-right hidden"></td>' +
+        '</tr>';
+      tfoot.push(tmp);
+
+
+      tmp = '' +
+        '<tr>' +
+          '<td class="hidden"></td>' +
+          '<td colspan="4" class="text-left">TOTAL INVOICE</td>' +
+          '<td class="text-right">' + parentheses_format(total_invoice) + '</td>' +
+          '<td class="text-right hidden"></td>' +
+        '</tr>';
+      tfoot.push(tmp);
+
+      cost_table.find('tfoot').html(tfoot.join(""));
+    };
+
+    $("#cost_comparison").on("click", function(e) {
+      e.preventDefault();
+      cost_table_data();
+      $.ajax({
+        url: '<%= get_cost_comparison_path %>',
+        dataType: "json",
+        data: {ibl_ref: '<%= @cost_revenue.ibl_ref %>'},
+        success: function(data){
+          if(data.success){
+            var base = $("#costComparisonModal");
+            var cost_table = base.find(".cost-table");
+            var cost_tbody = cost_table.find("tbody");
+            var cost_tfoot = cost_table.find("tfoot");
+            var invoice_table = base.find(".invoice-table");
+            var invoice_tbody = invoice_table.find("tbody");
+            var invoice_tfoot = invoice_table.find("tfoot");
+            
+            var base, tmp;
+            var parent, desc, volume, amount_usd, amount_idr, total, total_after_tax;
+
+            var cost_tbody_data = [];
+            var invoice_tbody_data = [];
+            var cost_tbody_html = [];
+            var invoice_tbody_html = [];
+
+            cost_tbody.find("tr").each(function(){
+              parent = $(this);
+              desc = parent.find("td:eq(1)").text();
+              volume = number_format(parent.find("td:eq(2)").text());
+              amount_usd = number_format(parent.find("td:eq(3)").text());
+              amount_idr = number_format(parent.find("td:eq(4)").text());
+              total = number_format(parent.find("td:eq(5)").text());
+              total_after_tax = number_format(parent.find("td:eq(6)").text());
+              cost_tbody_data.push({ description: desc, 
+                                volume: volume, 
+                                amount_usd: amount_usd, 
+                                amount_idr: amount_idr, 
+                                total: total,
+                                total_after_tax: total_after_tax
+                              });
+            });
+            // console.log(cost_tbody);
+
+            $.each(data.items, function(key, value) {
+              parent = $(this);
+              desc = value.description;
+              volume = number_format(value.volume);
+              amount_usd = number_format(value.amount_usd);
+              amount_idr = number_format(value.amount_idr);
+              total = number_format(value.total);
+              total_after_tax = number_format(value.total_after_tax);
+              invoice_tbody_data.push({ description: desc, 
+                                volume: volume, 
+                                amount_usd: amount_usd, 
+                                amount_idr: amount_idr, 
+                                total: total,
+                                total_after_tax: total_after_tax
+                              });
+            });
+            // console.log(invoice_tbody);
+
+            // $.each(data.items, function(key, value) {
+            var hide;
+            $.each(cost_tbody_data, function(key, value) {
+              hide = '';
+              if(value.volume == 0 && value.amount_usd == 0 && value.amount_idr == 0 && value.total_after_tax == 0)
+                hide = ' class="hidden"';
+              tmp = '' +
+                '<tr'+hide+'>' +
+                  '<td class="hidden"></td>' +
+                  '<td class="description">' + value.description + '</td>' +
+                  '<td class="volume text-right">' + volume_format(value.volume) + '</td>' +
+                  '<td class="amount_usd text-right">' + parentheses_format(value.amount_usd) + '</td>' +
+                  '<td class="amount_idr text-right">' + parentheses_format(value.amount_idr) + '</td>' +
+                  '<td class="total text-right">' + parentheses_format(value.total) + '</td>' +
+                  '<td class="total_after_tax text-right hidden">' + parentheses_format(value.total_after_tax) + '</td>' +
+                '</tr>';
+              cost_tbody_html.push(tmp);
+            });
+            cost_tbody.html( cost_tbody_html.join("") );
+            // console.log(cost_tbody_rows);
+
+            // $.each(data.items, function(key, value) {
+            $.each(invoice_tbody_data, function(key, value) {
+              hide = '';
+              if(value.volume != 0 || value.amount_usd != 0 || value.amount_idr != 0 || value.total_after_tax != 0){ 
+                tmp = '' +
+                '<tr>' +
+                  '<td class="hidden"></td>' +
+                  '<td class="description">' + value.description + '</td>' +
+                  '<td class="volume text-right">' + volume_format(value.volume) + '</td>' +
+                  '<td class="amount_usd text-right">' + parentheses_format(value.amount_usd) + '</td>' +
+                  '<td class="amount_idr text-right">' + parentheses_format(value.amount_idr) + '</td>' +
+                  '<td class="total text-right">' + parentheses_format(value.total) + '</td>' +
+                  '<td class="total_after_tax text-right hidden">' + parentheses_format(value.total_after_tax) + '</td>' +
+                '</tr>';
+                invoice_tbody_html.push(tmp);                
+              }
+            });
+            invoice_tbody.html( invoice_tbody_html.join("") );
+            // console.log(invoice_tbody_rows);
+
+            var cost_tfoot_data = [];
+            var invoice_tfoot_data = [];
+            var cost_tfoot_html = [];
+            var invoice_tfoot_html = [];
+
+            cost_tfoot.find("tr").each(function(){
+              parent = $(this);
+              desc = parent.find("td:eq(1)").text();
+              total = number_format(parent.find("td:eq(2)").text());
+              total_after_tax = number_format(parent.find("td:eq(3)").text());
+              cost_tfoot_data.push({ description: desc, total: (number_format(total)) });
+            });
+
+            invoice_tfoot_data.push({ description: "OTHER", total: (number_format(data.other)) });
+            invoice_tfoot_data.push({ description: "RATE", total: (number_format(data.rate)) });
+            invoice_tfoot_data.push({ description: "VAT 10%", total: (number_format(data.vat_10)) });
+            invoice_tfoot_data.push({ description: "VAT 1%", total: (number_format(data.vat_1)) });
+            invoice_tfoot_data.push({ description: "PPH 23", total: (number_format(data.pph_23)) });
+            invoice_tfoot_data.push({ description: "TOTAL INVOICE", total: (number_format(data.total_invoice)) });
+
+            // $.each(data.items, function(key, value) {
+            $.each(cost_tfoot_data, function(key, value) {
+              tmp = '' +
+                '<tr>' +
+                  '<td class="hidden"></td>' +
+                  '<td colspan="4" class="text-left">' + value.description + '</td>' +
+                  '<td class="text-right">' + parentheses_format(value.total) + '</td>' +
+                  '<td class="text-right hidden"></td>' +
+                '</tr>';
+              cost_tfoot_html.push(tmp);
+            });
+            cost_tfoot.html( cost_tfoot_html.join("") );
+
+            $.each(invoice_tfoot_data, function(key, value) {
+              tmp = '' +
+                '<tr>' +
+                  '<td class="hidden"></td>' +
+                  '<td colspan="4" class="text-left">' + value.description + '</td>' +
+                  '<td class="text-right">' + parentheses_format(value.total) + '</td>' +
+                  '<td class="text-right hidden"></td>' +
+                '</tr>';
+              invoice_tfoot_html.push(tmp);
+            });
+            invoice_tfoot.html( invoice_tfoot_html.join("") );
+
+            diff_cost_comparison("cost", "invoice");
+            diff_cost_comparison("invoice", "cost");
+            gray_cost_comparison("cost", "invoice");
+            gray_cost_comparison("invoice", "cost");
+
+            alert("Import done...");
+          }
+          else{
+            alert(data.message);
+          }
+        }
+      });
+    });
+
+    function diff_cost_comparison(table1, table2){
+      // var diff1 = [];
+      // jQuery.grep(cost_tbody_rows, function(el, i) {
+      //   if (jQuery.inArray(el, invoice_tbody_rows) == -1) diff1.push(i);
+      // });
+      // console.log(" the difference is " + diff1);
+
+      // var diff2 = [];
+      // jQuery.grep(invoice_tbody_rows, function(el, i) {
+      //   if (jQuery.inArray(el, cost_tbody_rows) == -1) diff2.push(i);
+      // });
+      // console.log(" the difference is " + diff2);
+      
+      var base = $("#costComparisonModal");
+      var table1 = base.find("."+table1+"-table");
+      var rows1 = [];
+      table1.find("tbody tr").each(function(){ rows1.push( $(this).html() ); });
+      
+      var table2 = base.find("."+table2+"-table");
+      var rows2 = [];
+      table2.find("tbody tr").each(function(){ rows2.push( $(this).html() ); });
+      var diff = [];
+      $.each(rows1, function(i, el) {
+        // alert(el);
+        if ($.inArray(el, rows2) == -1){
+          diff.push(i);
+        }else{
+          // console.log($.inArray(el, rows2));
+          rows2.splice($.inArray(el, rows2),1);
+        }
+      });
+      // console.log(rows2);
+      // console.log(" the difference is " + diff);
+
+      $.each(diff, function(key, value) {
+        // table1.find("tbody tr:eq("+value+")").css('background-color', 'gray');
+        table1.find("tbody tr:eq("+value+")").addClass('diff');
+      });
+
+      var rows1 = [];
+      table1.find("tfoot tr").each(function(){ rows1.push( $(this).html() ); });
+      var rows2 = [];
+      table2.find("tfoot tr").each(function(){ rows2.push( $(this).html() ); });
+      var diff = [];
+      $.each(rows1, function(i, el) {
+        // alert(el);
+        if ($.inArray(el, rows2) == -1){
+          diff.push(i);
+        }else{
+          rows2.splice($.inArray(el, rows2),1);
+        }
+      });
+
+      $.each(diff, function(key, value) {
+        // table1.find("tfoot tr:eq("+value+")").css('background-color', 'gray');
+        table1.find("tfoot tr:eq("+value+")").addClass('diff');
+      }); 
+    }
+
+    function gray_cost_comparison(table1, table2){
+      var base = $("#costComparisonModal");
+      var table1 = base.find("."+table1+"-table");
+      var rows1 = [];
+      var rows1_index = [];
+      // table1.find("tbody tr:not(.hidden)").each(function(){ rows1.push( $(this).find('td:eq(1)').html() ); });
+      table1.find("tbody tr").each(function(i){ if(!$(this).hasClass('hidden')){ rows1.push( $(this).find('td:eq(1)').html() ); rows1_index.push(i); } });
+      
+      var table2 = base.find("."+table2+"-table");
+      var rows2 = [];
+      var rows2_index = [];
+      // table2.find("tbody tr:not(.hidden)").each(function(){ rows2.push( $(this).find('td:eq(1)').html() ); });
+      table2.find("tbody tr").each(function(i){ if(!$(this).hasClass('hidden')){ rows2.push( $(this).find('td:eq(1)').html() ); rows2_index.push(i); } });
+
+      var diff = [];
+      $.each(rows1, function(i, el) {
+        // alert(el);
+        if ($.inArray(el, rows2) == -1){
+          diff.push(rows1_index[i]);
+        }else{
+          // console.log($.inArray(el, rows2));
+          rows2.splice($.inArray(el, rows2),1);
+        }
+      });
+      // console.log(rows2);
+      // console.log(" the difference is " + diff);
+
+      $.each(diff, function(key, value) {
+        table1.find("tbody tr:eq("+value+")").addClass('gray');
+      });
+
+      // var rows1 = [];
+      // table1.find("tfoot tr").each(function(){ rows1.push( $(this).html() ); });
+      // var rows2 = [];
+      // table2.find("tfoot tr").each(function(){ rows2.push( $(this).html() ); });
+      // var diff = [];
+      // $.each(rows1, function(i, el) {
+      //   // alert(el);
+      //   if ($.inArray(el, rows2) == -1){
+      //     diff.push(i);
+      //   }else{
+      //     rows2.splice($.inArray(el, rows2),1);
+      //   }
+      // });
+
+      // $.each(diff, function(key, value) {
+      //   table1.find("tfoot tr:eq("+value+")").addClass('gray');
+      // }); 
+    }
+
+    // function update_cost_comparison(){
+    $("#update_cost_comparison").on("click", function(e) {
+      e.preventDefault();
+      var base = $("#costComparisonModal");
+      var cost_table = base.find(".cost-table");
+      var invoice_table = base.find(".invoice-table");
+      
+      var diff_cost = cost_table.find("tbody tr.diff").map(function(){
+        return $(this).index();
+      }).get();
+      var diff_cost_desc = cost_table.find("tbody tr.diff td.description").map(function(){
+        return $(this).text();
+      }).get();
+
+      invoice_table.find("tbody tr.diff").each(function(){
+        invoice_parent = $(this);
+        invoice_desc = invoice_parent.find(".description").text();
+        invoice_volume = number_format(invoice_parent.find(".volume").text());
+        invoice_amount_usd = number_format(invoice_parent.find(".amount_usd").text());
+        invoice_amount_idr = number_format(invoice_parent.find(".amount_idr").text());
+        invoice_total = number_format(invoice_parent.find(".total").text());
+        invoice_total_after_tax = number_format(invoice_parent.find(".total_after_tax").text());
+        // invoice_total_after_tax = invoice_total
+        
+        if(jQuery.inArray(invoice_desc, diff_cost_desc) == -1){
+          console.log(invoice_desc+" not found");
+          add_sell_cost_fields('active');
+        
+          base = $(".revenue-table tbody tr");
+          base.last().find(".cost_revenue_description").val(invoice_desc);
+          // base.last().find(".selling_volume").val(0);
+          // base.last().find(".selling_usd").val(0);
+          // base.last().find(".selling_idr").val(0);
+          // base.last().find(".selling_total_after_tax").val(0);
+          base.last().find(".buying_volume").val(volume_format(invoice_volume));
+          base.last().find(".buying_usd").val(money_format(invoice_amount_usd));
+          base.last().find(".buying_idr").val(money_format(invoice_amount_idr));
+          base.last().find(".buying_total_after_tax").val(money_format(invoice_total_after_tax));
+          // base.last().find(".item_type").val(item_type);
+          // return true;
+
+        }else{
+          cost_table.find("tbody tr").each(function(index){
+            if($(this).is(".diff")){
+              cost_parent = $(this);
+              cost_desc = cost_parent.find(".description").text();
+              if(invoice_desc == cost_desc){
+                console.log(invoice_desc+" - "+cost_desc+" index: "+index);
+                base = $(".revenue-table tbody tr:not('.hidden'):eq("+index+")");
+                // base.find(".cost_revenue_description").val(cost_desc);
+                // base.find(".selling_volume").val(0);
+                // base.find(".selling_usd").val(0);
+                // base.find(".selling_idr").val(0);
+                // base.find(".selling_total_after_tax").val(0);
+                base.find(".buying_volume").val(volume_format(invoice_volume));
+                base.find(".buying_usd").val(money_format(invoice_amount_usd));
+                base.find(".buying_idr").val(money_format(invoice_amount_idr));
+                base.find(".buying_total_after_tax").val(money_format(invoice_total_after_tax));
+                // base.find(".item_type").val(item_type);
+
+                cost_parent.removeClass('diff');
+                // return false;
+              }
+            }
+          });
+        }
+      });
+      cost_table.find("tbody tr").each(function(index){
+        if($(this).is(".diff")){
+          cost_parent = $(this);
+          cost_desc = cost_parent.find(".description").text();
+          console.log(cost_desc+" empty");
+          base = $(".revenue-table tbody tr:not('.hidden'):eq("+index+")");
+          // base.find(".cost_revenue_description").val(cost_desc);
+          // base.find(".selling_volume").val(0);
+          // base.find(".selling_usd").val(0);
+          // base.find(".selling_idr").val(0);
+          // base.find(".selling_total_after_tax").val(0);
+          base.find(".buying_volume").val(0);
+          base.find(".buying_usd").val(0);
+          base.find(".buying_idr").val(0);
+          base.find(".buying_total_after_tax").val(0);
+          // base.find(".item_type").val(item_type);
+
+          cost_parent.removeClass('diff');
+          // return false;
+        }
+      });
+      invoice_table.find("tfoot tr").each(function(i){
+        parent = $(this);
+        desc = parent.find("td:eq(1)").text();
+        total = number_format(parent.find("td:eq(2)").text());
+        if(desc != "TOTAL INVOICE"){
+          console.log(desc+": "+total);
+          
+          base = $(".revenue-table tfoot tr:eq("+i+")");
+          base.find("td:eq(4) input").val(money_format(total));
+        }
+      });
+      calculate();
+      alert("Update done...");
+    });
+    // }
+  // });
+</script>
+<style type="text/css">
+  .gray{
+    background-color: gray;
+  }
+  #costComparisonModal table tbody tr td:nth-child(6){
+    font-weight: bold;
+  }
+  #costComparisonModal table tfoot tr td:nth-child(3){
+    font-weight: normal;
+  }
+  #costComparisonModal table tfoot tr:nth-child(2) td:nth-child(3), #costComparisonModal table tfoot tr:last-child td:nth-child(3){
+    font-weight: bold;
+  }
+</style>

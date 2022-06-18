@@ -1,0 +1,457 @@
+class DebitNotesController < ApplicationController
+  # layout "print", :only => [ :print ]
+  
+  before_filter :authorize, except: [:paid, :unpaid]
+  before_action :set_debit_note, only: [:show, :edit, :update, :destroy, :update_status, :cancel, :uncancel]
+  before_action :validate_edit_print, only: [:edit, :update, :print]
+  before_action :load_description, only: [:new, :edit, :create, :update, :create_dbn]
+
+  before_action :enable_edit_invoice, only: [:edit, :update, :update_status, :cancel, :uncancel]
+
+  # GET /debit_notes
+  # GET /debit_notes.json
+  def index
+    @debit_notes = DebitNote.includes(:bill_of_lading).order("bill_of_ladings.bl_number DESC")
+  end
+
+  # GET /debit_notes/1
+  # GET /debit_notes/1.json
+  def show
+    # respond_to do |format|
+    #   format.html { 
+    #     render 
+    #   }
+    #   format.pdf {
+    #     validate_edit_print
+    #     html = render_to_string(:layout => false , :action => "show-pdf.html.erb", :formats => [:html], :handler => [:erb])
+    #     kit = PDFKit.new(html, :margin_top => "0.25cm", :margin_left => "1cm", :margin_right => "1cm", :margin_bottom => "1cm")
+    #     kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/pdf.css"
+    #     send_data(kit.to_pdf, :filename => @debit_note.no_dbn + ".pdf", :type => 'application/pdf', :disposition  => "inline")
+    #     return # to avoid double render call
+    #   }
+    # end
+    @invoice = @debit_note
+    respond_to do |format|
+      format.html { 
+        render 
+      }
+      format.pdf {
+        validate_edit_print
+        html = render_to_string(:layout => false , :action => "show-pdf.html.erb", :formats => [:html], :handler => [:erb])
+        kit = PDFKit.new(html, :margin_top => "0.25cm", :margin_left => "1cm", :margin_right => "1cm", :margin_bottom => "1cm")
+        kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/pdf.css"
+        send_data(kit.to_pdf, :filename => @invoice.invoice_no + ".pdf", :type => 'application/pdf', :disposition  => "inline")
+        return # to avoid double render call
+      }
+    end
+  end
+
+  # GET /debit_notes/new
+  def new
+    @debit_note = DebitNote.new
+    @debit_note.no_dbn = @debit_note.generate_debit_number
+    3.times { @debit_note.invoice_details.build }
+  end
+
+  # GET /debit_notes/1/edit
+  def edit    
+    @debit_note.to_shipper = @debit_note.bill_of_lading.shipper.company_name if @debit_note.to_shipper.nil?
+    @debit_note.vessel = @debit_note.bill_of_lading.feeder_vessel if @debit_note.vessel.nil?
+    @debit_note.destination = @debit_note.bill_of_lading.final_destination if @debit_note.destination.nil?
+    @debit_note.bl_ibl_no = [@debit_note.bill_of_lading.master_bl_no, @debit_note.bill_of_lading.bl_number].join(" / ") if @debit_note.bl_ibl_no.nil?
+    @debit_note.shipper_ref = @debit_note.bill_of_lading.shipping_instruction.shipper_reference if @debit_note.shipper_ref.nil?
+    @debit_note.etd = @debit_note.bill_of_lading.shipping_instruction.vessels.first.etd_date if @debit_note.etd.nil?
+    @debit_note.eta = @debit_note.bill_of_lading.shipping_instruction.vessels.last.eta_date if @debit_note.eta.nil?
+    
+    unless params[:iid].blank?
+      @debit_note.invoice_details.each do |detail|
+        detail._destroy = 1
+      end
+
+      if calculate_invoice = BillOfLadingInvoice.find_by(id: params[:iid])
+        redirect_to edit_debit_note_path(@debit_note), notice: "Invoice #{@debit_note.invoice_no} with #{calculate_invoice.shipping_instruction.ibl_ref} was not connected." unless calculate_invoice.shipping_instruction.ibl_ref == @debit_note.ibl_ref
+        
+        currency = @debit_note.currency_code
+        
+        @debit_note.vat_10 = calculate_invoice.invoice_vat_10(currency)
+        @debit_note.vat_1 = calculate_invoice.invoice_vat_1(currency)
+        @debit_note.pph_23 = calculate_invoice.invoice_pph_23(currency)
+        @debit_note.rate = calculate_invoice.rate
+
+        @debit_note.default_total_amount = calculate_invoice.invoice_total_invoice(currency)
+        @debit_note.default_vat_10 = calculate_invoice.invoice_vat_10(currency)
+        @debit_note.default_vat_1 = calculate_invoice.invoice_vat_1(currency)
+        @debit_note.default_total_include_vat = @debit_note.default_total_include_vat
+        @debit_note.default_pph_23 = calculate_invoice.invoice_pph_23(currency)
+        @debit_note.default_total_after_pph_23 = @debit_note.default_total_after_pph_23
+        @debit_note.default_rate = calculate_invoice.rate
+
+        calculate_invoice.bill_of_lading_items.each do |item|
+          @debit_note.invoice_details.build({ description: item.description, volume: item.volume.to_f, amount: item.invoice_amount(currency), default_amount: item.invoice_amount(currency) })
+        end
+      # else
+      #   (3-@debit_note.invoice_details.size).times { @debit_note.invoice_details.build }
+      end
+      3.times { @debit_note.invoice_details.build } if @debit_note.invoice_details.map{|p| p._destroy == 0 ? 1:0 }.sum(&:to_i) == @debit_note.invoice_details.size      
+    end
+
+
+    if params[:layout] == "false"
+      render :json => {'success' => true, 'message' => render_to_string(:action => "edit",:layout => false)}.to_json and return
+    end
+  end
+
+  # POST /debit_notes
+  # POST /debit_notes.json
+  def create
+    @debit_note = DebitNote.new(debit_note_params)
+    @debit_note.status = 0
+
+    while DebitNote.exists? no_dbn: @debit_note.no_dbn  do
+      @debit_note.no_dbn = @debit_note.generate_debit_number
+    end
+
+    respond_to do |format|
+      if @debit_note.save
+        format.html { redirect_to @debit_note, notice: 'Debit note was successfully created.' }
+        format.json { render action: 'show', status: :created, location: @debit_note }
+      else
+        format.html { 
+          3.times { @debit_note.invoice_details.build }
+          render action: 'new' 
+        }
+        format.json { render json: @debit_note.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PATCH/PUT /debit_notes/1
+  # PATCH/PUT /debit_notes/1.json
+  def update
+    respond_to do |format|
+      if @debit_note.update(debit_note_params)
+        format.html { redirect_to @debit_note, notice: 'Debit note was successfully updated.' }
+        format.json { head :no_content }
+      else
+        format.html { render action: 'edit' }
+        format.json { render json: @debit_note.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /debit_notes/1
+  # DELETE /debit_notes/1.json
+  def destroy
+    @debit_note.destroy
+    respond_to do |format|
+      format.html { redirect_to debit_notes_url }
+      format.json { head :no_content }
+    end
+  end
+
+  def update_status
+    begin
+      debit_note = DebitNote.find(params[:id])
+      debit_note.status = params[:status]
+
+      if debit_note.save(validate: false)
+        redirect_to debit_note, notice: "Status updated" and return
+      end
+    rescue
+        redirect_to '/list-inv-dbn', notice: "An error occured, please try again." and return
+    end
+  end
+
+  def paid
+    if !params[:date_of_payment].blank? && !params[:id].blank?
+      debit_note = DebitNote.find(params[:id])
+      if debit_note
+        debit_note.status_payment = 1
+        debit_note.date_of_payment = params[:date_of_payment]
+        debit_note.notes_payment = params[:notes_payment]
+        debit_note.save(validate: false)
+
+        if debit_note.notes_payment.blank?
+          notes_payment = "&nbsp;"
+        else
+          notes_payment = "<div class=\"wrap collapsed\">#{debit_note.notes_payment}</div><a class=\"adjust\" href=\"#\">+ More</a>"
+        end
+
+        output = {'success' => true, 'message' => 'Update success', 'date_of_payment' => params[:date_of_payment].to_time.strftime('%d-%b-%Y'), 'notes' => notes_payment }
+      else
+        output = {'success' => false, 'message' => 'Debit Note already closed'}
+      end
+    else
+      output = {'success' => false, 'message' => 'Enter date of payment'}
+    end
+    render :json => output.to_json
+  end
+
+  def unpaid
+    dnotes = DebitNote.find_by(id: params[:id], no_dbn: params[:no])
+    if dnotes
+      dnotes.status_payment = 0
+      dnotes.date_of_payment = ''
+      dnotes.notes_payment = ''
+      dnotes.save(validate: false)
+      output = {'success' => true, 'message' => 'Update success'}
+    elsif dnotes.status == 0
+      output = {'success' => false, 'message' => 'Debit Note already open'}
+    end
+    render :json => output.to_json
+  end
+
+  def cancel
+    dbn = DebitNote.find(params[:id])
+    if dbn
+      dbn.is_cancel = 1
+      if dbn.save(:validate => false)
+        redirect_to dbn, notice: "#{dbn.head_letter.capitalize} has been update to cancel" and return
+      end
+    end
+    redirect_to dbn
+  end
+
+  def uncancel
+    dbn = DebitNote.find(params[:id])
+    if dbn
+      dbn.is_cancel = 0
+      if dbn.save(:validate => false)
+        redirect_to dbn, notice: "#{dbn.head_letter.capitalize} has been update to uncancel" and return
+      end
+    end
+    redirect_to dbn
+  end
+
+  # def create_dbn
+  #   bl = BillOfLading.find(params[:bid])
+  #   si = bl.shipping_instruction
+
+  #   # if si.is_complete?
+  #   #   vessel = bl.shipping_instruction.vessels.first
+  #   #   @debit_note = DebitNote.new(
+  #   #     :bill_of_lading_id => bl.id, 
+  #   #     :dbn_date => Date.today, 
+  #   #     :due_date => vessel.etd_date + bl.shipper.credit_term.to_i,
+  #   #     :to_shipper => bl.shipper.company_name, 
+  #   #     :vessel => bl.feeder_vessel,
+  #   #     :destination => bl.final_destination, 
+  #   #     :bl_ibl_no => [bl.master_bl_no, bl.bl_number].join(" / "),
+  #   #     :shipper_ref => bl.shipping_instruction.shipper_reference, 
+  #   #     :etd => bl.shipping_instruction.vessels.first.etd_date,
+  #   #     :eta => bl.shipping_instruction.vessels.last.eta_date,
+  #   #     :head_letter => params[:letter].upcase
+  #   #   )
+  #   #   @debit_note.no_dbn = @debit_note.generate_debit_number
+  #   #   3.times { @debit_note.debit_note_details.build }
+
+  #   #   if @debit_note.valid?
+  #   #     @debit_note.save
+  #   #     redirect_to edit_debit_note_path @debit_note, :layout => false
+  #   #   end
+  #   # else
+  #   #   output = {'success' => false, 'message' => "Please complete SI data, Thank you. Go to <a href=\"#{ edit_shipping_instruction_path(si) }\">Update SI</a>"}
+  #   #   render :json => output.to_json and return
+  #   # end
+
+  #   json_result = si.is_complete
+  #   array_result = json_result.to_a
+
+  #   if array_result[0][1]
+  #     vessel = bl.shipping_instruction.vessels.first
+  #     @debit_note = DebitNote.new(
+  #       :bill_of_lading_id => bl.id, 
+  #       :dbn_date => Date.today, 
+  #       :due_date => vessel.etd_date + si.shipper.credit_term.to_i,
+  #       :to_shipper => bl.shipping_instruction.shipper.company_name, 
+  #       :vessel => bl.shipping_instruction.feeder_vessel,
+  #       # :port_of_lading => bl.shipping_instruction.port_of_lading, 
+  #       :port_of_loading => bl.shipping_instruction.port_of_loading, 
+  #       :destination => bl.shipping_instruction.final_destination, 
+  #       :bl_no => bl.shipping_instruction.master_bl_no,
+  #       :ibl_no => bl.shipping_instruction.si_no,
+  #       :shipper_ref => bl.shipping_instruction.shipper_reference, 
+  #       :etd => bl.shipping_instruction.vessels.first.etd_date,
+  #       :eta => bl.shipping_instruction.vessels.last.eta_date,
+  #       :head_letter => params[:letter].upcase
+  #     )
+  #     @debit_note.no_dbn = @debit_note.generate_debit_number
+  #     # 3.times { @debit_note.invoice_details.build }
+
+  #     items = []
+  #     unless params[:iid].blank?
+  #       inv = BillOfLadingInvoice.find(params[:iid])
+  #       unless inv.bill_of_lading_items.blank?
+  #         inv.bill_of_lading_items.each do |item|
+  #           items << { description: item.description, amount: item.amount('IDR'), volume: item.volume }
+  #         end
+  #       end
+  #     end
+
+  #     if items.blank?
+  #       (3-@debit_note.invoice_details.size).times { @debit_note.invoice_details.build }
+  #     else
+  #       @debit_note.invoice_details.build(items)
+  #     end
+
+  #     # if @debit_note.valid?
+  #     #   @debit_note.save
+  #     #   redirect_to edit_debit_note_path @debit_note, :layout => false
+  #     # end
+  #     render :json => {'success' => true, 'message' => render_to_string(:action => "new",:layout => false)}.to_json and return
+  #   else
+  #     output = {
+  #       'success' => false, 
+  #       'message' => "Please complete SI data, Thanks. Go to <a href=\"#{ edit_shipping_instruction_path(si) }\">Update SI</a>",
+  #       'errors' => array_result[1][1]
+  #     }
+  #     render :json => output.to_json and return
+  #   end
+  # end
+
+  def create_dbn
+    bl = BillOfLading.find(params[:bid])
+    si = bl.shipping_instruction
+
+    json_result = si.is_complete
+    array_result = json_result.to_a
+
+    if array_result[0][1]
+      vessel = si.vessels.first
+
+      currency = ['USD', 'IDR'].include?(params[:currency].upcase) ? params[:currency].upcase : 'IDR' 
+
+      @debit_note = DebitNote.new(
+        :bill_of_lading_id => bl.id, 
+        :dbn_date => Date.today, 
+        :due_date => vessel.etd_date + si.shipper.credit_term.to_i,
+        :to_shipper => si.shipper.company_name, 
+        :vessel => si.feeder_vessel,
+        :port_of_loading => si.port_of_loading, 
+        :destination => si.final_destination, 
+        :bl_no => si.master_bl_no,
+        :ibl_no => si.si_no,
+        :shipper_ref => si.shipper_reference, 
+        :etd => si.vessels.first.etd_date,
+        :eta => si.vessels.last.eta_date,
+        :head_letter => params[:letter].upcase, 
+        :currency_code => currency
+      )
+      @debit_note.no_dbn = @debit_note.generate_debit_number
+
+      items = []
+      unless params[:iid].blank?
+        calculate_invoice = BillOfLadingInvoice.find(params[:iid])
+        currency = @debit_note.currency_code
+        
+        @debit_note.vat_10 = calculate_invoice.invoice_vat_10(currency)
+        @debit_note.vat_1 = calculate_invoice.invoice_vat_1(currency)
+        @debit_note.pph_23 = calculate_invoice.invoice_pph_23(currency)
+        @debit_note.rate = calculate_invoice.rate
+
+        @debit_note.default_total_amount = calculate_invoice.invoice_total_invoice(currency)
+        @debit_note.default_vat_10 = calculate_invoice.invoice_vat_10(currency)
+        @debit_note.default_vat_1 = calculate_invoice.invoice_vat_1(currency)
+        @debit_note.default_total_include_vat = @debit_note.default_total_include_vat
+        @debit_note.default_pph_23 = calculate_invoice.invoice_pph_23(currency)
+        @debit_note.default_total_after_pph_23 = @debit_note.default_total_after_pph_23
+        @debit_note.default_rate = calculate_invoice.rate
+
+        calculate_invoice.bill_of_lading_items.each do |item|
+          @debit_note.invoice_details.build({ description: item.description, volume: item.volume.to_f, amount: item.invoice_amount(currency), default_amount: item.invoice_amount(currency) })
+        end
+      end
+
+      if @debit_note.invoice_details.blank?
+        (3-@debit_note.invoice_details.size).times { @debit_note.invoice_details.build }
+      end
+
+      render :json => {'success' => true, 'message' => render_to_string(:action => "new",:layout => false)}.to_json and return
+    else
+      output = {
+        'success' => false, 
+        'message' => "Please complete SI data, Thanks. Go to <a href=\"#{ edit_shipping_instruction_path(si) }\">Update SI</a>",
+          'errors' => array_result[1][1]
+      }
+      render :json => output.to_json and return
+    end
+  end
+
+  def update_tax
+    if !params[:tax_issued].blank? && !params[:status_tax].blank? && !params[:id].blank?
+       # && (!params[:vat_10_no].blank? || !params[:vat_1_no].blank? || !params[:pph_23_no].blank?)
+      invoice = DebitNote.find(params[:id])
+      if invoice
+        invoice.tax_issued = Date.parse(params[:tax_issued])
+        invoice.vat_10_no = params[:vat_10_no]
+        invoice.vat_1_no = params[:vat_1_no]
+        invoice.pph_23_no = params[:pph_23_no]
+        
+        # invoice.vat_10 = params[:vat_10]
+        # invoice.vat_1 = params[:vat_1]
+        # invoice.pph_23 = params[:pph_23]
+
+        invoice.vat_10_2 = params[:vat_10] if invoice.add_vat_10_tax == '1'
+        invoice.vat_1_2 = params[:vat_1] if invoice.add_vat_1_tax == '1'
+        invoice.pph_23_2 = params[:pph_23] if invoice.add_pph_23_tax == '1'
+
+        invoice.status_tax = params[:status_tax]
+        invoice.save(validate: false)
+
+        vat_10 = invoice.is_canceled? ? "" : invoice.vat_10_tax
+        vat_1 = invoice.is_canceled? ? "" : invoice.vat_1_tax
+        pph_23 = invoice.is_canceled? ? "" : invoice.pph_23_tax
+
+        output = {'success' => true, 'message' => 'Update success', 'tax_issued' => invoice.tax_issued, 'status_tax' => invoice.status_tax, 'status_tax_humanize' => invoice.status_tax.humanize, 'vat_10_no' => invoice.vat_10_no, 'vat_1_no' => invoice.vat_1_no, 'pph_23_no' => invoice.pph_23_no, 'vat_10' => vat_10, 'vat_1' => vat_1, 'pph_23' => pph_23, 'add_vat_10_tax' => invoice.add_vat_10_tax, 'add_vat_1_tax' => invoice.add_vat_1_tax, 'add_pph_23_tax' => invoice.add_pph_23_tax }
+      else
+        output = {'success' => false, 'message' => 'Invoice already closed'}
+      end
+    else
+      output = {'success' => false, 'message' => 'Enter Tax Issued'}
+    end
+    render :json => output.to_json
+  end
+
+  private
+    def validate_edit_print
+        debit_note = DebitNote.find(params[:id])
+        if debit_note.status != 0 || debit_note.is_cancel != 0
+          redirect_to '/list-inv-dbn', notice: "Can't edit the invoice with status Closed, Printed, or Canceled" and return
+        end
+    end
+
+    # Use callbacks to share common setup or constraints between actions.
+    def set_debit_note
+      @debit_note = DebitNote.find(params[:id])
+    end
+
+    def load_description
+      @details = DebitNoteDetail.group(:description).all
+      @agents = Agent.search
+      @shippers = Shipper.search
+      @consignees = Consignee.search
+    end
+
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def debit_note_params
+      params.require(:debit_note).permit(:bill_of_lading_id, :no_dbn, :dbn_date, :due_date, :currency_code, :rate, :status, 
+        :notes, :to_shipper, :vessel, :port_of_lading, :port_of_loading, :destination, :bl_ibl_no, :bl_no, :ibl_no, :customer, :customer_ori, :shipper_ref, :etd, :eta, :head_letter,
+        :other, :vat_10, :vat_1, :pph_23,
+        :add_vat_10, :add_vat_1, :add_total_include_vat, :add_pph_23, :add_total_after_pph_23, :add_rate, 
+        :default_total_amount, :default_vat_10, :default_vat_1, :default_total_include_vat, :default_pph_23, :default_total_after_pph_23, :default_rate, 
+        # invoice_details_attributes: [:id, :description, :amount, :volume, :_destroy],
+        invoice_details_attributes: [:id, :description, :amount, :volume, :_destroy, :default_amount],
+        debit_note_details_attributes: [:id, :description, :amount, :volume, :_destroy])
+    end
+
+    def enable_edit_invoice
+      @invoice = @debit_note
+      unless @invoice.is_editable_invoice?
+        tmp = []
+        tmp.push "Invoice already Paid" if @invoice.is_payment_closed?
+        tmp.push "C/R Complete" if @invoice.shipping_instruction.is_cr_completed?
+        redirect_to @invoice, notice: "#{tmp.join(" and ")}"
+        return
+      end
+    end
+end

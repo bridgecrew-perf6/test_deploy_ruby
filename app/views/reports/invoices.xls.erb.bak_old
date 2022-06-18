@@ -1,0 +1,6 @@
+"Invoice No"<%= "\t" %>"IBL Ref"<%= "\t" %>"Currency"<%= "\t" %>"Customer"<%= "\t" %>"Shipper"<%= "\t" %>"Destination"<%= "\t" %>"Volume"<%= "\t" %>"Order Type"<%= "\t" %>"Status"
+<% @invoices.each do |invoice| %>
+<% cache_if((invoice.is_cancel == 1 || invoice.status == 3), ["report-invoices-xls", invoice]) do %>
+<%= invoice.try(:no_invoice) || invoice.try(:no_dbn) || invoice.try(:no_note) %><%= "\t" %><%= invoice.ibl_no %><%= "\t" %><%= invoice.currency_code %><%= "\t" %><%= invoice.customer_ori %><%= "\t" %><%= invoice.to_shipper %><%= "\t" %><%= invoice.destination %><%= "\t" %><%= invoice.bill_of_lading.shipping_instruction.si_containers.map {|c| (c.container.container_type == "LCL" ? "#{number_with_precision(c.volum, precision: 3, delimiter: ',')} M3 #{c.container.container_type}" : "#{c.volum}x#{c.container.container_type}") }.join(" & ") %><%= "\t" %><%= invoice.bill_of_lading.shipping_instruction.order_type_text %><%= "\t" %><% if invoice.is_cancel == 1 %>Cancel<% else %><%= invoice.status_text(invoice.status) %><% end %>
+<% end %>
+<% end %>

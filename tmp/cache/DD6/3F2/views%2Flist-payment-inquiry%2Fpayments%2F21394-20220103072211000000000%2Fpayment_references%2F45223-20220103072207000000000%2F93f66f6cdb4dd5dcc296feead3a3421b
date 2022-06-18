@@ -1,0 +1,34 @@
+o: ActiveSupport::Cache::Entry:@valueI"»  <tr>
+    <td data-no-turbolink="true">
+      <a href="/payments/21394?year=2022" title="Show Payment"><i class="icon-eye-open icon-large"></i></a>
+    </td>
+    <td data-order="001">
+      001/USD/2022
+      
+    </td>
+    <td>IBL220104</td>
+    <td>CMZ0662583</td>
+    <td>GUANGDONG SIMPACT TECHNOLOGY CORP.</td>
+    <td>SHENZHEN, CHINA</td>
+    <td>TANJUNG PRIOK, JAKARTA, INDONESIA</td>
+    <td>1x40HQ</td>
+    <td>GWL INTERNATIONAL LOGISTICS</td>
+    <td style="text-align: right;">3,235.72 USD</td>
+    <td><div class='wrap collapsed'><p>PEMBAYARAN TANGGAL 30 DEC 2021
+<br />OVP 150USD</p></div><a class='adjust' href='#'>+ More</a></td>
+    <td>03-Jan-2022</td>
+    <td>01-Jan-2022</td>
+    <td>Sent</td>
+    <td class="hidden disable">January 2022</td>
+    <td class="hidden disable">01/03/2022</td>
+    <td class="hidden disable row_id">21394</td>
+    <td class="hidden disable ibl_ref">IBL220104</td>
+    <td class="hidden disable currency">USD</td>
+    <td class="hidden disable row_ref_id">45223</td>
+    <td class="hidden disable">January 2022</td>
+    <td class="hidden disable">01/01/2022</td>
+    <td class="hidden disable">BANK TRANSACTION</td>
+    <td></td>
+    <td>3,085.72 USD</td>
+  </tr>
+:ET:@created_atf1648209478.5183718:@expires_in0

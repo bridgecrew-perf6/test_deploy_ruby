@@ -1,0 +1,140 @@
+<div class="page-header">
+  <h3>List Bill of Lading</h3>
+</div>
+
+<% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<%= form_for(@report, url: report_bill_of_ladings_path, html: { class: "form-inline", target: "_blank"}) do |f| %>
+  <div id="report_params"></div>
+  <div>
+    <%= link_to 'New Part of BL', new_part_bl_bill_of_ladings_path, :class => "btn btn-primary", "data-no-turbolink" => true %>
+    <button type="submit" class="btn btn-primary">View Report</button>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exFilterExternallyTriggered(billOfLadingsTable);">Filter</button>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exResetAllFilters(billOfLadingsTable);">Reset Filter</button>
+    <button type="button" class="btn btn-primary" onclick="billOfLadingsTable.state.clear();window.location.reload();" style="float: right;">Refresh</button>
+  </div>
+<% end %>
+
+<div class="clearfix"></div>
+
+<% columns = { 
+              carrier: "Carrier",
+              shipper: "Shipper",
+              pol: "POL",
+              destination: "Destination",
+              order_type: "Order Type",
+              delivery_doc: "Delivery Doc"
+            } 
+  
+  filter = "<table><tr style='vertical-align: top;'><td>Advance Filter :</td>"
+  columns.each_with_index do |(key, value), index|
+    filter+="<td style='vertical-align: top;'><span>#{value}</span><span id=#{key}></span></td>"
+  end
+  filter+="</tr></table>"
+%>
+
+<div>
+  <div class="span3" style="margin-left: 0;">Format :
+    <select name="format" id="format">
+      <option value="pdf">PDF</option>
+      <option value="xls">XLS</option>
+    </select>
+  </div>
+  
+  <div class="span3">Filter By :
+    <span id="monthly"></span>
+  </div>
+
+  <div class="span3">&nbsp;
+    <span id="date_range"></span>
+  </div>
+
+  <div class="clearfix"></div>
+  <br/>
+
+  <%= filter.html_safe %>
+
+  <div class="clearfix"></div>
+  <br/>
+</div>
+
+<div class="clearfix"></div>
+
+<!-- # Revisi 1 Dec 2015 -->
+<table class="table table-striped table-bordered" id="bill_of_ladings_table" width="100%">
+  <thead>
+  <tr>
+    <th width="10%" class="disable">Actions</th>
+    <th>IBL Ref</th>
+    <th>MBL No</th>
+    <th>Carrier</th>
+    <th>Shipper</th>
+    <th>Consignee</th>
+    <th>Notify Party</th>
+    <th>Destination</th>
+    <th>Invoice</th>
+    <th>Volume</th>
+    <th>Order Type</th>
+    <th>Payment</th>
+    <th>POL</th>
+    <th>Etd Vessel</th>
+    <th>Delivery Doc</th>
+    <th class="hidden disable">Filter Monthly</th>
+    <th class="hidden disable">Filter Date</th>
+    <th class="hidden disable">Row Id</th>
+    <th class="hidden disable">IBL Ref</th>
+    <th class="hidden disable">Invoice</th>
+    <th class="hidden disable">Payment</th>
+    <th class="hidden disable">Delivery Doc</th>
+  </tr>
+  </thead>
+  <tbody>
+    <%= render partial: 'row', collection: @bill_of_ladings, as: :reference %>
+  </tbody>
+</table>
+
+<script type="text/javascript">
+  var row;
+  $('#bill_of_ladings_table tbody').on( 'click', 'tr', function () {
+   //get back data
+   // console.log(this);
+   row = billOfLadingsTable.row( this );
+   // billOfLadingsTable.cell(row, 4).data("B").draw();
+   console.log(row.data());
+  });
+
+  $( ".delivery_doc_status" ).change(function() {
+    $("#loading").show();
+    $.ajax({
+      url: '<%= update_delivery_doc_path %>',
+      type: 'GET',
+      dataType: "json",
+      data: {bl_id: $(this).data('id'), status: $(this).val()},
+      success: function(data){
+        $("#loading").hide();
+        // parent.find('.delivery_doc').html(value);
+        // billOfLadingsTable.draw();
+        console.log(row);
+        
+        // console.log(row.cell('.delivery_doc').data());
+        // console.log(parent);
+        if(data.success){
+          // billOfLadingsTable.row( row ).cell('.delivery_doc').data(data.status).draw();
+          billOfLadingsTable.cell(row, 21).data(data.status).draw();
+          console.log(row.data());
+          alert(data.ibl_ref+" - Delivery Doc \""+data.status+"\"");
+        }
+        else{
+          alert("Invalid Status");
+        }
+      }
+    });
+  })
+  // .trigger( "change" );
+</script>
+<script type="text/javascript">
+  $(document).on('ready page:change', ready);
+  $(document).on('page:fetch', function() { billOfLadingsTable.destroy(); });
+</script>

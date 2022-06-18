@@ -1,0 +1,81 @@
+<div class="page-header">
+  <h3>Reports</h3>
+</div>
+<% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+<style>
+  .ui-datepicker-calendar {
+    display: none;
+  }
+</style>
+View Report:
+<select id="report_type" style="margin-bottom: 0">
+  <option value="">Select Report Type</option>
+  <option value="#LIST-SI">List SI</option>
+  <option value="#SHIPMENTS-TRACKING">Shipments Tracking</option>
+  <option value="#INVOICES">Invoices</option>
+  <option value="#INVOICES-UNPAID">Invoices Unpaid</option>
+  <option value="#OUTSTANDINVOICES">Outstanding Invoices</option>
+  <option value="#PAYMENTS">Payments</option>
+  <option value="#CONTROL-CENTER">Control Center</option>
+  <option value="#COST-REVENUE-ANALYSIS">Cost & Revenue Analysis</option>
+  <option value="#DETAIL-SHIPMENT">Detail Shipment</option>
+</select>
+
+<div id="LIST-SI" class="hidden report-wrapper">
+  <%= render 'reports/forms/report_list_si' %>
+</div>
+
+<div id="SHIPMENTS-TRACKING" class="hidden report-wrapper">
+  <%= render 'reports/forms/report_shipments_tracking' %>
+</div>
+
+<div id="INVOICES" class="hidden report-wrapper">
+  <%= render 'reports/forms/report_invoices' %>
+</div>
+
+<div id="INVOICES-UNPAID" class="hidden report-wrapper">
+  <%= render 'reports/forms/report_invoices_unpaid' %>
+</div>
+
+<div id="OUTSTANDINVOICES" class="hidden report-wrapper">
+  <%= render 'reports/forms/report_outstanding_invoices' %>
+</div>
+
+<div id="PAYMENTS" class="hidden report-wrapper">
+  <%= render 'reports/forms/report_payments' %>
+</div>
+
+<div id="CONTROL-CENTER" class="hidden report-wrapper">
+  <%= render 'reports/forms/report_control_center' %>
+</div>
+
+<div id="COST-REVENUE-ANALYSIS" class="hidden report-wrapper">
+  <%= render 'reports/forms/report_cost_revenue_analysis' %>
+</div>
+
+<div id="DETAIL-SHIPMENT" class="hidden report-wrapper">
+  <%= render 'reports/forms/report_detail_shipment' %>
+</div>
+
+<script type="text/javascript">
+  jQuery(document).ready(function () {
+    jQuery("#report_type").on("change", function () {
+      jQuery(".report-wrapper").addClass("hidden");
+      jQuery(jQuery(this).val()).removeClass("hidden");
+    });
+
+    jQuery(".filter_my").datepicker({
+      changeMonth: true,
+      changeYear: true,
+      showButtonPanel: true,
+      dateFormat: 'MM yy',
+      onClose: function (dateText, inst) {
+        var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+        var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+        $(this).datepicker('setDate', new Date(year, month, 1));
+      }
+    });
+  })
+</script>

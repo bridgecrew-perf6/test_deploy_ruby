@@ -1,0 +1,64 @@
+<div id="consigneesModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h3>List Consignees</h3>
+	</div>
+	<div class="modal-body">
+		<label>Search : <input type="text" id="searchConsignee" class="span12" placeholder="Type a keyword for search the consignee name" style="width: -moz-available;"/></label>
+		<table id="table-consignees" class="table table-striped table-bordered">
+		  <thead>
+		    <tr>
+		      <th>Consignee Name</th>
+		      <th>Address</th>
+		      <th colspan="3">Actions</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		  	<% count = 0 %>
+			<% @consignees.each do |s| %>
+			<% count += 1 %>
+			<tr class="<%= count > 5 ? "hidden" : "" %>">
+				<td class="id hidden"><%= s.id %></td>
+				<td class="consignee_name"><%= s.company_name %></td>
+				<td class="full_address"><%= s.full_address %></td>
+				<td><a class="selectConsignee btn btn-small" href="#">Select</a></td>
+			</tr>
+			<% end %>
+		  </tbody>
+		</table>
+	</div>
+</div>
+<script type="text/javascript">
+	// $(document).ready(function(){
+		$(".selectConsignee").click(function(e){
+			e.preventDefault();
+			var parent = $(this).parent().parent();
+			var c_name = parent.children("td.consignee_name").text() + "\n";
+			var c_address = parent.children("td.full_address").html().replace("<br>", "\n");
+			var c_full_address = c_name + c_address;
+			$("#<%= field %>").val(c_full_address);
+			// $("#<%= dup_field %>").val(c_full_address);
+			$("#<%= field %>").next().val(parent.children("td.id").text());
+			$('#consigneesModal').modal('hide');
+			$("#<%= field %>").focus();
+		});
+
+		$("#searchConsignee").keyup(function(){
+			var search = $(this).val().toLowerCase();
+			$("#table-consignees tbody tr").each(function(){
+				if($(this).children(".consignee_name").text().toLowerCase().indexOf(search) != -1){
+					$(this).removeClass("hidden");
+				}
+				else{
+					$(this).addClass("hidden");
+				}
+			});
+		});
+    
+		$('#searchConsignee').keypress(function(event) {
+		    if (event.which == 13) {
+		        event.preventDefault();
+		    }
+		});
+	// })
+</script>

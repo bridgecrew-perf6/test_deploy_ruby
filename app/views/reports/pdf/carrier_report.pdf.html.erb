@@ -1,0 +1,28 @@
+<%= render 'commons/pdf' %>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <table style="width: 100%" border="1">
+    <thead>
+      <tr>
+        <th>Company</th>
+        <th>Address</th>
+        <th>Phone</th>
+        <th>Fax</th>
+        <th>Email</th>
+        <th>PIC</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @carriers.each do |carrier| %>
+        <tr>
+          <td><%= carrier.name %></td>
+          <td><pre class="free"><%= carrier.full_address %></pre></td>
+          <td><%= carrier.custom_attribute('phone') %></td>
+          <td><%= carrier.custom_attribute('fax') %></td>
+          <td><%= carrier.custom_attribute('email') %></td>
+          <td><%= carrier.custom_attribute('pic') %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

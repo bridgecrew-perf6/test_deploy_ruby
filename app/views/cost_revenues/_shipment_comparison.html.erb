@@ -1,0 +1,423 @@
+<style type="text/css">
+  .shipment, .update_shipment{
+    vertical-align: top;
+    width: 50%;
+  }
+</style>
+<div id="shipmentComparisonModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3>Shipment Comparison</h3>
+  </div>
+  <div class="modal-body">
+  	<div id="shipment-comparison" style="margin-top: 10px">
+      <table width="100%" border="1">
+        <thead>
+          <tr>
+            <th>Shipment</th>
+            <th>Update Shipment</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr id="ibl_ref">
+            <td class="shipment">
+              <div>
+                <strong>IBL REF :</strong>
+                <span><%= @cost_revenue.ibl_ref %></span>
+              </div>
+            </td>
+            <td class="update_shipment">
+              <div>
+                <strong>IBL REF :</strong>
+                <span><%= @cost_revenue.ibl_ref %></span>
+              </div>
+            </td>
+          </tr>
+          <tr id="master_bl_no">
+            <td class="shipment">
+              <div>
+                <strong>MBL NO :</strong>
+                <span><%= @cost_revenue.master_bl_no %></span>
+              </div>
+            </td>
+            <td class="update_shipment">
+              <div>
+                <strong>MBL NO :</strong>
+                <span></span>
+              </div>
+            </td>
+          </tr>
+          <tr id="shipper_reference">
+            <td class="shipment">
+              <div>
+                <strong>SHIPPER REF :</strong>
+                <span><%= @cost_revenue.shipper_reference %></span>
+              </div>
+            </td>
+            <td class="update_shipment">
+              <div>
+                <strong>SHIPPER REF :</strong>
+                <span></span>
+              </div>
+            </td>
+          </tr>
+          <!-- <tr id="carrier"> -->
+          <tr id="carrier_name">
+            <td class="shipment">
+              <div>
+                <strong>CARRIER :</strong>
+                <span><%= @cost_revenue.carrier_name %></span>
+              </div>
+            </td>
+            <td class="update_shipment">
+              <div>
+                <strong>CARRIER :</strong>
+                <span></span>
+              </div>
+            </td>
+          </tr>
+          <tr id="shipper_company_name">
+            <td class="shipment">
+              <div>
+                <strong>SHIPPER :</strong>
+                <span><%= @cost_revenue.shipper_company_name %></span>
+              </div>
+            </td>
+            <td class="update_shipment">
+              <div>
+                <strong>SHIPPER :</strong>
+                <span></span>
+              </div>
+            </td>
+          </tr>
+          <tr id="consignee_company_name">
+            <td class="shipment">
+              <div>
+                <strong>CONSIGNEE :</strong>
+                <span><%= @cost_revenue.consignee_company_name %></span>
+              </div>
+            </td>
+            <td class="update_shipment">
+              <div>
+                <strong>CONSIGNEE :</strong>
+                <span></span>
+              </div>
+            </td>
+          </tr>
+          <tr id="trade">
+            <td class="shipment">
+              <div>
+                <strong>TRADE :</strong>
+                <span><%= @cost_revenue.trade %></span>
+              </div>
+            </td>
+            <td class="update_shipment">
+              <div>
+                <strong>TRADE :</strong>
+                <span></span>
+              </div>
+            </td>
+          </tr>
+          <tr id="vessel_name">
+            <td class="shipment">
+              <div>
+                <strong>VESSEL :</strong>
+                <span><%= @cost_revenue.vessel_name %></span>
+              </div>
+            </td>
+            <td class="update_shipment">
+              <div>
+                <strong>VESSEL :</strong>
+                <span></span>
+              </div>
+            </td>
+          </tr>
+          <tr id="etd_date">
+            <td class="shipment">
+              <div>
+                <strong>ETD :</strong>
+                <span><%= normal_date_format(@cost_revenue.etd_date) %></span>
+              </div>
+            </td>
+            <td class="update_shipment">
+              <div>
+                <strong>ETD :</strong>
+                <span></span>
+              </div>
+            </td>
+          </tr>    
+          <tr id="port_of_loading">
+            <td class="shipment">
+              <div>
+                <strong>POL :</strong>
+                <span><%= @cost_revenue.port_of_loading %></span>
+              </div>
+            </td>
+            <td class="update_shipment">
+              <div>
+                <strong>POL :</strong>
+                <span></span>
+              </div>
+            </td>
+          </tr>    
+          <tr id="port_of_discharge">
+            <td class="shipment">
+              <div>
+                <strong>POD :</strong>
+                <span><%= @cost_revenue.port_of_discharge %></span>
+              </div>
+            </td>
+            <td class="update_shipment">
+              <div>
+                <strong>POD :</strong>
+                <span></span>
+              </div>
+            </td>
+          </tr>    
+          <tr id="final_destination">
+            <td class="shipment">
+              <div>
+                <strong>DESTINATION :</strong>
+                <span><%= @cost_revenue.final_destination %></span>
+              </div>
+            </td>
+            <td class="update_shipment">
+              <div>
+                <strong>DESTINATION :</strong>
+                <span></span>
+              </div>
+            </td>
+          </tr> 
+          <tr id="volume">
+            <td class="shipment">
+              <div>
+                <strong>VOLUME :</strong>
+                <span><%= @cost_revenue.volume %></span>
+              </div>
+            </td>
+            <td class="update_shipment">
+              <div>
+                <strong>VOLUME :</strong>
+                <span></span>
+              </div>
+            </td>
+          </tr>    
+        </tbody>
+        <tfoot>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <button class="btn btn-primary" id="update_shipment_comparison" data-dismiss="modal" aria-hidden="true">Update</button>
+    <!-- <button class="btn btn-primary" id="update_shipment_comparison" data-dismiss="modal" aria-hidden="true" onclick="update_shipment_comparison(); return false;">Update</button> -->
+  </div>
+</div>
+<style type="text/css">
+  #shipment-comparison table{
+    border-collapse: collapse;
+  }
+  #shipment-comparison table, #shipment-comparison th{
+    border: 1px solid black;
+  }
+  #shipment-comparison td{
+    border-left: 1px solid black;
+    border-right: 0px;
+    border-top: 0px;
+    border-bottom: 0px;
+  }
+</style>
+<script type="text/javascript">
+  // $(document).ready(function(){
+    // $("#update_shipment_comparison").click(function(){
+    //   var data = <%# @shipment_comparison_data.html_safe %>;
+    //   $("#cost_revenue_master_bl_no").val(data.master_bl_no);
+    //   $("#cost_revenue_shipper_reference").val(data.shipper_reference);
+    //   $("#cost_revenue_carrier").val(data.carrier);
+    //   $("#cost_revenue_shipper_id").val(data.shipper_id);
+    //   $("#cost_revenue_consignee_id").val(data.consignee_id);
+    //   $("#cost_revenue_trade").val(data.trade);
+    //   // $("#cost_revenue_owner").val();
+    //   $("#cost_revenue_vessel_name").val(data.vessel_name);
+    //   $("#cost_revenue_etd_date").val($.datepicker.formatDate("dd MM yy", new Date(data.etd_date)));
+    //   $("#cost_revenue_port_of_loading").val(data.port_of_loading);
+    //   $("#cost_revenue_port_of_discharge").val(data.port_of_discharge);
+    //   $("#cost_revenue_final_destination").val(data.final_destination);
+    //   $("#cost_revenue_volume").val(data.volume);
+    // });
+
+    $("#shipment_comparison").on("click", function(e) {
+      e.preventDefault();
+      var url = '<%= get_shipment_comparison_path(ibl_ref: "#{@cost_revenue.ibl_ref}") %>';
+      $.getJSON(url, function(data){
+        if (data == "") {
+          alert("No data to be imported");
+        } else {
+          if(data.success){
+            // var column2 = $('#update_shipment');
+            // $(column2).find("#master_bl_no").html(data.master_bl_no);
+            // $(column2).find("#shipper_reference").html(data.shipper_reference);
+            // $(column2).find("#carrier").html(data.carrier);
+            // $(column2).find("#shipper_company_name").html(data.shipper_company_name);
+            // $(column2).find("#consignee_company_name").html(data.consignee_company_name);
+            // $(column2).find("#trade").html(data.trade);
+            // // $(column2).find("#owner").html();
+            // $(column2).find("#vessel_name").html(data.vessel_name);
+            // $(column2).find("#etd_date").html($.datepicker.formatDate("dd MM yy", new Date(data.etd_date)));
+            // $(column2).find("#port_of_loading").html(data.port_of_loading);
+            // $(column2).find("#port_of_discharge").html(data.port_of_discharge);
+            // $(column2).find("#final_destination").html(data.final_destination);
+            // $(column2).find("#volume").html(data.volume);
+            var row = $("#shipment-comparison");
+            var update = ".update_shipment span";
+            row.find("#master_bl_no").find(update).html(data.master_bl_no);
+            row.find("#shipper_reference").find(update).html(data.shipper_reference);
+            // row.find("#carrier").find(update).html(data.carrier);
+            row.find("#carrier_name").find(update).html(data.carrier_name);
+            row.find("#shipper_company_name").find(update).html(data.shipper_company_name);
+            row.find("#consignee_company_name").find(update).html(data.consignee_company_name);
+            row.find("#trade").find(update).html(data.trade);
+            // row.find("#owner").find(update).html();
+            row.find("#vessel_name").find(update).html(data.vessel_name);
+            row.find("#etd_date").find(update).html($.datepicker.formatDate("dd MM yy", new Date(data.etd_date)));
+            row.find("#port_of_loading").find(update).html(data.port_of_loading);
+            row.find("#port_of_discharge").find(update).html(data.port_of_discharge);
+            row.find("#final_destination").find(update).html(data.final_destination);
+            row.find("#volume").find(update).html(data.volume);
+
+            var row = $("#shipment-comparison");
+            var update = ".shipment span";
+            row.find("#master_bl_no").find(update).html($("#cost_revenue_master_bl_no").val());
+            row.find("#shipper_reference").find(update).html($("#cost_revenue_shipper_reference").val());
+            // row.find("#carrier").find(update).html($("#cost_revenue_carrier").val());
+            row.find("#carrier_name").find(update).html($("#cost_revenue_carrier_id option:selected").text());
+            row.find("#shipper_company_name").find(update).html($("#cost_revenue_shipper_id option:selected").text());
+            row.find("#consignee_company_name").find(update).html($("#cost_revenue_consignee_id option:selected").text());
+            row.find("#trade").find(update).html($("#cost_revenue_trade").val());
+            // row.find("#owner").find(update).html();
+            row.find("#vessel_name").find(update).html($("#cost_revenue_vessel_name").val());
+            row.find("#etd_date").find(update).html($.datepicker.formatDate("dd MM yy", new Date($("#cost_revenue_etd_date").val())));
+            row.find("#port_of_loading").find(update).html($("#cost_revenue_port_of_loading").val());
+            row.find("#port_of_discharge").find(update).html($("#cost_revenue_port_of_discharge").val());
+            row.find("#final_destination").find(update).html($("#cost_revenue_final_destination").val());
+            var volume = "";
+            if($("#cost_revenue_cr_containers_attributes_1_volum").val() != ""){
+              volume += accounting.formatMoney($("#cost_revenue_cr_containers_attributes_1_volum").val(), "", 3, ",", ".") + " M3 LCL";
+            }
+            if($("#cost_revenue_cr_containers_attributes_2_volum").val() != ""){
+              if(volume != "")
+                volume += " & ";
+              volume += money_format($("#cost_revenue_cr_containers_attributes_2_volum").val()) + "x20FT";
+            }
+            if($("#cost_revenue_cr_containers_attributes_3_volum").val() != ""){
+              if(volume != "")
+                volume += " & ";
+              volume += money_format($("#cost_revenue_cr_containers_attributes_3_volum").val()) + "x40FT";
+            }
+            if($("#cost_revenue_cr_containers_attributes_4_volum").val() != ""){
+              if(volume != "")
+                volume += " & ";
+              volume += money_format($("#cost_revenue_cr_containers_attributes_4_volum").val()) + "x40HQ";
+            }
+            if($("#cost_revenue_cr_containers_attributes_5_volum").val() != ""){
+              if(volume != "")
+                volume += " ";
+              volume += $("#cost_revenue_cr_containers_attributes_5_volum").val();
+            }
+            row.find("#volume").find(update).html(volume);
+
+            highlighter("#master_bl_no");
+            highlighter("#shipper_reference");
+            highlighter("#carrier_name");
+            highlighter("#shipper_company_name");
+            highlighter("#consignee_company_name");
+            highlighter("#trade");
+            highlighter("#vessel_name");
+            highlighter("#etd_date");
+            highlighter("#port_of_loading");
+            highlighter("#port_of_discharge");
+            highlighter("#final_destination");
+            highlighter("#volume");
+            // alert("Import done...");
+          }
+          else{
+            alert(data.message);
+          }
+        }
+      });
+    });
+
+    function highlighter(id){
+      // var column1 = $('#shipment').find(id);
+      // var column2 = $('#update_shipment').find(id);
+      // if(column1.html() == column2.html()){
+      //   column1.css('color', 'black');
+      //   column2.css('color', 'black');
+      // }
+      // else{
+      //   column1.css('color', 'blue');
+      //   column2.css('color', 'blue');
+      // }
+      var row = $("#shipment-comparison").find(id);
+      var column1 = row.find(".shipment");
+      var column2 = row.find(".update_shipment");
+      if(column1.html() == column2.html()){
+        row.css('color', 'black');
+        row.css('color', 'black');
+      }
+      else{
+        row.css('color', 'blue');
+        row.css('color', 'blue');
+      }
+    }
+
+    // function update_shipment_comparison(){
+    $("#update_shipment_comparison").on("click", function(e) {
+      e.preventDefault();
+      var url = '<%= get_shipment_comparison_path(ibl_ref: "#{@cost_revenue.ibl_ref}") %>';
+      $.getJSON(url, function(data){
+        if (data == "") {
+          alert("No data to be imported");
+        } else {
+          if(data.success){
+            $("#cost_revenue_master_bl_no").val(data.master_bl_no);
+            $("#cost_revenue_shipper_reference").val(data.shipper_reference);
+            $("#cost_revenue_carrier").val(data.carrier);
+            $("#cost_revenue_carrier_id").val(data.carrier_id);
+            $("#cost_revenue_shipper_id").val(data.shipper_id);
+            $("#cost_revenue_consignee_id").val(data.consignee_id);
+            $("#cost_revenue_trade").val(data.trade);
+            // $("#cost_revenue_owner").val();
+            $("#cost_revenue_vessel_name").val(data.vessel_name);
+            $("#cost_revenue_etd_date").val($.datepicker.formatDate("dd MM yy", new Date(data.etd_date)));
+            $("#cost_revenue_port_of_loading").val(data.port_of_loading);
+            $("#cost_revenue_port_of_discharge").val(data.port_of_discharge);
+            $("#cost_revenue_final_destination").val(data.final_destination);
+            // $("#cost_revenue_volume").val(data.volume);
+            // var containers = [];
+            $('.cost_revenue_cr_containers_volum').val('');
+            $.each( data.si_containers, function( key, value ) {
+              var container_id = $('.cost_revenue_cr_containers_container_id[value='+value.container_id+']').attr('id').split("_")[5];
+              // containers.push(container_id);
+              $('#cost_revenue_cr_containers_attributes_'+container_id+'_volum').val(value.volum);
+              $('#cost_revenue_cr_containers_attributes_'+container_id+'_volum').change();
+            });
+            // for(i = 1; i < 5; i++)
+            // {
+            //     if($.inArray( i, containers) == false)
+            //       $('#cost_revenue_cr_containers_attributes_'+i+'_volum').val('');
+            // }
+
+            calculate();
+            alert("Import done...");
+          }
+          else{
+            alert(data.message);
+          }
+        }
+      });
+    });
+    // }
+  // });
+</script>

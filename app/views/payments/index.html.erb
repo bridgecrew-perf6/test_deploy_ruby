@@ -1,0 +1,56 @@
+<%
+  title = "List Payment"
+  if current_page?(payment_plans_path) || current_page?(payment_plans_path)
+    title = "Payment Plan"
+  elsif current_page?(payment_inquiries_path)
+    title = "Payment Inquiry"
+  elsif current_page?(payment_taxes_path)
+    title = "Payment Tax"
+  elsif current_page?(payment_deposits_path)
+    title = "Payment Deposit"
+  elsif current_page?(payment_reports_path)
+    title = "Payment Report"
+  end
+%>
+<div class="page-header">
+  <h3><%= title %></h3>
+</div>
+<% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+<% if !alert.nil? %>
+  <p id="alert" class="alert alert-error"><%= alert %></p>
+<% end %>
+
+<ul class="nav nav-tabs" id="myTab">
+  <li<%= ' class=active' if current_page?(payment_plans_path) || current_page?(payment_plans_path)%>><a href="<%= payment_plans_path %>">PLAN</a></li>
+  <li<%= ' class=active' if current_page?(payment_inquiries_path)%>><a href="<%= payment_inquiries_path %>">INQUIRY</a></li>
+  <li<%= ' class=active' if current_page?(payment_taxes_path) %>><a href="<%= payment_taxes_path %>">TAX</a></li>
+  <li<%= ' class=active' if current_page?(payment_deposits_path) %>><a href="<%= payment_deposits_path %>">DEPOSIT</a></li>
+  <li<%= ' class=active' if current_page?(payment_reports_path) %>><a href="<%= payment_reports_path %>">REPORT</a></li>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane<%= ' active' if current_page?(payment_plans_path) || current_page?(payment_plans_path)  %>" id="plan">
+    <%= render 'payment_tabs/plan' if current_page?(payment_plans_path) || current_page?(payment_plans_path)%>
+  </div>
+  <div class="tab-pane<%= ' active' if current_page?(payment_inquiries_path)%>" id="inquiry">
+    <%= render 'payment_tabs/inquiry' if current_page?(payment_inquiries_path) %>
+  </div>
+  <div class="tab-pane<%= ' active' if current_page?(payment_taxes_path) %>" id="tax">
+    <%= render 'payment_tabs/tax' if current_page?(payment_taxes_path) %>
+  </div>
+  <div class="tab-pane<%= ' active' if current_page?(payment_deposits_path) %>" id="deposit">
+    <%= render 'payment_tabs/deposit' if current_page?(payment_deposits_path) %>
+  </div>
+  <div class="tab-pane<%= ' active' if current_page?(payment_reports_path) %>" id="report">
+    <%= render 'payment_tabs/report' if current_page?(payment_reports_path) %>
+  </div>
+</div>
+
+<script type="text/javascript">
+// $('#myTab a').click(function (e) {
+//   e.preventDefault();
+//   $(this).tab('show');
+// })
+</script>

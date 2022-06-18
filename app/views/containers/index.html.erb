@@ -1,0 +1,33 @@
+<div class="page-header">
+  <h3>List Containers</h3>
+</div>
+
+<%= link_to 'Add New Container', new_container_path, :class => "btn btn-primary" %><br/><br/>
+
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th>Container Type</th>
+      <th>Capacity (cbm)</th>
+      <th>Load (kg)</th>
+      <th>Container Weight (kg)</th>
+      <th>Max Gross Weight (kg)</th>
+      <th colspan="3">Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @containers.each do |container| %>
+      <tr>
+        <td><%= container.container_type %></td>
+        <td><%= container.capacity %></td>
+        <td><%= container.load %></td>
+        <td><%= container.container_weight %></td>
+        <td><%= container.max_gross_weight %></td>
+        <td><%= link_to 'Show', container %></td>
+        <td><%= link_to 'Edit', edit_container_path(container) %></td>
+        <td><%= link_to 'Destroy', container, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,43 @@
+o: ActiveSupport::Cache::Entry:@valueI"j  <tr class="">
+    <td>
+      <a href="/invoices/33397?year=2022" title="Show Invoice"><i class="icon-eye-open icon-large"></i></a>
+        <a href="/invoices/33397/edit?year=2022" title="Edit Invoice"><i class="icon-edit-sign icon-large"></i></a>
+
+      <a href="#invModal" role="button" class="btn btn-info btn-small btn-invoice" data-toggle="modal">Tax</a>
+    </td>
+    <td>
+      IBLINV220784
+      
+    </td>
+    <td>
+      IBL220738
+      
+      
+    </td>
+    <td>IDR</td>
+    <td style="text-align:right">6,545,063</td>
+    <td>PT. PLATINUM CERAMICS INDUSTRY (SHIPPER)</td>
+    <td>PT. PLATINUM CERAMICS INDUSTRY</td>
+    <td>SURABAYA, INDONESIA</td>
+    <td>Open</td>
+    <td></td>
+    <td style="text-align:right"></td>
+    <td>040.003-22.79653182</td>
+    <td style="text-align:right">66,112</td>
+    <td></td>
+    <td style="text-align:right">(132,224)</td>
+    <td>Open</td>
+    <td>March 2022</td>
+    <td></td>
+    <td class="hidden disable">March 2022</td>
+    <td class="hidden disable">03/17/2022</td>
+    <td class="hidden disable row_id">33397</td>
+    <td class="hidden disable ibl_ref">IBL220738</td>
+    <td class="hidden disable invoice_no">IBLINV220784</td>
+    <td class="hidden disable head_letter">INVOICE</td>
+    <td class="hidden disable">1</td>
+    <td class="hidden disable"></td>
+    <td class="hidden disable"></td>
+    <td>18-Mar-2022</td>
+  </tr>
+:ET:@created_atf1648209260.4374607:@expires_in0

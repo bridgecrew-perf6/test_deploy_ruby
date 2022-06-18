@@ -1,0 +1,43 @@
+o: ActiveSupport::Cache::Entry:@valueI"3  <tr class="">
+    <td>
+      <a href="/invoices/33719?year=2022" title="Show Invoice"><i class="icon-eye-open icon-large"></i></a>
+        <a href="/invoices/33719/edit?year=2022" title="Edit Invoice"><i class="icon-edit-sign icon-large"></i></a>
+
+      <a href="#invModal" role="button" class="btn btn-info btn-small btn-invoice" data-toggle="modal">Tax</a>
+    </td>
+    <td>
+      IBLINV221106
+      
+    </td>
+    <td>
+      IBL221088
+      
+      
+    </td>
+    <td>USD</td>
+    <td style="text-align:right">825</td>
+    <td>TEA MASTER SDN. BHD. (CONSIGNEE)</td>
+    <td>PT. MELANIA INDONESIA</td>
+    <td>TG. PRIOK, JAKARTA, INDONESIA</td>
+    <td>Open</td>
+    <td></td>
+    <td style="text-align:right"></td>
+    <td></td>
+    <td style="text-align:right"></td>
+    <td></td>
+    <td style="text-align:right"></td>
+    <td>Open</td>
+    <td></td>
+    <td></td>
+    <td class="hidden disable">April 2022</td>
+    <td class="hidden disable">04/16/2022</td>
+    <td class="hidden disable row_id">33719</td>
+    <td class="hidden disable ibl_ref">IBL221088</td>
+    <td class="hidden disable invoice_no">IBLINV221106</td>
+    <td class="hidden disable head_letter">INVOICE</td>
+    <td class="hidden disable">1</td>
+    <td class="hidden disable">1</td>
+    <td class="hidden disable">1</td>
+    <td>14-Apr-2022</td>
+  </tr>
+:ET:@created_atf1650813286.3835397:@expires_in0

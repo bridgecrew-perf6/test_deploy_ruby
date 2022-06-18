@@ -1,0 +1,62 @@
+<div style="margin-top:20px">
+Head Letter Form : 
+<select id="head_letter" name="head_letter" style="margin:0">
+	<option value="">Select Head Letter Form</option>
+	<option value="Invoice">Invoice</option>
+	<option value="Debit Note">Debit Note</option>
+	<option value="Reimbursement Cost">Reimbursement Cost</option>
+	<option value="Credit Note">Credit Note</option>
+</select>
+<select id="currency" name="currency" style="margin:0">
+	<option value="">Select Currency</option>
+	<option value="USD">USD</option>
+	<option value="IDR">IDR</option>
+</select>
+<button id="show-form" class="btn btn-info" data-loading-text="Loading...">Create <i class="icon-chevron-right"></i></button>
+</div>
+<hr/>
+<div id="form-invoice-dbn"></div>
+<script type="text/javascript">
+	$("#show-form").click(function(){
+		var letter = $("#head_letter").val();
+		var currency = $("#currency").val();
+		var url = "";
+		if(letter != "" && currency!= ""){
+			$("#show-form").button('loading');
+			if(letter == "Invoice")
+				url = "<%= create_invoice_path(bid: params[:bid]) %>";
+			else if(letter == "Credit Note")
+				url = "<%= create_note_path(bid: params[:bid]) %>";
+			else
+				url = "<%= create_dbn_path(bid: params[:bid]) %>";
+			$.ajax({
+				url: url,
+				type: "GET",
+				dataType: "json",
+				data: {layout: false, letter: letter, currency: currency<%= ", iid: #{params[:iid]}" unless params[:iid].blank? %>}
+			})
+			.done(function(data){
+				if(data.success){
+					$("#form-invoice-dbn").html(data.message);
+					// calculate();
+				}
+				else{
+					var div = $('<div class="alert alert-warning">').html(data.message);
+					$("#form-invoice-dbn").html(div);	
+					$("#form-invoice-dbn .alert").append("<ul></ul>");
+					for(str in data.errors){
+						$("#form-invoice-dbn .alert ul").append("<li>"+ data.errors[str] +"</li>");
+					}
+				}
+				$("#show-form").button('reset');
+			})
+			.fail(function(){
+				alert("an error occured, please try again...");
+				$("#show-form").button('reset');	
+			});
+		}
+		else{
+			alert("Select a Head Letter and Currency first");
+		}
+	})
+</script>

@@ -1,0 +1,74 @@
+<%# cache ["list-payment-tax", row, reference] do %>
+  <% if reference.vat_10.to_f != 0 %>
+    <tr>
+      <td><a href="#paymentTaxModal" role="button" class="btn btn-info btn-small btn-payment-tax" data-toggle="modal">Tax</a></td>
+      <td><%= row.ibl_ref %></td>
+      <td><%= reference.carrier %></td>
+      <td class="vat_type">VAT 10%</td>
+      <td style="text-align:right;"><%= money_with_currency_format(reference.vat_10, 'IDR') %></td>
+      <td><%= reference.vat_10_tax_no %></td>
+      <td><%= si_date_format reference.vat_10_tax_issued %></td>
+      <td><%= si_date_format reference.payment_date %></td>
+      <td><%= reference.vat_10_invoice_no %></td>
+      <td><%= reference.paid_status %></td>
+      <td><select name="tax_status" class="tax_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="<%= reference.id %>">
+        <%= options_for_select [["Open", "Open"], ["Close", "Close"]], reference.vat_10_status_text %>
+      </select></td>
+      <td class="hidden disable"><%= monthly_format reference.vat_10_tax_issued %></td>
+      <td class="hidden disable"><%= datepicker_format reference.vat_10_tax_issued %></td>
+      <td class="hidden disable row_id"><%= reference.id %></td>
+      <td class="hidden disable ibl_ref"><%= row.ibl_ref %></td>
+      <td class="hidden disable row_ref_id"><%= reference.id %></td>
+      <td class="hidden disable"><%= monthly_format reference.payment_date %></td>
+      <td class="hidden disable status"><%= reference.vat_10_status_text %></td>
+    </tr>
+  <% end %>
+  <% if reference.vat_1.to_f != 0 %>
+    <tr>
+      <td><a href="#paymentTaxModal" role="button" class="btn btn-info btn-small btn-payment-tax" data-toggle="modal">Tax</a></td>
+      <td><%= row.ibl_ref %></td>
+      <td><%= reference.carrier %></td>
+      <td class="vat_type">VAT 1%</td>
+      <td style="text-align:right;"><%= money_with_currency_format(reference.vat_1, 'IDR') %></td>
+      <td><%= reference.vat_1_tax_no %></td>
+      <td><%= si_date_format reference.vat_1_tax_issued %></td>
+      <td><%= si_date_format reference.payment_date %></td>
+      <td><%= reference.vat_1_invoice_no %></td>
+      <td><%= reference.paid_status %></td>
+      <td><select name="tax_status" class="tax_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="<%= reference.id %>">
+        <%= options_for_select [["Open", "Open"], ["Close", "Close"]], reference.vat_1_status_text %>
+      </select></td>
+      <td class="hidden disable"><%= monthly_format reference.vat_1_tax_issued %></td>
+      <td class="hidden disable"><%= datepicker_format reference.vat_1_tax_issued %></td>
+      <td class="hidden disable row_id"><%= reference.id %></td>
+      <td class="hidden disable ibl_ref"><%= row.ibl_ref %></td>
+      <td class="hidden disable row_ref_id"><%= reference.id %></td>
+      <td class="hidden disable"><%= monthly_format reference.payment_date %></td>
+      <td class="hidden disable status"><%= reference.vat_1_status_text %></td>
+    </tr>
+  <% end %>
+  <% if reference.pph_23.to_f != 0 %>
+    <tr>
+      <td><a href="#paymentTaxModal" role="button" class="btn btn-info btn-small btn-payment-tax" data-toggle="modal">Tax</a></td>
+      <td><%= row.ibl_ref_with_status %></td>
+      <td><%= reference.carrier %></td>
+      <td class="vat_type">PPH 23</td>
+      <td style="text-align:right;"><%= money_with_currency_format(reference.pph_23, 'IDR') %></td>
+      <td><%= reference.pph_23_tax_no %></td>
+      <td><%= si_date_format reference.pph_23_tax_issued %></td>
+      <td><%= si_date_format reference.payment_date %></td>
+      <td><%= reference.pph_23_invoice_no %></td>
+      <td><%= reference.paid_status %></td>
+      <td><select name="tax_status" class="tax_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="<%= reference.id %>">
+        <%= options_for_select [["Open", "Open"], ["Close", "Close"]], reference.pph_23_status_text %>
+      </select></td>
+      <td class="hidden disable"><%= monthly_format reference.pph_23_tax_issued %></td>
+      <td class="hidden disable"><%= datepicker_format reference.pph_23_tax_issued %></td>
+      <td class="hidden disable row_id"><%= reference.id %></td>
+      <td class="hidden disable ibl_ref"><%= row.ibl_ref %></td>
+      <td class="hidden disable row_ref_id"><%= reference.id %></td>
+      <td class="hidden disable"><%= monthly_format reference.payment_date %></td>
+      <td class="hidden disable status"><%= reference.pph_23_status_text %></td>
+    </tr>
+  <% end %>
+<%# end %>

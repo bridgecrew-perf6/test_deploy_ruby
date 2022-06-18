@@ -1,0 +1,65 @@
+<div class="page-header">
+  <h3>Bill of Lading: <%= @bill_of_lading.bl_number %></h3>
+</div>
+<% if !notice.nil? %>
+<p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<div class="btn-group ">
+	<% if @bill_of_lading.is_uncanceled? && @bill_of_lading.shipping_instruction.is_open? %>
+	<a href="<%= edit_bill_of_lading_path(@bill_of_lading) %>" class="btn btn-small" title="Edit: <%= @bill_of_lading.bl_number  %>"><i class="icon-edit-sign"></i> Edit</a>
+	<a data-no-turbolink="true" target="_blank" href="<%= bill_of_lading_path(@bill_of_lading, format: "pdf") %>" class="btn btn-small" title="Print: <%= @bill_of_lading.bl_number %>"><i class="icon-print"></i> Print</a>
+	<% end %>
+	<a href="<%= bill_of_ladings_path %>" class="btn btn-small" title="Back to Lists"><i class="icon-reply"></i> Back</a>
+</div>
+
+<style type="text/css">
+	#size-a4-print, #size-a4-print label, #size-a4-print pre, #size-a4-print span, #size-a4-print td, #size-a4-print div{
+		font-family: Arial;
+		font-size: 8pt;
+		font-weight: 700;
+	}
+	#size-a4-print small{
+		font-size: 7pt!important;
+	}
+</style>
+
+<div id="size-a4-print">
+<%= render "bill_of_lading" %>
+</div>
+
+<% if @bill_of_lading.attachments.any? %>
+<div class="span6">
+	<h4>View / Download Attachment</h4>
+	<ul>
+	  <% @bill_of_lading.attachments.each do |attach| %>
+	    <% if !attach.name.blank? && !attach.asset.nil? %>
+	    <li><%= attach.name %> : <%= link_to "View", attach.asset.url, target: "_blank" %></li>
+	    <% end %>
+	  <% end %>
+	</ul>
+</div>
+<div class="clearfix"></div>
+<% end %>
+
+<% if @bill_of_lading.bill_of_lading_histories.any? %>
+<h4>Bill of Lading Histories</h4>
+<table class="table" style="margin-bottom: 20px">
+<thead>
+	<tr>
+		<th>HBL No. / MBL No.</th>
+		<th>Update by</th>
+		<th>Update at</th>
+	</tr>
+</thead>
+<tbody>
+	<% @bill_of_lading.bill_of_lading_histories.order("updated_at DESC").last(5).each do |bl| %>
+	<tr>
+		<td><%= link_to [bl.bl_number, bl.master_bl_no.blank? ? "-" : bl.master_bl_no].join(" / "), history_bill_of_lading_path(bl, format: "pdf"), target: "_blank" %></td>
+		<td><%= User.find(bl.update_by).username %></td>
+		<td><%= bl.updated_at %></td>
+	</tr>
+	<% end %>
+</tbody>
+</table>
+<% end %>

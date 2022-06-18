@@ -1,0 +1,24 @@
+<div class="row-fluid" id="attachment-wrapper">
+  <div class="span6" id="attachments">
+    <h4>Attachments</h4>
+    <span class="help-block">Specify the attachment name and browse the file</span>
+    <%= f.fields_for :attachments do |builder| %>
+      <%= render 'attachments_fields', :f => builder %>
+    <% end %>
+  </div>
+  <div class="span6">
+    <h4>View / Download Attachment</h4>
+    <ul>
+      <% @shipping_instruction.attachments.each do |attach| %>
+        <% if !attach.name.blank? && !attach.asset.nil? %>
+        <li><%= attach.name %> : <%= link_to "View", attach.asset.url, target: "_blank" %></li>
+        <% end %>
+      <% end %>
+    </ul>
+  </div>
+  <div class="clearfix"></div>
+  <div class="row-fluid">
+    <br/>
+    <a onclick="add_attachment_fields('shipping_instruction')" class="btn btn-default">Add More Attachment</a>
+  </div>
+</div>

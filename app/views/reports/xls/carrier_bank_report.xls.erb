@@ -1,0 +1,20 @@
+<%
+  head = []
+  head.push "Carrier\t"
+  head.push "Currency\t"
+  head.push "Bank\t"
+  head.push "Account Name\t"
+  head.push "Account No\t"
+%>
+<%= head.join("").html_safe %>
+<% @results.each do |carrier_bank| %>
+  <%
+    body = []
+    body.push "#{carrier_bank.carrier.name}\t"
+    body.push "#{carrier_bank.currency}\t"
+    body.push "#{carrier_bank.bank_name}\t"
+    body.push "#{carrier_bank.acc_name}\t"
+    body.push "#{carrier_bank.acc_no}\t"
+  %>
+<%= body.join("").html_safe %>
+<% end %>

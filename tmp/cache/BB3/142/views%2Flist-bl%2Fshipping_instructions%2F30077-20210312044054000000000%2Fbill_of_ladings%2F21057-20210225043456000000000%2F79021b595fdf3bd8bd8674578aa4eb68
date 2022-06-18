@@ -1,0 +1,58 @@
+o: ActiveSupport::Cache::Entry:@valueI"H  <tr class="warning ">
+    <td>
+      <a href="/bill_of_ladings/21057?year=2020" title="Show Bill of Lading"><i class="icon-eye-open icon-large"></i></a>
+      &nbsp;
+
+      
+      &nbsp;
+
+          <a href="/bill_of_ladings/view_calculate_invoice?sid=30077&amp;year=2020" title="Calculate Invoice"><i class="icon-file icon-large"></i></a>
+        &nbsp;
+
+
+      
+      <a href="/cost_revenues/30077/print_cover?year=2020" target="_blank" title="Print"><i class="icon-print icon-large"></i></a>
+      &nbsp;
+      
+    </td>
+    <td>
+      IBL204665
+      
+      
+      <span class="label label-error">Closed CR</span>
+        
+    </td>
+    <td> IBL203915/4181/4183/4184/4219/4220/4197/4198/4298/4300</td>
+    <td>PT. BARUNA SURINDO PERKASA</td>
+    <td>PT. INTERBENUA LOGISTINDO</td>
+    <td>TBA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>SURABAYA, INDONESIA</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+        No Invoice Yet
+    </td>
+    <td>10x20FT EDI PPJK</td>
+    <td></td>
+    <td>
+        <ul>
+            <li><a href="/payments/18278?year=2020">3759/IDR/2020</a></li>
+        </ul>
+    </td>
+    <td>SURABAYA, INDONESIA</td>
+    <td>31-Dec-2020</td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="21057">
+        <option selected="selected" value="Not Yet">Not Yet</option>
+<option value="Done">Done</option>
+      </select>
+    </td>
+    <td class="hidden disable">December 2020</td>
+    <td class="hidden disable">12/31/2020</td>
+    <td class="hidden disable reference_id">21057</td>
+    <td class="hidden disable ibl_ref">IBL204665</td>
+    <td class="hidden disable invoice">No Invoice Yet</td>
+    <td class="hidden disable payment">3759/IDR/2020</td>
+    <td class="hidden disable delivery_doc">Not Yet</td>
+  </tr>
+:ET:@created_atf1649082869.8309288:@expires_in0

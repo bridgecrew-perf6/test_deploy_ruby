@@ -1,0 +1,56 @@
+o: ActiveSupport::Cache::Entry:@valueI"¿  <tr class="warning ">
+    <td>
+      <a href="/bill_of_ladings/25570?year=2022" title="Show Bill of Lading"><i class="icon-eye-open icon-large"></i></a>
+      &nbsp;
+
+      <a href="/bill_of_ladings/25570/edit?year=2022" title="Edit Bill of Lading"><i class="icon-edit-sign icon-large"></i></a>
+      &nbsp;
+
+            <a data-confirm="Detail sell is empty. Proceed?" href="/bill_of_ladings/calculate_invoice?sid=36362&amp;year=2022" title="Calculate Invoice"><i class="icon-file icon-large"></i></a>
+        &nbsp;
+
+
+      
+      <a href="/cost_revenues/36362/print_cover?year=2022" target="_blank" title="Print"><i class="icon-print icon-large"></i></a>
+      &nbsp;
+      
+    </td>
+    <td>
+      IBL221190
+      
+      
+      
+        <span class="label label-warning">No Status CR</span>
+    </td>
+    <td>GOSUQIN3108010 GF50221300065</td>
+    <td>GOLD STAR LINE LTD</td>
+    <td>SHANDONG GOODFARMER INTERNATIONAL TRADING CO.,LTD</td>
+    <td>PT BOGA AGRO INDONESIA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+        No Invoice Yet
+    </td>
+    <td>7x40HQ REEFER</td>
+    <td>IMPORT (OCEAN FREIGHT, TRUCKING)</td>
+    <td>
+        No Payment Yet
+    </td>
+    <td>QINGDAO, CHINA</td>
+    <td>19-Apr-2022</td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="25570">
+        <option selected="selected" value="Not Yet">Not Yet</option>
+<option value="Done">Done</option>
+      </select>
+    </td>
+    <td class="hidden disable">April 2022</td>
+    <td class="hidden disable">04/19/2022</td>
+    <td class="hidden disable reference_id">25570</td>
+    <td class="hidden disable ibl_ref">IBL221190</td>
+    <td class="hidden disable invoice">No Invoice Yet</td>
+    <td class="hidden disable payment">No Payment Yet</td>
+    <td class="hidden disable delivery_doc">Not Yet</td>
+  </tr>
+:ET:@created_atf1650201891.3545816:@expires_in0

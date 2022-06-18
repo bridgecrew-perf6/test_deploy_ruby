@@ -1,0 +1,51 @@
+<% columns = @report.columns %>
+<% base = [] %>
+<% 20.times{ |i| base.push i.to_s } %>
+<%
+  head = []
+  head.push "" if columns.include? "0"
+  head.push "IBL Ref\t" if columns.include? "1"
+  head.push "MBL No\t" if columns.include? "2"
+  head.push "Carrier\t" if columns.include? "3"
+  head.push "Shipper Ref\t" if columns.include? "4"
+  head.push "Shipper\t" if columns.include? "5"
+  head.push "Consignee\t" if columns.include? "6"
+  head.push "Vessel\t" if columns.include? "7"
+  head.push "ETD\t" if columns.include? "8"
+  head.push "POL\t" if columns.include? "9"
+  head.push "POD\t" if columns.include? "10"
+  head.push "Destination\t" if columns.include? "11"
+  head.push "Volume\t" if columns.include? "12"
+  head.push "Owner\t" if columns.include? "13"
+  head.push "Status\t" if columns.include? "14"
+  head.push "Trade\t" if columns.include? "15"
+  head.push "Sell\t" if (columns.include? "16") || (columns.include? "17")
+  head.push "\t" if (columns.include? "16") && (columns.include? "17")
+  head.push "Cost\t" if (columns.include? "18") || (columns.include? "19")
+  head.push "\t" if (columns.include? "18") && (columns.include? "19")
+  # head.push "Sell USD\t"
+  # head.push "Sell IDR\t"
+  # head.push "Cost USD\t"
+  # head.push "Cost IDR\t"
+%>
+<%# (base-columns).reverse_each{ |column| head.delete_at(column.to_i) } %>
+<%= head.join("").html_safe %>
+<%
+  head = []
+  index = []
+  index.push columns.index("16")
+  index.push columns.index("17")
+  index.push columns.index("18")
+  index.push columns.index("19")
+  (index.compact.min.to_i-1).times{ head.push "\t" } 
+  head.push "USD\t" if columns.include? "16"
+  head.push "IDR\t" if columns.include? "17"
+  head.push "USD\t" if columns.include? "18"
+  head.push "IDR\t" if columns.include? "19"
+%>
+<%= head.join("").html_safe %>
+<% @results.each do |row| %>
+  <% body = report_list_cr(row, "xls") %>
+  <% (base-columns).reverse_each{ |column| body.delete_at(column.to_i) } unless body.blank? %>
+<%= body.join("").html_safe unless body.blank? %>
+<% end %>

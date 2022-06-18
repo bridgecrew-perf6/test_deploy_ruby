@@ -1,0 +1,28 @@
+<% columns = @report.columns %>
+<% base = [] %>
+<% 15.times{ |i| base.push i.to_s } %>
+<%
+  head = []
+  head.push ""
+  head.push "IBL Ref\t"
+  head.push "MBL No\t"
+  head.push "Carrier\t"
+  head.push "Shipper\t"
+  head.push "Consignee\t"
+  head.push "Notify Party\t"
+  head.push "Destination\t"
+  head.push "Invoice\t"
+  head.push "Volume\t"
+  head.push "Order Type\t"
+  head.push "Payment\t"
+  head.push "POL\t"
+  head.push "Etd Vessel\t"
+  head.push "Delivery Doc\t"
+%>
+<% (base-columns).reverse_each{ |column| head.delete_at(column.to_i) } %>
+<%= head.join("").html_safe %>
+<% @results.each do |bill_of_lading| %>
+  <% body = report_list_bl(bill_of_lading, "xls") %>
+  <% (base-columns).reverse_each{ |column| body.delete_at(column.to_i) } unless body.blank? %>
+<%= body.join("").html_safe unless body.blank? %>
+<% end %>

@@ -1,0 +1,196 @@
+<%= render 'commons/pdf' %>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <%# cache(["report-cost-revenues-table", @cost_revenues.size]) do %>
+  <div style="overflow-x: scroll;">
+    <table style="width: 100%" border="1" style="page-break-before: always;">
+      <thead>
+        <tr>
+          <th colspan="13"></th>
+          <th colspan="10">Sell</th>
+          <th colspan="10">Cost</th>
+          <th colspan="7"></th>
+        </tr>
+        <tr>
+          <th>Status</th>
+          <th>MBL No</th>
+          <th>IBL Ref</th>
+          <th>Shipper Ref</th>
+          <th>Shipper</th>
+          <th>Consignee</th>
+          <th>Carrier</th>
+          <th>Trade</th>
+          <th>POL</th>
+          <th>POD</th>
+          <th>Destination</th>
+          <th>ETD</th>
+          <th>Volume</th>
+          <th>Description</th>
+          <th>Qty</th>
+          <th>USD</th>
+          <th>IDR</th>
+          <th>Rate</th>
+          <th>Other</th>
+          <th>VAT 10%</th>
+          <th>VAT 1%</th>
+          <th>PPH 23</th>
+          <th>Total</th>
+          <th>Description</th>
+          <th>Qty</th>
+          <th>USD</th>
+          <th>IDR</th>
+          <th>Rate</th>
+          <th>Other</th>
+          <th>VAT 10%</th>
+          <th>VAT 1%</th>
+          <th>PPH 23</th>
+          <th>Total</th>
+          <th>GPT</th>
+          <th>ADDA</th>
+          <th>ADDB</th>
+          <th>ADDC</th>
+          <th>ADDT</th>
+          <th>NPT</th>
+          <th>Owner</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @cost_revenues.each do |row| %>
+          <tr>
+            <td><%= row.status_text.join("<br>").html_safe %></td>
+            <td><%= row.master_bl_no %></td>
+            <td><%= row.ibl_ref_with_status %></td>
+            <td><%= row.shipper_reference %></td>
+            <td><%= row.shipper_company_name %></td>
+            <td><%= row.consignee_company_name %></td>
+            <td><%= row.carrier %></td>
+            <td><%= row.trade %></td>
+            <td><%= row.port_of_loading %></td>
+            <td><%= row.port_of_discharge %></td>
+            <td><%= row.final_destination %></td>
+            <td>ETD</td>
+            <td><%= row.volume %></td>
+            <td>
+              <% row.cost_revenue_items.each do |item| %>
+                <%= item.description %><br>
+              <% end %>
+            </td>
+            <td style="text-align:right">
+              <% row.cost_revenue_items.each do |item| %>
+                <%= item.selling_volume %><br>
+              <% end %>
+            </td>
+            <td style="text-align:right">
+              <% row.cost_revenue_items.each do |item| %>
+                <%= money_format item.selling_usd %><br>
+              <% end %>
+            </td>
+            <td style="text-align:right">
+              <% row.cost_revenue_items.each do |item| %>
+                <%= money_format item.selling_idr %><br>
+              <% end %>
+            </td>
+            <td style="text-align:right"><%= money_format row.selling_rate %></td>
+            <td style="text-align:right"><%= money_format row.selling_other %></td>
+            <td style="text-align:right"><%= money_format row.selling_vat_10 %></td>
+            <td style="text-align:right"><%= money_format row.selling_vat_1 %></td>
+            <td style="text-align:right"><%= money_format row.selling_pph_23 %></td>
+            <td style="text-align:right"><%= money_format row.selling_total_invoice %></td>
+            <td>
+              <% row.cost_revenue_items.each do |item| %>
+                <%= item.description %><br>
+              <% end %>
+            </td>
+            <td style="text-align:right">
+              <% row.cost_revenue_items.each do |item| %>
+                <%= item.buying_volume %><br>
+              <% end %>
+            </td>
+            <td style="text-align:right">
+              <% row.cost_revenue_items.each do |item| %>
+                <%= money_format item.buying_usd %><br>
+              <% end %>
+            </td>
+            <td style="text-align:right">
+              <% row.cost_revenue_items.each do |item| %>
+                <%= money_format item.buying_idr %><br>
+              <% end %>
+            </td>
+            <td style="text-align:right"><%= money_format row.buying_rate %></td>
+            <td style="text-align:right"><%= money_format row.buying_other %></td>
+            <td style="text-align:right"><%= money_format row.buying_vat_10 %></td>
+            <td style="text-align:right"><%= money_format row.buying_vat_1 %></td>
+            <td style="text-align:right"><%= money_format row.buying_pph_23 %></td>
+            <td style="text-align:right"><%= money_format row.buying_total_invoice %></td>
+            <td style="text-align:right"><%= money_format row.gpt %></td>
+            <td style="text-align:right"><%= money_format row.adda %></td>
+            <td style="text-align:right"><%= money_format row.addb %></td>
+            <td style="text-align:right"><%= money_format row.addc %></td>
+            <td style="text-align:right"><%= money_format row.addt %></td>
+            <td style="text-align:right"><%= money_format row.npt %></td>
+            <td><%= row.owner %></td>
+          </tr>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="13">TOTAL</th>
+          <th colspan="5"></th>
+          <th style="text-align:right"><%= money_format @cost_revenues.map{|p| p.selling_other}.sum(&:to_f) %></th>
+          <th style="text-align:right"><%= money_format @cost_revenues.map{|p| p.selling_vat_10}.sum(&:to_f) %></th>
+          <th style="text-align:right"><%= money_format @cost_revenues.map{|p| p.selling_vat_1}.sum(&:to_f) %></th>
+          <th style="text-align:right"><%= money_format @cost_revenues.map{|p| p.selling_pph_23}.sum(&:to_f) %></th>
+          <th></th>
+          <th colspan="5"></th>
+          <th style="text-align:right"><%= money_format @cost_revenues.map{|p| p.buying_other}.sum(&:to_f) %></th>
+          <th style="text-align:right"><%= money_format @cost_revenues.map{|p| p.buying_vat_10}.sum(&:to_f) %></th>
+          <th style="text-align:right"><%= money_format @cost_revenues.map{|p| p.buying_vat_1}.sum(&:to_f) %></th>
+          <th style="text-align:right"><%= money_format @cost_revenues.map{|p| p.buying_pph_23}.sum(&:to_f) %></th>
+          <th></th>
+          <th style="text-align:right"><%= money_format @cost_revenues.map{|p| p.gpt}.sum(&:to_f) %></th>
+          <th style="text-align:right"><%= money_format @cost_revenues.map{|p| p.adda}.sum(&:to_f) %></th>
+          <th style="text-align:right"><%= money_format @cost_revenues.map{|p| p.addb}.sum(&:to_f) %></th>
+          <th style="text-align:right"><%= money_format @cost_revenues.map{|p| p.addc}.sum(&:to_f) %></th>
+          <th style="text-align:right"><%= money_format @cost_revenues.map{|p| p.addt}.sum(&:to_f) %></th>
+          <th style="text-align:right"><%= money_format @cost_revenues.map{|p| p.npt}.sum(&:to_f) %></th>
+          <th></th>
+        </tr>
+      </tfoot>
+    </table>
+    <dl class="dl-horizontal">
+      <dt style="text-align:left">Total SI</dt>
+      <dd>: <%= @cost_revenues.count %></dd>
+      <dt style="text-align:left">Cancel SI</dt>
+      <dd>: <%= @cost_revenues.map{|p| p.shipping_instruction.is_canceled? ? 1 : 0}.sum(&:to_i) %></dd>
+      <dt style="text-align:left">Total Shipment</dt>
+      <dd>: <%= @cost_revenues.map{|p| p.shipping_instruction.is_canceled? ? 0 : 1}.sum(&:to_i) %></dd>
+      <dt style="text-align:left">Completed SI</dt>
+      <dd>: <%= @cost_revenues.map{|p| p.is_completed? ? 1 : 0}.sum(&:to_i) %></dd>
+    </dl>
+    <%
+      volum1 = 0
+      volum2 = 0
+      volum3 = 0
+      volum4 = 0
+      @cost_revenues.each do |cr|
+        cr.cr_containers.each do |crc|
+          volum1 += crc.volum.to_f if crc.container.container_type == "LCL"
+          volum2 += crc.volum.to_f if crc.container.container_type == "20FT"
+          volum3 += crc.volum.to_f if crc.container.container_type == "40FT"
+          volum4 += crc.volum.to_f if crc.container.container_type == "40HQ"
+        end
+      end
+    %>
+    <strong>QUANTITY</strong>
+    <dl class="dl-horizontal">
+      <dt style="text-align:left">LCL</dt>
+      <dd>: <%= volum1 %></dd>
+      <dt style="text-align:left">20 FT</dt>
+      <dd>: <%= volum2 %></dd>
+      <dt style="text-align:left">40 FT</dt>
+      <dd>: <%= volum3 %></dd>
+      <dt style="text-align:left">40 HC</dt>
+      <dd>: <%= volum4 %></dd>
+    </dl>
+  </div>
+</div>

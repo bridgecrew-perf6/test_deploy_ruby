@@ -1,0 +1,45 @@
+o: ActiveSupport::Cache::Entry:@valueI"Æ  <tr class="">
+    <td>
+      <a href="/shipping_instructions/36292?year=2022" title="Show Shipping Instruction"><i class="icon-eye-open icon-large"></i></a>
+
+      <a href="/shipping_instructions/36292/edit?year=2022" title="Edit Shipping Instruction"><i class="icon-edit-sign icon-large"></i></a>
+
+      <a href="/shipping_instructions/36292/email?year=2022" target="_blank" title="Email"><i class="icon icon-envelope"></i></a>
+
+          <div>
+              <a data-confirm="Already update SI data?" href="/createBL/36292">Create BL</a>
+          </div>
+          <div>
+            <a data-confirm="Are you sure?" href="/shipping_instructions/36292/cancel?year=2022">Cancel SI</a>
+          </div>
+    </td>
+    <td>
+      IBL221132
+      
+      
+    </td>
+    <td></td>
+    <td>PT. TRIJASA PRIMA INTERNATIONAL</td>
+    <td>1x20FT</td>
+    <td>SINGAPORE, SINGAPORE</td>
+    <td>24-Apr-2022</td>
+    <td>11-Apr-2022</td>
+    <td>PT. OCEAN GLOBAL SHIPPING (COSCO)</td>
+    <td>TBA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>TG. PRIOK, JAKARTA, INDONESIA</td>
+    <td>7238226660</td>
+    <td></td>
+    <td>EXPORT (OCEAN FREIGHT)</td>
+    <td>Bayu</td>
+    <td class="hidden disable">April 2022</td>
+    <td class="hidden disable">04/24/2022</td>
+    <td class="hidden disable row_id">36292</td>
+    <td class="hidden disable ibl_ref">IBL221132</td>
+    <td class="hidden disable status">
+      
+      
+    </td>
+    <td class="hidden disable additional_si">false</td>
+  </tr>
+:ET:@created_atf1649688108.8695776:@expires_in0

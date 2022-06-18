@@ -1,0 +1,143 @@
+<div class="page-header">
+  <h3>List Payment</h3>
+</div>
+<% if !notice.nil? %>
+<p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<%= link_to 'Add Payment', new_payment_path, :class => "btn btn-primary pull-left", data: {"no-turbolink" => "true"}, style: "margin-right: 10px" %> 
+<!-- Button to trigger modal -->
+ <a href="#myModal" role="button" class="btn" data-toggle="modal">Show / Hide Columns</a>
+ <div class="pull-right">
+  Sort Data: 
+  <select name="sort_data" id="sort_data" style="margin-bottom: 0">
+    <option value="">All</option>
+    <option value="USD" <%= 'selected' if params[:sort] == "USD" %>>USD</option>
+    <option value="IDR" <%= 'selected' if params[:sort] == "IDR" %>>IDR</option>
+  </select>
+  <script type="text/javascript">
+  $("#sort_data").change(function(){
+    link = '<%= payments_path %>';
+    if($(this).val() != '')
+      window.location.href = link + '?sort=' + $(this).val();
+    else
+      window.location.href = link;
+  })
+  </script>
+ </div>
+
+<!-- Modal -->
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Show / Hide Columns</h3>
+  </div>
+  <div class="modal-body">
+    <ul class="unstyled columns">
+      <li><label><input type="checkbox" id="1" checked/> Payment No</label></li>
+      <li><label><input type="checkbox" id="2" checked/> IBL REF</label></li>
+      <li><label><input type="checkbox" id="3"/> Booking No</label></li>
+      <li><label><input type="checkbox" id="4" checked/> Shipper</label></li>
+      <li><label><input type="checkbox" id="5" checked/> Destination</label></li>
+      <li><label><input type="checkbox" id="6"/> Volume</label></li>
+      <li><label><input type="checkbox" id="7" checked/> Carrier</label></li>
+      <li><label><input type="checkbox" id="8" checked/> Amount</label></li>
+      <li><label><input type="checkbox" id="9"/> Notes</label></li>
+      <li><label><input type="checkbox" id="10" checked/> ETD Vessel</label></li>
+      <li><label><input type="checkbox" id="11" checked/> Payment Date</label></li>
+      <li><label><input type="checkbox" id="12" checked/> Status</label></li>
+    </ul>
+    <style type="text/css">
+      .unstyled li{
+        float: left;
+        width: 50%;
+      }
+    </style>
+  </div>
+</div>
+<div class="clearfix"></div>
+<table class="table table-striped table-bordered dtable">
+  <thead>
+    <tr>
+      <th width="60px">Actions</th>
+      <th>Payment NO</th>
+      <th>IBL REF</th>
+      <th class="hidden">Booking No</th>
+      <th>Shipper</th>
+      <th>Destination</th>
+      <th class="hidden">Volume</th>
+      <th>Carrier</th>
+      <th>Amount</th>
+      <th class="hidden">Notes</th>
+      <th>ETD Vessel</th>
+      <th>Payment Date</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @payments.each do |payment| %>
+      <tr>
+        <td data-no-turbolink="true">
+          <%= link_to '<i class="icon-eye-open icon-large"></i>'.html_safe, payment, title: "Show Payment" %>
+          <% if payment.status == 0 && payment.is_cancel == 0 %>
+          <%= link_to '<i class="icon-edit-sign icon-large"></i>'.html_safe, edit_payment_path(payment), title: "Edit Payment" %> 
+          <% end %>
+          <% if payment.is_cancel == 0 && payment.status == 0 %>
+            <%= link_to 'Cancel', cancel_payment_path(payment), data: {confirm: "Are you sure?"} %>
+          <% end %>
+          <% if payment.is_cancel == 1 %>
+            <%= link_to 'Uncancel', uncancel_payment_path(payment), data: {confirm: "Are you sure?"} %>
+          <% end %>
+          <!--<%= link_to '<i class="icon-remove icon-large"></i>'.html_safe, payment, method: :delete, data: { confirm: 'Are you sure?' }, title: "Delete Payment" %>-->
+        </td>
+        <td><%= payment.payment_no %> 
+        <%= '<span class="label label-warning">Cancel</span>'.html_safe if payment.is_cancel == 1 %>
+        <%= '<span class="label label-error">Close</span>'.html_safe if payment.status == 1 %></td>
+        <td><%= payment.payment_references.first.ibl_ref %></td>
+        <td class="hidden"><%= payment.payment_references.first.booking_no %></td>
+        <% if payment.payment_references.any? %>
+        <% si = ShippingInstruction.find_by(si_no: payment.payment_references.first.ibl_ref) %>
+        <td><%= si.shipper.company_name unless si.nil? %></td>
+        <td><%= si.final_destination unless si.nil? %></td>
+        <td class="hidden">
+          <% unless si.nil? %>          
+          <%= 
+            si.si_containers.map {|c| (c.container.container_type == "LCL" ? "#{number_with_precision(c.volum, precision: 3, delimiter: ',')} M3 #{c.container.container_type}" : "#{c.volum}x#{c.container.container_type}") }.join(" & ")  
+          %>
+          <% end %>
+        </td>
+        <% else %>
+        <td></td>
+        <td></td>
+        <td class="hidden"></td>
+        <% end %>
+        <td>
+          <% if payment.carrier_bank_id == 0 %>
+            CASH by: <%= payment.cash_carrier_name %>
+          <% elsif payment.carrier_bank_id == -1 %>
+            DEPOSIT by: <%= payment.cash_carrier_name %>
+          <% else %>
+            <%= payment.carrier_bank.carrier.name %>
+          <% end %>
+        </td>
+        <td style="text-align:right">
+          <%= number_with_delimiter payment.amount %> 
+          <% if payment.payment_no.to_s.include? 'USD' %>
+            USD
+          <% else %>
+            IDR 
+          <% end %>
+          </td>
+        <td class="hidden"><pre class="free"><%= payment.notes %></td>
+        <td>
+          <% if !si.nil? && si.vessels.any? %>
+            <%= normal_date_format si.vessels.first.etd_date %>
+          <% end %>
+        </td>
+        <td><%= normal_date_format payment.payment_date %></td>
+        <td><%= payment.status_text %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,10 @@
+<tr>
+	<td><%= f.text_field :description, class: "span12 note_description", autocomplete: "off" %></td>
+	<td><%= f.text_field :volume, class: "span12", autocomplete: "off" %></td>
+	<td><%= f.text_field :amount, class: "span12 invoice_amount", autocomplete: "off" %></td>
+	<td></td>
+	<td>
+		<%= f.hidden_field :_destroy, class: "span12" %>
+		<a onclick="remove_note_fields(this); return false;" tabindex="-1" href="#" title="Remove"><i class="icon-remove-sign"></i></a>
+	</td>
+</tr>

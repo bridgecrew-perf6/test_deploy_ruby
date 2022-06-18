@@ -1,0 +1,48 @@
+<%# cache payment_reference do %>
+<% unless row.payment_references.blank? %>
+  <%= render partial: 'payment_inquiries/reference', collection: row.payment_references, as: :reference, locals: { row: row } %>
+<% else %>
+  <% cache ["list-payment-inquiry", row] do %>
+    <tr>
+      <td data-no-turbolink="true">
+        <%= link_to '<i class="icon-eye-open icon-large"></i>'.html_safe, row, title: "Show Payment" %>
+        <% if row.is_open? && row.is_uncanceled? %>
+          <%= link_to '<i class="icon-edit-sign icon-large"></i>'.html_safe, edit_payment_path(row), title: "Edit Payment" %>
+        <% end %>
+        <% if row.is_uncanceled? && row.is_open? %>
+          <%= link_to 'Cancel', cancel_payment_path(row), data: {confirm: "Are you sure?"} %>
+        <% end %>
+        <% if row.is_canceled? %>
+          <%= link_to 'Uncancel', uncancel_payment_path(row), data: {confirm: "Are you sure?"} %>
+        <% end %>
+      </td>
+      <td data-order="<%= row.no %>">
+        <%= row.payment_no %>
+        <%= '<span class="label label-warning">Cancel</span>'.html_safe if row.is_canceled? %>
+      </td>
+      <td><%=  %></td>
+      <td><%=  %></td>
+      <td><%=  %></td>
+      <td><%=  %></td>
+      <td><%=  %></td>
+      <td><%= row.carrier_name %></td>
+      <td></td>
+      <td><%= simple_format row.notes %></td>
+      <td><%=  %></td>
+      <td><%= si_date_format row.payment_date %></td>
+      <td><%= row.status_info %></td>
+      <td class="hidden disable"><%# monthly_format row.payment_date %></td>
+      <td class="hidden disable"><%# datepicker_format row.payment_date %></td>
+      <td class="hidden disable row_id"><%= row.id %></td>
+      <td class="hidden disable ibl_ref"><%=  %></td>
+      <td class="hidden disable currency"><%= row.payment_type %></td>
+      <td class="hidden disable row_ref_id"><%=  %></td>
+      <td class="hidden disable"><%=  %></td>
+      <td class="hidden disable"><%=  %></td>
+      <td class="hidden disable"><%=  %></td>
+      <td></td>
+      <td></td>
+    </tr>
+  <% end %>
+<% end %>
+<%# end %>

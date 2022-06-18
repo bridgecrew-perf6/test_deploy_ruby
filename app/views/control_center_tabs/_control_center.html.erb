@@ -1,0 +1,196 @@
+<%= form_for(@report, url: report_control_centers_path, html: { class: "form-inline", target: "_blank"}) do |f| %>
+  <div id="report_params"></div>
+  <div>
+    <select name="report_type" id="report_type">
+      <option value="customized">Customized Report</option>
+      <option value="breakdown">Breakdown Report</option>
+      <option value="paid">Paid Report</option>
+    </select>
+    <button type="submit" class="btn btn-primary">View Report</button>
+    <% if current_user.administrator? %>
+    <button type="button" class="btn btn-primary" data-toggle="modal" href="#viewSummaryModal" data-no-turbolink="true">View Summary</button>
+    <% end %>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exFilterExternallyTriggered(controlCenterTable);">Filter</button>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exResetAllFilters(controlCenterTable);">Reset Filter</button>
+    <button type="button" class="btn btn-primary" onclick="controlCenterTable.state.clear();window.location.reload();" style="float: right;">Refresh</button>
+  </div>
+<% end %>
+
+<div class="clearfix"></div>
+
+<% columns = { 
+              customer: "Customer",
+              shipper: "Shipper",
+              due_date: "Due Date",
+              payment_date: "Payment Date",
+              status: "Status"
+            } 
+  
+  filter = "<table><tr style='vertical-align: top;'><td>Advance Filter :</td>"
+  columns.each_with_index do |(key, value), index|
+    filter+="<td style='vertical-align: top;'><span>#{value}</span><span id=#{key}></span></td>"
+  end
+  filter+="</tr></table>"
+%>
+
+<div>
+  <div class="span3" style="margin-left: 0;">Format :
+    <select name="format" id="format">
+      <option value="pdf">PDF</option>
+      <option value="xls">XLS</option>
+    </select>
+  </div>
+  
+  <div class="span3">Filter By :
+    <span id="monthly"></span>
+  </div>
+
+  <div class="span3">&nbsp;
+    <span id="date_range"></span>
+  </div>
+  <% if current_user.administrator? %>
+  <%# form_for(@report, url: close_payment_control_centers_path, html: { class: "form-inline", target: "_blank"}) do |f| %>
+  <%= form_tag(close_payment_control_centers_path, class: "close_payment_form form-inline", target: "_blank") do |f| %>
+    <div id="close_payment_params"></div>
+    <!-- <div><br/><button type="submit" class="btn btn-primary" style="float: right;" onclick="
+    control_center_close_payment();">Close Payment</button></div> -->
+    <div><br/><button type="submit" class="btn btn-primary" style="float: right;">Close Payment</button></div>
+  <% end %>
+  <% end %>
+
+  <div class="clearfix"></div>
+  <br/>
+
+  <%= filter.html_safe %>
+
+  <div class="clearfix"></div>
+  <br/>
+</div>
+
+<div class="clearfix"></div>
+
+<table class="table table-striped table-bordered" id="control_center_table" width="100%">
+  <thead>
+  <tr>
+    <th width="10%" class="disable">Actions</th>
+    <th>Close Ref</th>
+    <th>IBL Ref</th>
+    <th>Customer</th>
+    <th>Shipper</th>
+    <th>Shipper Ref</th>
+    <th>MBL</th>
+    <th>Invoice No</th>
+    <th>Qty</th>
+    <th>POL</th>
+    <th>Destination</th>
+    <th>USD</th>
+    <th>IDR</th>
+    <th>Invoice Date</th>
+    <th>ETD Date</th>
+    <th>Due Date</th>
+    <th>Date Payment</th>
+    <th>Status</th>
+    <th>Note</th>
+    <th>Close Payment</th>
+    <th class="hidden disable">Filter Monthly</th>
+    <th class="hidden disable">Filter Date</th>
+    <th class="hidden disable">Row Id</th>
+    <th class="hidden disable">IBL Ref</th>
+    <th class="hidden disable">Invoice No</th>
+    <th class="hidden disable">Head Letter</th>
+    <th class="hidden disable">Due Date</th>
+    <th class="hidden disable">Payment Date</th>
+  </tr>
+  </thead>
+  <tbody>
+    <%= render partial: 'control_centers/row', :collection => @invoices, :as => :reference %>
+    <%# render partial: 'control_centers/row', :collection => @shipping_instructions, :as => :row %>
+  </tbody>
+</table>
+
+<%= render "commons/summary_2" %>
+
+<% if current_user.administrator? %>
+
+<script type="text/javascript">
+var invoice_no, customer;
+function control_center_close_payment() {
+  invoice_no = [];
+  customer = [];
+  controlCenterTable.rows({search:'applied'}).every( function ( rowIdx, tableLoop, rowLoop ) {
+    var rowNode = this.node();
+
+    $(rowNode).find("input:checkbox#invoice_no").each(function (){
+      if($(this).is(":checked")){
+        invoice_no.push( $(this).val() );
+        customer.push( $(this).parent().parent().find("td:eq(3)").text() );
+      }
+    });
+  });
+
+  console.log(invoice_no);
+  console.log(customer);
+
+  // if(invoice_no.length != 0){
+  //   if(jQuery.unique(customer).length == 1){
+  //     form += '<input type="hidden" name="control_center_close_payment[invoice_no][]">';
+  //     $.each(invoice_no, function(key, value){
+  //       form += '<input type="hidden" name="control_center_close_payment[invoice_no][]" value="'+value+'">';
+  //       // form += '<input type="hidden" name="invoice_no[]" value="'+value+'">';
+  //     });
+
+  //     $('#close_payment_params').html(form);
+  //   }
+  //   else{
+  //     alert("Please Close Payment each Customer separately");
+  //     $(".close_payment_form").form.off("submit");
+  //   }
+  // }
+  // else{
+  //   alert("Please check at least one Invoice");
+  //   $(".close_payment_form").off("submit");
+  // }
+}
+</script>
+
+<script type="text/javascript">
+  $(".close_payment_form").submit(function() {
+    control_center_close_payment();
+
+    var form = "";
+    if(invoice_no.length != 0){
+      if(jQuery.unique(customer).length == 1){
+        form += '<input type="hidden" name="control_center_close_payment[invoice_no][]">';
+        $.each(invoice_no, function(key, value){
+          form += '<input type="hidden" name="control_center_close_payment[invoice_no][]" value="'+value+'">';
+          // form += '<input type="hidden" name="invoice_no[]" value="'+value+'">';
+        });
+
+        $('#close_payment_params').html(form);
+        $('#close_payment_params').submit();
+      }
+      else{
+        alert("Please Close Payment each Customer separately");
+        // $(".close_payment_form").off("submit");
+        return false;
+      }
+    }
+    else{
+      alert("Please check at least one Invoice");
+      // $(".close_payment_form").off("submit");
+      return false;
+    }
+  });
+</script>
+
+<% else %>
+<script type="text/javascript">
+  $('a:contains("Edit")').css("display", "none");
+  $("input:checkbox").css("display", "none");
+</script>
+<% end %>
+
+<script type="text/javascript">
+  $(document).on('ready page:change', ready);
+  $(document).on('page:fetch', function() { controlCenterTable.destroy(); });
+</script>

@@ -1,0 +1,106 @@
+<div class="page-header">
+  <h3>Shipments Tracking</h3>
+</div>
+
+<% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<%= form_for(@report, url: report_shipment_trackings_path, html: { class: "form-inline", target: "_blank"}) do |f| %>
+  <div id="report_params"></div>
+  <div>
+    <div class="span5" style="margin-left: 0;">FU Date :
+      <span id="fu_date" style="display: inline-block;width: 215px;"></span>
+      <button type="button" class="btn" onclick="yadcf.exFilterExternallyTriggered(shipmentsTrackingTable);">Sort Data</button>
+    </div>
+    <button type="submit" class="btn btn-primary">View Report</button>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exFilterExternallyTriggered(shipmentsTrackingTable);">Filter</button>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exResetAllFilters(shipmentsTrackingTable);">Reset Filter</button>
+    <button type="button" class="btn btn-primary" onclick="shipmentsTrackingTable.state.clear();window.location.reload();" style="float: right;">Refresh</button>
+  </div>
+<% end %>
+
+<div class="clearfix"></div>
+
+<% columns = { 
+              shipper: "Shipper",
+              consignee: "Consignee",
+              carrier: "Carrier",
+              feeder: "Feeder",
+              pol: "POL",
+              destination: "Destination",
+              free_time: "Free Time"
+            } 
+  
+  filter = "<table><tr style='vertical-align: top;'><td>Advance Filter :</td>"
+  columns.each_with_index do |(key, value), index|
+    filter+="<td style='vertical-align: top;'><span>#{value}</span><span id=#{key}></span></td>"
+  end
+  filter+="</tr></table>"
+%>
+
+<div>
+  <div class="span3" style="margin-left: 0;">Format :
+    <select name="format" id="format">
+      <option value="pdf">PDF</option>
+      <option value="xls">XLS</option>
+    </select>
+  </div>
+  
+  <div class="span3">Filter By :
+    <span id="monthly"></span>
+  </div>
+
+  <div class="span3">&nbsp;
+    <span id="date_range"></span>
+  </div>
+
+  <div class="clearfix"></div>
+  <br/>
+
+  <%= filter.html_safe %>
+
+  <div class="clearfix"></div>
+  <br/>
+</div>
+
+<div class="clearfix"></div>
+
+<!-- # Revisi 1 Dec 2015 -->
+<table class="table table-striped table-bordered" id="shipments_tracking_table" width="100%">
+  <thead>
+  <tr>
+    <th width="10%" class="hidden disable">&nbsp;</th>
+    <th>IBL Ref</th>
+    <th>Shipper</th>
+    <th>Consignee</th>
+    <th>Carrier</th>
+    <th>Feeder</th>
+    <th>ETD Feeder</th>
+    <th>POL</th>
+    <th>Dest.</th>
+    <th>ETA Dest.</th>
+    <th>Shipper Ref</th>
+    <th>Booking No</th>
+    <th>MBL</th>
+    <th>Transit Time</th>
+    <th>Free Time Status</th>
+    <th>Notes</th>
+    <th>FU Date</th>
+    <th class="hidden disable">Filter Monthly</th>
+    <th class="hidden disable">Filter Date</th>
+    <th class="hidden disable">Row Id</th>
+    <th class="hidden disable">IBL Ref</th>
+    <th class="hidden disable">Notes</th>
+    <th class="hidden disable">Vessel Name</th>
+  </tr>
+  </thead>
+  <tbody>
+    <%= render partial: 'row', collection: @shipments, as: :reference %>
+  </tbody>
+</table>
+
+<script type="text/javascript">
+  $(document).on('ready page:change', ready);
+  $(document).on('page:fetch', function() { shipmentsTrackingTable.destroy(); });
+</script>

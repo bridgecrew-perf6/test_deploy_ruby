@@ -1,0 +1,58 @@
+<% cache ["list-si", row] do %>
+  <tr class="<%= "error cancel" if row.is_canceled? %>">
+    <td>
+      <%= link_to '<i class="icon-eye-open icon-large"></i>'.html_safe, row, title: "Show Shipping Instruction" %>
+
+      <%= link_to '<i class="icon-edit-sign icon-large"></i>'.html_safe, edit_shipping_instruction_path(row), title: "Edit Shipping Instruction" if row.is_uncanceled? && row.is_open? %>
+
+      <%= link_to '<i class="icon icon-envelope"></i>'.html_safe, email_shipping_instruction_path(row), target: "_blank", title: "Email" unless row.is_cr_completed? %>
+
+      <% if !row.is_shadow && row.is_open? %>
+        <% if row.is_uncanceled? %>
+          <div>
+            <% if row.bill_of_lading.blank? %>
+              <%= link_to 'Create BL', '/createBL/' + row.id.to_s, data: {confirm: "Already update SI data?"} %>
+            <% else %>
+              <%= link_to 'Update BL', edit_bill_of_lading_path(row.bill_of_lading) %>
+            <% end %>
+          </div>
+          <div>
+            <%= link_to 'Cancel SI', cancel_shipping_instruction_path(row), data: {confirm: 'Are you sure?'} %>
+          </div>
+        <% elsif row.is_canceled? %>
+          <div>
+            <%= link_to 'Uncancel SI', uncancel_shipping_instruction_path(row), data: {confirm: 'Are you sure?'} %>
+          </div>
+        <% end %>
+      <% end %>
+    </td>
+    <td>
+      <%= row.ibl_ref %>
+      <%= '<span class="label label-warning">Cancel</span>'.html_safe if row.is_canceled? %>
+      <%= '<span class="label">Closed</span>'.html_safe if row.is_closed? %>
+    </td>
+    <td><%= row.shipper_reference %></td>
+    <td><%= row.shipper_company_name %></td>
+    <td><%= row.volume %></td>
+    <td><%= row.final_destination %></td>
+    <td><%= si_date_format row.first_etd_date %></td>
+    <td><%= si_date_format row.si_date %></td>
+    <td><%= row.carrier %></td>
+    <td><%= row.consignee_company_name %></td>
+    <td><%= row.first_line_notify_party %></td>
+    <td><%= row.port_of_loading %></td>
+    <td><%= row.booking_no %></td>
+    <td><%= row.master_bl_no %></td>
+    <td><%= row.order_type_text %></td>
+    <td><%= row.handler_name %></td>
+    <td class="hidden disable"><%= monthly_format row.first_etd_date %></td>
+    <td class="hidden disable"><%= datepicker_format row.first_etd_date %></td>
+    <td class="hidden disable row_id"><%= row.id  %></td>
+    <td class="hidden disable ibl_ref"><%= row.ibl_ref  %></td>
+    <td class="hidden disable status">
+      <%= 'Cancel' if row.is_canceled? %>
+      <%= 'Closed' if row.is_closed? %>
+    </td>
+    <td class="hidden disable additional_si"><%= row.is_shadow %></td>
+  </tr>
+<% end %>

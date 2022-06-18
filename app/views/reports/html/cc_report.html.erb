@@ -1,0 +1,46 @@
+<%= render 'commons/pdf' %>
+<% columns = @report.columns %>
+<% base = [] %>
+<% 19.times{ |i| base.push i.to_s } %>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <table style="width: 100%" border="1">
+    <thead>
+      <tr>
+        <%
+          head = []
+          head.push ""
+          head.push "<th width=\"70\">Close Ref</th>"
+          head.push "<th width=\"70\">IBL Ref</th>"
+          head.push "<th width=\"200\">Customer</th>"
+          head.push "<th width=\"200\">Shipper</th>"
+          head.push "<th width=\"200\">Shipper Ref</th>"
+          head.push "<th width=\"200\">MBL</th>"
+          head.push "<th width=\"95\">Invoice No</th>"
+          head.push "<th width=\"60\">Qty</th>"
+          head.push "<th width=\"200\">POL</th>"
+          head.push "<th width=\"200\">Destination</th>"
+          head.push "<th width=\"125\">USD</th>"
+          head.push "<th width=\"125\">IDR</th>"
+          head.push "<th width=\"100\">Invoice Date</th>"
+          head.push "<th width=\"100\">ETD Date</th>"
+          head.push "<th width=\"100\">Due Date</th>"
+          head.push "<th width=\"100\">Payment Date</th>"
+          head.push "<th width=\"45\">Status</th>"
+          head.push "<th>Note</th>"
+        %>
+        <% (base-columns).reverse_each{ |column| head.delete_at(column.to_i) } %>
+        <%= head.join("").html_safe %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @results.each do |reference| %>
+        <tr>
+          <% body = report_list_cc(reference, "pdf") %>
+          <% (base-columns).reverse_each{ |column| body.delete_at(column.to_i) } unless body.blank? %>
+          <%= body.join("").html_safe unless body.blank? %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

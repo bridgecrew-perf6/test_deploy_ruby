@@ -1,0 +1,40 @@
+.panel-container {
+  margin-left: -20px;
+  margin-right: -20px;
+
+  .panel {
+    width: 33.33%;
+    float: left;
+
+    ul {
+      list-style-type: none;
+      margin: 15px 10px;
+      border: #EAEAEA 2px solid;
+      border-radius: 4px;
+      max-height: 500px;
+      overflow: auto;
+     
+      li {
+        padding: 10px;
+        overflow: auto;
+        border-bottom: #EAEAEA 2px solid;
+
+        &.heading {
+          text-align: center;
+        }
+      }
+
+      li:last-child {
+        border-bottom: none; 
+      }
+
+      li:nth-child(even) {
+        background: #f5f5f5;
+      }
+
+      li:nth-child(odd) {
+        background: #fcfcfc;
+      }
+    }
+  }
+}

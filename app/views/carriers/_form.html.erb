@@ -1,0 +1,80 @@
+<%= form_for(@carrier, html: { class: "form-horizontal", id: "form-carrier"}) do |f| %>
+<% if @carrier.errors.any? %>
+<div class="alert alert-error">
+  <ul class="unstyled">
+    <% @carrier.errors.full_messages.each do |msg| %>
+    <li><%= msg %></li>
+    <% end %>
+  </ul>
+</div>
+<% end %>
+<style type="text/css">
+  .control-label{
+    padding-top: 0!important;
+  }
+  .control-label > input{
+    border-style: dashed;
+    border-width: 0 0 1px;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    -webkit-border-radius: 0;
+    border-radius: 0;  
+    text-align: right;
+  }
+  .control-label > input:focus{
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
+</style>
+<div class="row-fluid">
+  <div class="span6">
+    <div class="control-group">
+      <label class="control-label">Carrier Name</label>
+      <div class="controls">
+        <%= f.text_field :name %>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="" class="control-label">Reference</label>
+      <div class="controls"><%= f.text_field :reference %></div>
+    </div>
+    <div class="control-group">
+      <label for="" class="control-label">Credit Term</label>
+      <div class="controls"><%= f.text_field :credit_term %> days</div>
+    </div>
+    <div class="control-group">
+      <label for="" class="control-label">BL Address</label>
+      <div class="controls"><%= f.text_area :address, class: "span11", style: "height: 110px" %></div>
+    </div>
+    <div id="custom-fields">
+      <%= f.fields_for :custom_fields do |builder| %>
+        <%= render 'shared/custom_field_fields', :f => builder %>
+      <% end %>
+    </div>
+    <div class="control-group">
+      <div class="controls">
+        <button type="submit" class="btn btn-primary"><i class="icon-save"></i> Save</button>
+        <div class="btn-group dropup" data-no-turbolink="true">
+          <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+            <i class="icon-plus-sign"></i> Add
+          </a>
+          <ul class="dropdown-menu">
+            <li><a onclick="add_custom_field('address', 'carrier')">Address</a></li>
+            <li><a onclick="add_custom_field('email', 'carrier')">Email</a></li>
+            <li><a onclick="add_custom_field('fax', 'carrier')">Fax</a></li>
+            <li><a onclick="add_custom_field('phone', 'carrier')">Phone</a></li>
+            <li><a onclick="add_custom_field('pic', 'carrier')">PIC</a></li>
+            <li><a onclick="add_custom_field('url', 'carrier')">URL</a></li>
+            <li><a onclick="add_custom_field('custom', 'carrier')">Other...</a></li>
+          </ul>
+        </div>
+        <a href="<%= carriers_path %>" class="btn"><i class="icon-reply"></i> Back</a>
+      </div>
+    </div>
+  </div>
+  <div class="span6">
+    <label>Notes</label>
+    <%= f.text_area :notes, class: "span12", style: "height: 180px" %>
+  </div>
+</div>
+<% end %>

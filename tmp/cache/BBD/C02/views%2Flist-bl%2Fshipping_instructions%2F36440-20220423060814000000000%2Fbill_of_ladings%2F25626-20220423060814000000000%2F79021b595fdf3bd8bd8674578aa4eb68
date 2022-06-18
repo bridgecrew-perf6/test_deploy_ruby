@@ -1,0 +1,59 @@
+o: ActiveSupport::Cache::Entry:@valueI"  <tr class="success ">
+    <td>
+      <a href="/bill_of_ladings/25626?year=2022" title="Show Bill of Lading"><i class="icon-eye-open icon-large"></i></a>
+      &nbsp;
+
+      <a href="/bill_of_ladings/25626/edit?year=2022" title="Edit Bill of Lading"><i class="icon-edit-sign icon-large"></i></a>
+      &nbsp;
+
+            <a data-confirm="Detail sell is empty. Proceed?" href="/bill_of_ladings/calculate_invoice?sid=36440&amp;year=2022" title="Calculate Invoice"><i class="icon-file icon-large"></i></a>
+        &nbsp;
+
+
+      
+      <a href="/cost_revenues/36440/print_cover?year=2022" target="_blank" title="Print"><i class="icon-print icon-large"></i></a>
+      &nbsp;
+      
+    </td>
+    <td>
+      IBL221241
+      
+      
+      
+        <span class="label label-warning">No Status CR</span>
+    </td>
+    <td>-</td>
+    <td>PT. INDOLOGISTIK SAKTI TEGUH</td>
+    <td>PT. SURI NUSANTARA JAYA LOGISTIK</td>
+    <td>TBA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+        <ul>
+            <li><a href="/invoices/33806?year=2022">IBLINV221193</a></li>
+            <li><a href="/debit_notes/14099?year=2022">IBLDBN220414</a></li>
+        </ul>
+    </td>
+    <td>11x40HQ</td>
+    <td> (TRUCKING)</td>
+    <td>
+        No Payment Yet
+    </td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>21-Apr-2022</td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="25626">
+        <option selected="selected" value="Not Yet">Not Yet</option>
+<option value="Done">Done</option>
+      </select>
+    </td>
+    <td class="hidden disable">April 2022</td>
+    <td class="hidden disable">04/21/2022</td>
+    <td class="hidden disable reference_id">25626</td>
+    <td class="hidden disable ibl_ref">IBL221241</td>
+    <td class="hidden disable invoice">IBLINV221193<br>IBLDBN220414</td>
+    <td class="hidden disable payment">No Payment Yet</td>
+    <td class="hidden disable delivery_doc">Not Yet</td>
+  </tr>
+:ET:@created_atf1650813817.071338:@expires_in0

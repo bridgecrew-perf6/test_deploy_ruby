@@ -1,0 +1,68 @@
+o: ActiveSupport::Cache::Entry:@valueI"/  <tr class="success ">
+    <td>
+      <a href="/bill_of_ladings/24616?year=2021" title="Show Bill of Lading"><i class="icon-eye-open icon-large"></i></a>
+      &nbsp;
+
+      <a href="/bill_of_ladings/24616/edit?year=2021" title="Edit Bill of Lading"><i class="icon-edit-sign icon-large"></i></a>
+      &nbsp;
+
+            <a data-confirm="Detail sell is empty. Proceed?" href="/bill_of_ladings/calculate_invoice?sid=35027&amp;year=2021" title="Calculate Invoice"><i class="icon-file icon-large"></i></a>
+        &nbsp;
+
+
+      
+      <a href="/cost_revenues/35027/print_cover?year=2021" target="_blank" title="Print"><i class="icon-print icon-large"></i></a>
+      &nbsp;
+      
+    </td>
+    <td>
+      IBL214728
+      
+      
+      
+        <span class="label label-warning">No Status CR</span>
+    </td>
+    <td>DJA0918767</td>
+    <td>CMA CGM</td>
+    <td>PT. INDOTAMA FERRO ALLOYS </td>
+    <td>EURL HADDAK CONSTRUCTION</td>
+    <td>EURL HADDAK CONSTRUCTION</td>
+    <td>ALGIERS PORT, ALGERIA</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+        <ul>
+            <li><a href="/invoices/32550?year=2021">IBLINV215101</a></li>
+            <li><a href="/invoices/32552?year=2021">IBLINV215103</a></li>
+            <li><a href="/debit_notes/13636?year=2021">IBLDBN212279</a></li>
+        </ul>
+    </td>
+    <td>5x20FT</td>
+    <td>EXPORT (OCEAN FREIGHT, COO, TRUCKING, FIAT PEB)</td>
+    <td>
+        <ul>
+            <li><a href="/payments/21330?year=2021">3483/IDR/2021</a></li>
+            <li><a href="/payments/21331?year=2021">3484/IDR/2021</a></li>
+            <li><a href="/payments/21397?year=2021">3547/IDR/2021</a></li>
+            <li><a href="/payments/21428?year=2021">3564/IDR/2021</a></li>
+            <li><a href="/payments/21429?year=2021">3565/IDR/2021</a></li>
+            <li><a href="/payments/21438?year=2021">3567/IDR/2021</a></li>
+            <li><a href="/payments/21725?year=2021">3600/IDR/2021</a></li>
+        </ul>
+    </td>
+    <td>TANJUNG  PRIOK, JAKARTA, INDONESIA</td>
+    <td>30-Dec-2021</td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="24616">
+        <option selected="selected" value="Not Yet">Not Yet</option>
+<option value="Done">Done</option>
+      </select>
+    </td>
+    <td class="hidden disable">December 2021</td>
+    <td class="hidden disable">12/30/2021</td>
+    <td class="hidden disable reference_id">24616</td>
+    <td class="hidden disable ibl_ref">IBL214728</td>
+    <td class="hidden disable invoice">IBLINV215101<br>IBLINV215103<br>IBLDBN212279</td>
+    <td class="hidden disable payment">3483/IDR/2021<br>3484/IDR/2021<br>3547/IDR/2021<br>3564/IDR/2021<br>3565/IDR/2021<br>3567/IDR/2021<br>3600/IDR/2021</td>
+    <td class="hidden disable delivery_doc">Not Yet</td>
+  </tr>
+:ET:@created_atf1649082884.9001355:@expires_in0

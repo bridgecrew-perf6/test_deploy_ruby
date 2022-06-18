@@ -1,0 +1,17 @@
+<tr>
+  <td class="hidden"></td>
+  <td>
+    <%= f.object.description %>
+    <%= f.hidden_field :description, class: "span12", autocomplete: "off" %>
+    <%= f.hidden_field :item_type, class: "span12" %>
+  </td>
+
+  <td class="text-right"><%= f.hidden_field :volume, class: "span12", autocomplete: "off" %></td>
+  <td><%= f.text_field :amount_usd, class: "invoice_field money_text amount_usd", autocomplete: "off" %></td>
+  <td><%= f.text_field :amount_idr, class: "invoice_field money_text amount_idr", autocomplete: "off" %></td>
+  <td class="text-right invoice_static"></td>
+  <td class="text-right invoice_static"></td>
+  <td class="text-center"></td>
+  <td class="text-center"></td>
+  <td class="text-center"></td>
+</tr>

@@ -1,0 +1,57 @@
+<style type="text/css">
+  .padding {
+    padding: 5px 0;
+  }
+  .form-horizontal .control-group {
+    margin-bottom: 0;
+  }
+  .form-horizontal .control-group label {
+    text-align: left;
+    font-weight: 700;
+  }
+</style>
+<div class="page-header">
+  <h3><%= @invoice.head_letter.titleize %>: <%= @invoice.invoice_no %> (<%= @invoice.status_info %>)</h3>
+</div>
+<% if !notice.nil? %>
+<p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<div class="btn-group" style="margin-bottom: 20px">
+  <% if (@invoice.is_open? && @invoice.shipping_instruction.is_open? && @invoice.is_uncanceled?) %>
+  <% unless @invoice.shipping_instruction.is_cr_completed? %>
+  <a href="<%= url_for([:edit, @invoice]) %>" class="btn btn-small" title="Edit: <%= @invoice.invoice_no %>"><i class="icon-edit-sign"></i> Edit</a>
+  <% end %>
+  <a data-no-turbolink="true" target="_blank" href="<%= url_for([@invoice, format: "pdf"]) %>" class="btn btn-small" title="Print: <%= @invoice.invoice_no %>"><i class="icon-print"></i> Print</a>
+  <% end %>
+  <a href="/list-inv-dbn" class="btn btn-small" title="Back to Lists"><i class="icon-reply"></i> Back</a>
+</div>
+
+<div class="clearfix"></div>
+
+<%= form_for @invoice, url: url_for([:update_status, @invoice]), html: { class: "form-horizontal"} do |f| %>
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="control-group">
+        <label for="" class="control-label">Status</label>
+        <div class="controls padding">:
+          <% if @invoice.is_uncanceled? %>
+            <%= select_tag "status", options_for_select([["Open", "0"], ["Printed", "3"]], @invoice.status.to_s), style: "margin-bottom: 0; width: 100px" %>
+            <%= f.submit "Update Status", class: "btn btn-info" %>
+            
+            <% unless @invoice.is_printed? %>
+              OR <%= link_to 'Cancel Invoice', url_for([:cancel, @invoice]), data: {confirm: 'Are you sure?'} %>
+            <% end %>
+          
+          <% else %>
+            <%= link_to 'Uncancel Invoice', url_for([:uncancel, @invoice]), data: {confirm: 'Are you sure?'} %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end unless @invoice.shipping_instruction.is_cr_completed? %>
+<div id="size-a4-print">
+  <%# render "invoice" %>
+  <%= render "invoices/invoice" %>
+</div>

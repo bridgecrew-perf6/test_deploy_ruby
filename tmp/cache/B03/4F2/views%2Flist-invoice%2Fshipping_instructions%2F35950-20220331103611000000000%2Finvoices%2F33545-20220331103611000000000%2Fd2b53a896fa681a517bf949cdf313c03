@@ -1,0 +1,43 @@
+o: ActiveSupport::Cache::Entry:@valueI"u  <tr class="">
+    <td>
+      <a href="/invoices/33545?year=2022" title="Show Invoice"><i class="icon-eye-open icon-large"></i></a>
+        <a href="/invoices/33545/edit?year=2022" title="Edit Invoice"><i class="icon-edit-sign icon-large"></i></a>
+
+      <a href="#invModal" role="button" class="btn btn-info btn-small btn-invoice" data-toggle="modal">Tax</a>
+    </td>
+    <td>
+      IBLINV220932
+      
+    </td>
+    <td>
+      IBL220854
+      
+      
+    </td>
+    <td>IDR</td>
+    <td style="text-align:right">707,000</td>
+    <td>PT. SINAR MAS AGRO RESOURCES AND TECHNOLOGY TBK. (SMART TBK.) (SHIPPER)</td>
+    <td>PT. SMART TBK</td>
+    <td>SURABAYA, INDONESIA</td>
+    <td>Open</td>
+    <td></td>
+    <td style="text-align:right"></td>
+    <td>040.003-22.79653350</td>
+    <td style="text-align:right">7,000</td>
+    <td></td>
+    <td style="text-align:right">(14,000)</td>
+    <td>Open</td>
+    <td>March 2022</td>
+    <td></td>
+    <td class="hidden disable">March 2022</td>
+    <td class="hidden disable">03/25/2022</td>
+    <td class="hidden disable row_id">33545</td>
+    <td class="hidden disable ibl_ref">IBL220854</td>
+    <td class="hidden disable invoice_no">IBLINV220932</td>
+    <td class="hidden disable head_letter">INVOICE</td>
+    <td class="hidden disable">1</td>
+    <td class="hidden disable"></td>
+    <td class="hidden disable">1</td>
+    <td>31-Mar-2022</td>
+  </tr>
+:ET:@created_atf1648819889.7180011:@expires_in0

@@ -1,0 +1,28 @@
+<%= render 'commons/pdf' %>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <table style="width: 100%" border="1">
+    <thead>
+    <tr>
+      <th width="100">Username</th>
+      <th width="150">Email</th>
+      <th width="200">Register at</th>
+      <th width="200">Last Login at</th>
+      <th width="100">Role</th>
+      <th width="50">Status</th>
+    </tr>
+    </thead>
+    <tbody>
+      <% @results.each do |user| %>
+        <tr>
+          <td><%= user.username %></td>
+          <td><%= user.email %></td>
+          <td><%= local_date(user.register_at) %></td>
+          <td><%= local_date(user.login_at) %></td>
+          <td><%= user.administrator? ? "Administrator" : "Moderator" %></td>
+          <td><%= user.label_status %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

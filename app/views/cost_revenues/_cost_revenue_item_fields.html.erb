@@ -1,0 +1,27 @@
+<!-- <tr class="<%= f.object.item_type %>"> -->
+<tr<%= " class=hidden" if f.object.marked_for_destruction? %>>
+  <td align="center"><%= count %></td>
+  <td>
+    <%= f.text_field :description, class: "cost_revenue_field cost_revenue_description", autocomplete: "off" %>
+    <%# f.hidden_field :_destroy, class: "span12" %>
+    <% if f.object.marked_for_destruction? %>
+      <%= f.hidden_field :_destroy, class: "span12", value: 1 %>
+    <% else %>
+      <%= f.hidden_field :_destroy, class: "span12" %>
+    <% end %>
+    <a class="remove_cost_revenue_description" onclick="remove_revenue_fields(this); return false;" tabindex="-1" href="#" title="Remove"><i class="icon-remove-sign"></i></a>
+    <%= f.hidden_field :item_type, class: "item_type span12" %>
+  </td>
+
+  <td class="text-right"><%= f.text_field :selling_volume, class: "cost_revenue_field cost_revenue_volume volume_text selling_volume", autocomplete: "off" %></td>
+  <td><%= f.text_field :selling_usd, class: "cost_revenue_field money_text selling_usd", autocomplete: "off" %></td>
+  <td><%= f.text_field :selling_idr, class: "cost_revenue_field money_text selling_idr", autocomplete: "off" %></td>
+  <td class="text-right"><%= f.text_field :selling_total, class: "cost_revenue_field money_text selling_total", autocomplete: "off", disabled: "disabled" %></td>
+  <td class="text-right"><%= f.text_field :selling_total_after_tax, class: "cost_revenue_field money_text selling_total_after_tax", autocomplete: "off" %></td>
+  
+  <td class="text-right"><%= f.text_field :buying_volume, class: "cost_revenue_field cost_revenue_volume volume_text buying_volume", autocomplete: "off" %></td>
+  <td><%= f.text_field :buying_usd, class: "cost_revenue_field money_text buying_usd", autocomplete: "off" %></td>
+  <td><%= f.text_field :buying_idr, class: "cost_revenue_field money_text buying_idr", autocomplete: "off" %></td>
+  <td class="text-right"><%= f.text_field :buying_total, class: "cost_revenue_field money_text buying_total", autocomplete: "off", disabled: "disabled" %></td>
+  <td class="text-right"><%= f.text_field :buying_total_after_tax, class: "cost_revenue_field money_text buying_total_after_tax", autocomplete: "off" %></td>
+</tr>

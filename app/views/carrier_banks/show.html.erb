@@ -1,0 +1,51 @@
+<div class="page-header">
+  <h3>Carrier Bank</h3>
+</div>
+<% if !notice.nil? %>
+<p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+<div class="details">
+  <div>
+    <strong>Carrier Name:</strong>
+    <span><%= @carrier_bank.carrier.name %></span>
+  </div>
+
+  <div>
+    <strong>Bank Name:</strong>
+    <pre><%= @carrier_bank.bank_name %></pre>
+  </div>
+
+  <div>
+    <strong>Branch:</strong>
+    <pre><%= @carrier_bank.branch %>&nbsp;</pre>
+  </div>
+
+  <div>
+    <strong>Bank Address:</strong>
+    <pre class="free"><%= @carrier_bank.bank_address %>&nbsp;</pre>
+  </div>
+
+  <div>
+    <strong>Account Name:</strong>
+    <pre><%= @carrier_bank.acc_name %>&nbsp;</pre>
+  </div>
+
+  <div>
+    <strong>Account No.:</strong>
+    <pre><%= @carrier_bank.acc_no %>&nbsp;</pre>
+  </div>
+
+  <div>
+    <strong>Swift Code:</strong>
+    <pre><%= @carrier_bank.swift_code %>&nbsp;</pre>
+  </div>
+
+  <div>
+    <strong>Currency:</strong>
+    <pre><%= @carrier_bank.currency %>&nbsp;</pre>
+  </div>
+</div>
+<div class="clearfix"></div>
+
+<%= link_to 'Edit', edit_carrier_bank_path(@carrier_bank) %> |
+<%= link_to 'Back', carrier_banks_path %>

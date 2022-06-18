@@ -1,0 +1,109 @@
+<% cache ["list-bl", reference.shipping_instruction, reference] do %>
+  <% row = reference.shipping_instruction %>
+  <tr class="<%= ((reference.invoices.any? || reference.debit_notes.any? || reference.notes.any?) ? "success" : "warning") %> <%= "error cancel" if reference.is_canceled? %>">
+    <td>
+      <%= link_to '<i class="icon-eye-open icon-large"></i>'.html_safe, reference, title: "Show Bill of Lading" %>
+      &nbsp;
+
+      <%= link_to '<i class="icon-edit-sign icon-large"></i>'.html_safe, edit_bill_of_lading_path(reference), title: "Edit Bill of Lading" if reference.is_uncanceled? && !row.is_closed? %>
+      &nbsp;
+
+      <% if reference.is_uncanceled? && !reference.is_shadow %>
+        <%# if !row.cost_revenue.blank? && !row.cost_revenue.cost_revenue_items.blank? %>
+        <% unless row.is_cr_completed? %>
+          <% unless row.is_detail_sell_empty? %>  
+            <%= link_to '<i class="icon-file icon-large"></i>'.html_safe, calculate_invoice_bill_of_ladings_path(sid: row.id), title: 'Calculate Invoice' %>
+          <% else %>
+            <%= link_to '<i class="icon-file icon-large"></i>'.html_safe, calculate_invoice_bill_of_ladings_path(sid: row.id), title: 'Calculate Invoice', data: {confirm: 'Detail sell is empty. Proceed?'} %>
+          <% end %>
+        <% else %>
+          <%= link_to '<i class="icon-file icon-large"></i>'.html_safe, view_calculate_invoice_bill_of_ladings_path(sid: row.id), title: 'Calculate Invoice' %>
+        <% end %>
+        &nbsp;
+      <% end %>
+
+      <%# link_to '<i class="icon-print icon-large"></i>'.html_safe, cost_revenue_path(row.cost_revenue, format: "pdf", cover: "true"), target: '_blank', title: 'Print' if !row.cost_revenue.blank? && !reference.is_shadow %>
+
+      <%# link_to '<i class="icon-print icon-large"></i>'.html_safe, print_cover_cost_revenue_path(row.cost_revenue), target: '_blank', title: 'Print' if !row.cost_revenue.blank? && !reference.is_shadow %>
+      
+      <%= link_to '<i class="icon-print icon-large"></i>'.html_safe, print_cover_cost_revenue_path(row), target: '_blank', title: 'Print' unless reference.is_shadow %>
+      &nbsp;
+      
+      <% if reference.is_shadow %>
+        <% if reference.is_uncanceled? %>
+          <div>
+            <%= link_to 'Cancel BL', cancel_bill_of_lading_path(reference.id), data: {confirm: 'Are you sure?'} %>
+          </div>
+        <% else %>
+          <div>
+            <%= link_to 'Uncancel BL', uncancel_bill_of_lading_path(reference.id), data: {confirm: 'Are you sure?'} %>
+          </div>
+        <% end %>
+      <% end %>
+    </td>
+    <td>
+      <%= reference.bl_number %>
+      <%= '<span class="label label-warning">Cancel BL</span>'.html_safe if reference.is_canceled? %>
+      <%= '<span class="label label-warning">Cancel SI</span>'.html_safe if row.is_canceled? %>
+      <%# '<span class="label label-error">Closed SI</span>'.html_safe if row.is_closed? %>
+      <%= '<span class="label label-error">Closed CR</span>'.html_safe if row.is_closed? %>
+      <% if reference.cost_revenue.blank? %>
+        <%= '<span class="label label-warning">No Status CR</span>'.html_safe %>
+      <% else %>
+        <%= '<span class="label label-warning">Open CR</span>'.html_safe if reference.cost_revenue.is_open? %>
+        <%# '<span class="label label-error">Closed CR</span>'.html_safe if reference.cost_revenue.is_completed? %>
+      <% end %>
+    </td>
+    <td><%= reference.master_bl_no %></td>
+    <td><%= reference.carrier %></td>
+    <td><%= reference.shipper_company_name %></td>
+    <td><%= reference.consignee_company_name %></td>
+    <td><%= reference.first_line_notify_party %></td>
+    <td><%= reference.final_destination %></td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+      <% if reference.invoices.any? || reference.debit_notes.any? || reference.notes.any? %>
+        <ul>
+          <% reference.invoices.each do |inv| %>
+            <li><%= link_to "#{inv.invoice_no_with_status}", inv %></li>
+          <% end %>
+          <% reference.debit_notes.each do |dbn| %>
+            <li><%= link_to "#{dbn.invoice_no_with_status}", dbn %></li>
+          <% end %>
+          <% reference.notes.each do |note| %>
+            <li><%= link_to "#{note.invoice_no_with_status}", note %></li>
+          <% end %>
+        </ul>
+      <% else %>
+        No Invoice Yet
+      <% end %>
+    </td>
+    <td><%= reference.volume %></td>
+    <td><%= reference.order_type_text %></td>
+    <td>
+      <% if reference.payments.any? %>
+        <ul>
+          <% reference.payments.each do |payment| %>
+            <li><%= link_to "#{payment.payment_no_with_status}", payment %></li>
+          <% end %>
+        </ul>
+      <% else %>
+        No Payment Yet
+      <% end %>
+    </td>
+    <td><%= reference.port_of_loading %></td>
+    <td><%= si_date_format reference.first_etd_date %></td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="<%= reference.id %>">
+        <%= options_for_select [["Not Yet", "Not Yet"], ["Done", "Done"]], reference.delivery_doc_status %>
+      </select>
+    </td>
+    <td class="hidden disable"><%= monthly_format reference.first_etd_date %></td>
+    <td class="hidden disable"><%= datepicker_format reference.first_etd_date %></td>
+    <td class="hidden disable reference_id"><%= reference.id %></td>
+    <td class="hidden disable ibl_ref"><%= reference.ibl_ref %></td>
+    <td class="hidden disable invoice"><%= reference.invoice_no.join("<br>").html_safe %></td>
+    <td class="hidden disable payment"><%= reference.payment_no.join("<br>").html_safe %></td>
+    <td class="hidden disable delivery_doc"><%= reference.delivery_doc_status %></td>
+  </tr>
+<% end %>

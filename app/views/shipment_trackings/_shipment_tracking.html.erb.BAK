@@ -1,0 +1,59 @@
+<% cache [shipment_tracking, shipment_tracking.shipping_instruction] do %>
+  <%
+     feeder = shipment_tracking.shipping_instruction.vessels.first
+     destination = shipment_tracking.shipping_instruction.vessels.last
+     connecting = nil
+
+     if shipment_tracking.shipping_instruction.vessels.size >= 2
+       connecting = shipment_tracking.shipping_instruction.vessels.last
+     end
+  %>
+  <tr>
+    <td class="hidden">&nbsp;</td>
+    <td>
+      <%= link_to shipment_tracking.shipping_instruction.si_no, edit_shipment_tracking_path(shipment_tracking) %>
+      <%= '<span class="label label-warning">Cancel</span>'.html_safe if shipment_tracking.shipping_instruction.is_cancel == 1 %>
+      <% unless connecting.nil? %>
+        <%= '<span class="label label-info">Connecting!</span>'.html_safe if connecting.etd_date == (Date.today + 2.days) %>
+      <% end %>
+      <% unless destination.nil? %>
+        <%= '<span class="label label-success">Arrived!</span>'.html_safe if destination.eta_date == (Date.today + 2.days) %>
+      <% end %>
+    </td>
+    <td><%= shipment_tracking.shipping_instruction.shipper.company_name unless shipment_tracking.shipping_instruction.shipper.nil? %></td>
+    <td><%= shipment_tracking.shipping_instruction.shipper_reference %></td>
+    <td><%= shipment_tracking.shipping_instruction.master_bl_no %></td>
+    <td><%= shipment_tracking.shipping_instruction.carrier %></td>
+    <td>
+      <%= shipment_tracking.shipping_instruction.si_containers.map { |c| (c.container.container_type == "LCL" ?
+              "#{number_with_precision(c.volum, precision: 3, delimiter: ',')} M3 #{c.container.container_type}" :
+              "#{c.volum}x#{c.container.container_type}") }.join(" & ")
+      %>
+    </td>
+    <td><%= shipment_tracking.shipping_instruction.final_destination %></td>
+    <td><%= si_date_format feeder.etd_date unless feeder.nil? %></td>
+    <td>
+      <% unless feeder.nil? %>
+        <%= si_date_format feeder.actual_vessel.actual_etd_date unless feeder.actual_vessel.nil? %>
+      <% end %>
+    </td>
+    <td><%= si_date_format connecting.etd_date unless connecting.nil? %></td>
+    <td>
+      <% unless connecting.nil? %>
+        <%= si_date_format connecting.actual_vessel.actual_etd_date unless connecting.actual_vessel.nil? %>
+      <% end %>
+    </td>
+    <td><%= si_date_format destination.eta_date unless destination.nil? %></td>
+    <td>
+      <% unless destination.nil? %>
+        <%= si_date_format destination.actual_vessel.actual_eta_date unless destination.actual_vessel.nil? %>
+      <% end %>
+    </td>
+    <td><%= shipment_tracking.status_free_time %></td>
+    <td>
+      <div class="wrap collapsed"><%= simple_format shipment_tracking.notes.to_s %></div>
+      <%= '<a class="adjust" href="#">- More</a>'.html_safe unless shipment_tracking.notes.to_s.blank? %>
+    </td>
+    <td><%= fu_date_format(shipment_tracking.fu_date.presence || feeder.try(:etd_date)) %></td>
+  </tr>
+<% end %>

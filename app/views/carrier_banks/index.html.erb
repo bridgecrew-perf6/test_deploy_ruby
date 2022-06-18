@@ -1,0 +1,75 @@
+<div class="page-header">
+  <h3>List Carrier Bank</h3>
+</div>
+
+<% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<div class="row-fluid">
+  <div class="span2">
+    <%= link_to 'New Carrier bank', new_carrier_bank_path, :class => "btn btn-primary pull-left" %>
+  </div>
+  <div class="span10">
+    <% if current_user.administrator? %>
+      <%= form_for(@report, url: report_carrier_banks_path, html: { class: "form-inline", target: "_blank"}) do |f| %>
+          <button type="submit" class="btn btn-primary">View Report</button>
+          Format :
+          <span style="display: inline-block;width: 220px;">
+            <select name="carrier_bank_report[format]" id="format">
+              <option value="pdf">PDF</option>
+              <option value="xls">XLS</option>
+            </select>
+          </span>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<div class="clearfix"></div>
+
+<!-- Carrier - Currency - Bank - Account Name - Account No -->
+<table class="table table-striped table-bordered skip_checkbox" id="carrier_banks_table" width="100%">
+  <thead>
+    <tr>
+      <th colspan="3" width="10%">Actions</th>
+      <th rowspan="2">Carrier</th>
+      <th rowspan="2">Currency</th>
+      <th rowspan="2">Bank</th>
+      <th rowspan="2">Account Name</th>
+      <th rowspan="2">Account No</th>
+    </tr>
+    <tr>
+      <th class="hidden">Show</th>
+      <th class="hidden">Edit</th>
+      <th class="hidden">Delete</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @carrier_banks.each do |carrier_bank| %>
+      <%
+        color = "error" if carrier_bank.is_deleted
+        color = "warning" if carrier_bank.carrier.is_deleted
+      %>
+      <tr<%# " class=#{color}" unless color.blank? %>>
+        <td><%= link_to '<i class="icon-eye-open icon-large"></i>'.html_safe, carrier_bank, title: "Show Carrier Bank" %></td>
+        <td><%= link_to '<i class="icon-edit-sign icon-large"></i>'.html_safe, edit_carrier_bank_path(carrier_bank), title: "Edit Carrier Bank" %></td>
+        <td>
+          <% if current_user.administrator? %>
+            <% unless carrier_bank.is_deleted %>
+              <%= link_to '<i class="icon-ok icon-large"></i>'.html_safe, carrier_bank_path(carrier_bank), method: "delete", data: {confirm: "Are you sure?"} %>
+            <% else %>
+              <%= link_to '<i class="icon-remove icon-large"></i>'.html_safe, enable_carrier_bank_path(carrier_bank) %>
+            <% end %>
+          <% end %>
+        </td>
+        <td><%= carrier_bank.carrier.name %></td>
+        <td><%= carrier_bank.currency %></td>
+        <td><%= carrier_bank.bank_name %></td>
+        <td><%= carrier_bank.acc_name %></td>
+        <td><%= carrier_bank.acc_no %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

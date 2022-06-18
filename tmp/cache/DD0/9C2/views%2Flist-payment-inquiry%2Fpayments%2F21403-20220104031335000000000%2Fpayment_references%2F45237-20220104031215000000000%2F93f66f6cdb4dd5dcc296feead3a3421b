@@ -1,0 +1,33 @@
+o: ActiveSupport::Cache::Entry:@valueI"/  <tr>
+    <td data-no-turbolink="true">
+      <a href="/payments/21403?year=2022" title="Show Payment"><i class="icon-eye-open icon-large"></i></a>
+    </td>
+    <td data-order="006">
+      006/IDR/2022
+      
+    </td>
+    <td>IBL220112</td>
+    <td>EGLV080100804843</td>
+    <td>PT. DELTA HIJAU ABADI</td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>PASIR GUDANG, MALAYSIA</td>
+    <td>4x20FT FLEXIBAG</td>
+    <td>EVERGREEN LINE</td>
+    <td style="text-align: right;">16,851,400 IDR</td>
+    <td></td>
+    <td>02-Jan-2022</td>
+    <td>04-Jan-2022</td>
+    <td>Sent</td>
+    <td class="hidden disable">January 2022</td>
+    <td class="hidden disable">01/02/2022</td>
+    <td class="hidden disable row_id">21403</td>
+    <td class="hidden disable ibl_ref">IBL220112</td>
+    <td class="hidden disable currency">IDR</td>
+    <td class="hidden disable row_ref_id">45237</td>
+    <td class="hidden disable">January 2022</td>
+    <td class="hidden disable">01/04/2022</td>
+    <td class="hidden disable">BANK TRANSACTION</td>
+    <td></td>
+    <td>16,851,400 IDR</td>
+  </tr>
+:ET:@created_atf1648209477.7826188:@expires_in0

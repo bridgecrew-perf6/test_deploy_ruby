@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interbenua DEMO</title>
+  <%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <%= csrf_meta_tags %>
+  <meta name="google-site-verification" content="CaKySRgfdvMmnn13nCONIo3US-WLCjPDBfVrdrsahBY"/>
+</head>
+<body style="background-color: #FFF">
+<div class="navbar navbar-inverse">
+  <div class="navbar-inner" style="border-radius:0">
+    <!-- <a href="/" class="brand"><strong class="second">PT. Interbenua Logistindo DEMO with sample data 20 July 2016</strong></a> -->
+    <div class="container">
+      <a href="/" class="brand">PT. Interbenua Logistindo DEMO (<%= Date.today.strftime("%B %d, %Y") %>)</a>
+      <!-- <ul class="nav pull-right">
+        <li><a href="<%= backup_path %>">Backup & Restore</a></li>
+        <li><a href="<%= logout_path %>">Logout</a></li>
+      </ul> -->
+      <div class="nav-collapse collapse">
+        <ul class="nav" style="font-size: 11px">
+          <li><a href="<%= root_path %>">Home</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Manages</a>
+            <ul class="dropdown-menu">
+              <li><a href="<%= agents_path %>">Agent at Destination</a></li>
+              <li><a href="<%= carrier_banks_path %>">Banks</a></li>
+              <li><a href="<%= carriers_path %>">Carriers</a></li>
+              <li><a href="<%= consignees_path %>">Consignees</a></li>
+              <!-- <li><a href="<%= containers_path %>">Containers</a></li> -->
+              <li><a href="<%= shippers_path %>">Shippers</a></li>
+              <li><a href="<%= owners_path %>">Owners</a></li>
+              <li><a href="<%= users_path %>">Users</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Shipping Instructions</a>
+            <ul class="dropdown-menu">
+              <% Constant.years_range.each do |year| %>
+                <li><a href="<%= shipping_instructions_path(year: year) %>" class="text-center"><%= year %></a></li>
+              <% end %>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Bill of Ladings</a>
+            <ul class="dropdown-menu">
+              <% Constant.years_range.each do |year| %>
+                <li><a href="<%= bill_of_ladings_path(year: year) %>" class="text-center"><%= year %></a></li>
+              <% end %>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Shipments Tracking</a>
+            <ul class="dropdown-menu">
+              <% Constant.years_range.each do |year| %>
+                <li><a href="<%= shipment_trackings_path(year: year) %>" class="text-center"><%= year %></a></li>
+              <% end %>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Invoices & Taxes</a>
+            <ul class="dropdown-menu">
+              <% Constant.years_range.each do |year| %>
+                <li><a href="<%= list_inv_dbn_path(year: year) %>" class="text-center"><%= year %></a></li>
+              <% end %>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Payments</a>
+            <ul class="dropdown-menu">
+              <% Constant.years_range.each do |year| %>
+                <li><a href="<%= payment_plans_path(year: year) %>" class="text-center"><%= year %></a></li>
+              <% end %>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Control Center</a>
+            <ul class="dropdown-menu">
+              <% Constant.years_range.each do |year| %>
+                <li><a href="<%= control_centers_path(year: year) %>" class="text-center"><%= year %></a></li>
+              <% end %>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cost & Revenue Analysis</a>
+            <ul class="dropdown-menu">
+              <% Constant.years_range.each do |year| %>
+                <li><a href="<%= cost_revenues_path(year: year) %>" class="text-center"><%= year %></a></li>
+              <% end %>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports</a>
+            <ul class="dropdown-menu">
+              <li><a href="<%= cost_revenue_analysis_index_reports_path %>">Cost & Revenue Analysis</a></li>
+              <li><a href="<%= balance_index_reports_path %>">Balance</a></li>
+              <li><a href="<%= detail_shipment_index_reports_path %>">Detail Shipment</a></li>
+            </ul>
+          </li>
+<!--          <li><a href="<%#= reports_path %>">Reports</a></li>-->
+          <li><a href="<%= backup_path %>">Backup & Restore</a></li>
+          <li><a href="<%= logout_path %>">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content" style="margin-left:0">
+  <div class="container-fluid">
+    <%= yield %>
+  </div>
+</div>
+<div id="loading"></div>
+<script type="text/javascript">
+  $(document).on('page:fetch', function () {
+    $("#loading").show();
+  });
+  $(document).on('page:change', function () {
+    $("#loading").hide();
+  });
+</script>
+<script type="text/javascript">
+  // $(document).on('ready page:change page:load', readyFormat);
+  year = <%= params[:year].blank? ? Date.today.year : params[:year] %>;
+  max_year = <%= Constant.max_year %>;
+  min_year = <%= Constant::MIN_YEAR %>;
+  $(document).on('ready page:change', readyYear);
+</script>
+</body>
+</html>

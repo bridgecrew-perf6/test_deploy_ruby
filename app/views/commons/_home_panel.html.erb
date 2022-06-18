@@ -1,0 +1,42 @@
+<div class="panel">
+  <ul>
+    <li class="heading">
+      <h1><%= count || models.count %></h1>
+      <strong><%= title %></strong>
+    </li>
+    <% models.each do |month, groups| %>
+      <li class="heading"><strong><%= month.blank? ? "No Shipment Date" : month.try(:strftime, "%B %Y") %> <%= "(#{groups.count})" %></strong></li>
+      <% groups.each do |model| %>
+        <% if type == :OUTSTANDING_SI %>
+          <li><%= link_to model.name, edit_shipping_instruction_path(model.shipping_instruction_id) %></li>
+        <% elsif type == :OUTSTANDING_DOCUMENT %>
+          <li><%= link_to model.name, edit_shipping_instruction_path(model.shipping_instruction_id) %></li>
+        <% elsif type == :OUTSTANDING_TRACKING %>
+          <li><%= link_to model.name, edit_shipment_tracking_path(model.shipment_tracking_id) %></li>
+        <% elsif type == :OUTSTANDING_INVOICING %>
+          <li><%= link_to [model.name, si_date_format(model.etd_date)].join(' / '), calculate_invoice_bill_of_ladings_path(sid: model.shipping_instruction_id) %></li>
+        <% elsif type == :OUTSTANDING_PAYMENT %>
+          <li><%= link_to [model.name, si_date_format(model.etd_date)].join(' / '), calculate_invoice_payments_path(sid: model.shipping_instruction_id) %></li>
+        <% elsif type == :LIST_DUE_DATE_INVOICE %>
+          <li>
+            <%= link_to [model.name, "(#{transit_time_format(model.transit_time)})"].join(' '), control_centers_path unless model.invoice_id.blank? %>
+            <%= link_to [model.name, "(#{transit_time_format(model.transit_time)})"].join(' '), control_centers_path unless model.debit_note_id.blank? %>
+            <%= link_to [model.name, "(#{transit_time_format(model.transit_time)})"].join(' '), control_centers_path unless model.note_id.blank? %>
+          </li>
+        <% elsif type == :OUTSTANDING_C_N_R %>
+          <% unless model.cost_revenue_id.blank? %>
+            <li><%= link_to model.name, cost_revenue_path(model.cost_revenue_id) %></li>
+          <% else %>
+            <li><%= link_to model.name, new_cost_revenue_path(ibl_ref: model.ibl_ref) %></li>
+          <% end %>
+        <% elsif type == :OUTSTANDING_COST_N_SELL %>
+          <% unless model.cost_revenue_id.blank? %>
+            <li><%= link_to model.name, cost_revenue_path(model.cost_revenue_id) %></li>
+          <% else %>
+            <li><%= link_to model.name, new_cost_revenue_path(ibl_ref: model.ibl_ref) %></li>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </ul>
+</div>

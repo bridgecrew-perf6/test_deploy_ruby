@@ -1,0 +1,45 @@
+<%= render 'commons/pdf' %>
+<% columns = @report.columns %>
+<% base = [] %>
+<% 20.times{ |i| base.push i.to_s } %>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <table style="width: 100%" border="1">
+    <thead>
+    <tr>
+      <%= "<th rowspan=\"2\" width=\"50\">IBL Ref</th>".html_safe if columns.include? "1" %>
+      <%= "<th rowspan=\"2\" width=\"100\">MBL No</th>".html_safe if columns.include? "2" %>
+      <%= "<th rowspan=\"2\" width=\"150\">Carrier</th>".html_safe if columns.include? "3" %>
+      <%= "<th rowspan=\"2\" width=\"100\">Shipper Ref</th>".html_safe if columns.include? "4" %>
+      <%= "<th rowspan=\"2\" width=\"150\">Shipper</th>".html_safe if columns.include? "5" %>
+      <%= "<th rowspan=\"2\" width=\"150\">Consignee</th>".html_safe if columns.include? "6" %>
+      <%= "<th rowspan=\"2\" width=\"100\">Vessel</th>".html_safe if columns.include? "7" %>
+      <%= "<th rowspan=\"2\" width=\"50\">ETD</th>".html_safe if columns.include? "8" %>
+      <%= "<th rowspan=\"2\" width=\"150\">POL</th>".html_safe if columns.include? "9" %>
+      <%= "<th rowspan=\"2\" width=\"150\">POD</th>".html_safe if columns.include? "10" %>
+      <%= "<th rowspan=\"2\" width=\"150\">Destination</th>".html_safe if columns.include? "11" %>
+      <%= "<th rowspan=\"2\" width=\"100\">Volume</th>".html_safe if columns.include? "12" %>
+      <%= "<th rowspan=\"2\" width=\"100\">Owner</th>".html_safe if columns.include? "13" %>
+      <%= "<th rowspan=\"2\" width=\"50\">Status</th>".html_safe if columns.include? "14" %>
+      <%= "<th rowspan=\"2\" width=\"100\">Trade</th>".html_safe if columns.include? "15" %>
+      <%= "<th colspan=\"2\">Sell</th>".html_safe if (columns.include? "16") || (columns.include? "17") %>
+      <%= "<th colspan=\"2\">Cost</th>".html_safe if (columns.include? "18") || (columns.include? "19") %>
+    </tr>
+    <tr>
+      <%= "<th width=\"100\">USD</th>".html_safe if columns.include? "16" %>
+      <%= "<th width=\"100\">IDR</th>".html_safe if columns.include? "17" %>
+      <%= "<th width=\"100\">USD</th>".html_safe if columns.include? "18" %>
+      <%= "<th width=\"100\">IDR</th>".html_safe if columns.include? "19" %>
+    </tr>
+    </thead>
+    <tbody>
+      <% @results.each do |row| %>
+        <tr>
+          <% body = report_list_cr(row, "pdf") %>
+          <% (base-columns).reverse_each{ |column| body.delete_at(column.to_i) } unless body.blank? %>
+          <%= body.join("").html_safe unless body.blank? %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

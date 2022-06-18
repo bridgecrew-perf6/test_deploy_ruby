@@ -1,0 +1,47 @@
+<div class="row-fluid">
+  <form method="get" action="<%= detail_shipment_reports_path(format: "pdf") %>" class="form-horizontal span6" target="_blank">
+    <fieldset>
+      <legend>Report Detail Shipment</legend>
+      <div class="control-group">
+        <label for="" class="control-label">IBL No</label>
+
+        <div class="controls"><input type="text" id="ibl_no" name="ibl_no"></div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">&nbsp;</label>
+
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">View Report</button>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+</div>
+<script type="text/javascript">
+  jQuery(document).ready(function () {
+    jQuery("#DETAIL-SHIPMENT").find("form").on("submit", function () {
+      var submit = false;
+      var ibl_no = jQuery("#ibl_no").val();
+      var form = jQuery(this);
+      if (ibl_no != '') {
+        jQuery.ajax({
+          url: '<%= check_si_exists_reports_path %>',
+          type: "GET",
+          dataType: "json",
+          data: {ibl_no: jQuery("#ibl_no").val()}
+        })
+        .done(function (data) {
+          if (data.success) {
+            form.off("submit");
+            form.submit();
+          }
+          else {
+            jQuery("#ibl_no").val('').focus();
+            alert("IBL No. tidak terdaftar");
+          }
+        })
+      }
+      return submit;
+    })
+  })
+</script>

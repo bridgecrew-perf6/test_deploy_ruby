@@ -1,0 +1,808 @@
+<style type="text/css">
+  .details > div{
+    margin-bottom: 5px
+  }
+  .details input{
+    margin-bottom: 0
+  }
+  .cost_revenue_field{
+    margin-bottom: 0!important;
+    border: none!important;
+    padding: 0!important;
+    /*float: left;*/
+    float: left;
+    /*min-width: 115px;*/
+    /*min-width: 80px;*/
+    /*max-width: 134px;*/
+    max-width: 86px;
+    /*width: 100%;*/
+    text-align: right;
+  }
+  .cost_revenue_field, .cost_revenue_field:focus{
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important; 
+  }
+  .cost_revenue_description{
+    /*min-width: 170px;*/
+    max-width: 275px;
+    width: 93%;
+    text-align: left;
+  }
+  .remove_cost_revenue_description {
+    float: right;
+    margin-top: -20px;
+  }
+  .cost_revenue_volume{
+    margin-bottom: 0!important;
+    border: none!important;
+    padding: 0!important;
+    float: left;
+    min-width: 30px;
+    max-width: 134px;
+    width: 100%;
+    text-align: right;
+  }
+  .cost_revenue_static{
+    min-width: 80px;
+    max-width: 134px;
+    text-align: right;
+  }
+  tfoot td{
+    font-weight: bold;
+    text-align: center;
+  }
+  .selling_usd, .selling_idr, .buying_usd, .buying_idr{
+    float: right;
+  }
+  .details input {
+    /*width: 100%;*/
+    /*padding: 3px;*/
+    /*box-sizing: border-box;*/
+  }
+  .padding{
+    padding: 5px 0;
+    font-weight: 700;
+  }
+</style>
+<%# link_to "Import Cost & Revenue Data", import_data_cost_revenues_path(ibl_ref: (params[:si_no] ? params[:si_no] :
+        @cost_revenue.si_no)), class: "btn btn-primary", id: "import_cnr_data" %>
+        <!-- <br/><br/> -->
+<%= form_for(@cost_revenue, html: { class: "form-horizontal"}) do |f| %>
+  <% if @cost_revenue.errors.any? %>
+  <div class="alert alert-error">
+    <ul class="unstyled">
+      <% @cost_revenue.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+  <% end %>
+<div class="row-fluid">
+  <div class="span6">
+    <div class="control-group">
+      <label for="" class="control-label text-left">Duplicate SI :</label>
+      <div class="controls">
+        <div class="input-append">
+          <input type="text" id="ibl_ref" class="span12" autocomplete="off" placeholder="IBL Ref"/>
+          <button class="btn" type="button" id="import_cr_data">Go!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="span6">
+  </div>
+</div>
+
+<div class="row-fluid">
+  <div class="span6">
+    <div class="control-group">
+      <label for="" class="control-label text-left">IBL REF :</label>
+      <div class="controls padding">
+        <%= @cost_revenue.ibl_ref %>
+        <%= f.hidden_field :shipping_instruction_id %>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="" class="control-label text-left">MBL No :</label>
+      <div class="controls">
+        <%= f.text_field :master_bl_no, class: "span12", autocomplete: "off" %>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="" class="control-label text-left">SHIPPER REF :</label>
+      <div class="controls">
+        <%= f.text_field :shipper_reference, class: "span12", autocomplete: "off" %>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="" class="control-label text-left">CARRIER :</label>
+      <div class="controls">
+        <%= f.text_field :carrier, class: "span12", autocomplete: "off" %>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="" class="control-label text-left">SHIPPER :</label>
+      <div class="controls">
+        <%= f.collection_select :shipper_id, Shipper.order(:company_name), :id, :company_name, { include_blank: "Select Shipper" }, class: "span12" %>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="" class="control-label text-left">CONSIGNEE :</label>
+      <div class="controls">
+        <%= f.collection_select :consignee_id, Consignee.order(:company_name), :id, :company_name, { include_blank: "Select Consignee" }, class: "span12" %>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="" class="control-label text-left">TRADE :</label>
+      <div class="controls">
+        <%= f.text_field :trade, class: "span12", autocomplete: "off" %>
+      </div>
+    </div>
+  </div>
+  <div class="span6">
+    <div class="control-group">
+      <label for="" class="control-label text-left">OWNER :</label>
+      <div class="controls">
+        <%= f.text_field :owner, class: "span12", autocomplete: "off" %>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="" class="control-label text-left">VESSEL :</label>
+      <div class="controls">
+        <%= f.text_field :first_vessel_name, class: "span12", autocomplete: "off" %>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="" class="control-label text-left">ETD :</label>
+      <div class="controls">
+        <%= f.text_field :first_etd_date, class: "span12 datepicker", value: normal_date_format(@cost_revenue.first_etd_date), autocomplete: "off" %>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="" class="control-label text-left">POL :</label>
+      <div class="controls">
+        <%= f.text_field :port_of_loading, class: "span12", autocomplete: "off" %>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="" class="control-label text-left">POD :</label>
+      <div class="controls">
+        <%= f.text_field :port_of_discharge, class: "span12", autocomplete: "off" %>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="" class="control-label text-left">DESTINATION :</label>
+      <div class="controls">
+        <%= f.text_field :final_destination, class: "span12", autocomplete: "off" %>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="" class="control-label text-left">VOLUME :</label>
+      <div class="controls">
+        <%# f.text_field :volume, class: "span12", autocomplete: "off" %>
+        <% count = 0 %>
+        <% Container.all.each do |c| %>
+          <% count += 1 %>
+          <% cr_container = @cost_revenue.cr_containers.where(:container_id => c.id) %>
+          <% unless cr_container.blank? 
+              volume = cr_container.map { |e| e.volum } 
+              crc_id = cr_container.map { |e| e.id }
+            else
+              volume = [0]
+              crc_id = []
+            end %>
+          <% @cost_revenue.cr_containers.each do |container|
+              if container.container_id == c.id
+                volume = [container.volum]
+                crc_id = []
+              end
+            end if @cost_revenue.new_record? %>
+          <% if count < 5 %>
+          <input type="text" value="<%= volume[0] %>" name="cost_revenue[cr_containers_attributes][<%= count %>][volum]" id="cost_revenue_cr_containers_attributes_<%= count %>_volum" class="span2 cost_revenue_cr_containers_volum" style="margin-bottom: 10px">
+          <% else %>
+          <input type="text" value="<%= volume[0] %>" name="cost_revenue[cr_containers_attributes][<%= count %>][volum]" id="cost_revenue_cr_containers_attributes_<%= count %>_volum" class="span4 cost_revenue_cr_containers_volum">
+          <% end %>
+          &nbsp;<%= c.container_type %>&nbsp;
+          <% if crc_id.any? %>
+          <input type="hidden" value="<%= crc_id[0] %>" name="cost_revenue[cr_containers_attributes][<%= count %>][id]" id="cost_revenue_cr_containers_attributes_<%= count %>_id" class="span2">
+          <% end %>
+          <input type="hidden" value="<%= c.id %>" name="cost_revenue[cr_containers_attributes][<%= count %>][container_id]" id="cost_revenue_cr_containers_attributes_<%= count %>_container_id" class="span2 cost_revenue_cr_containers_container_id">
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- <div class="span6" style="margin-left: 0;">
+  <div class="details">
+    <div>
+      <strong>IBL REF<span class="pull-right">:</span></strong>
+      <span><%# f.hidden_field :si_no, class: "", autocomplete: "off", value: (params[:si_no] ? params[:si_no] : @cost_revenue.si_no) %>
+        <%= f.hidden_field :shipping_instruction_id %>
+        <span><%= @cost_revenue.ibl_ref %>&nbsp;</span>
+      </span>
+    </div>
+    <div>
+      <strong>MBL NO<span class="pull-right">:</span></strong>
+      <span><%= f.text_field :master_bl_no, autocomplete: "off" %>&nbsp;</span>
+    </div>
+    <div>
+      <strong>SHIPPER REF <span class="pull-right">:</span></strong>
+      <span><%= f.text_field :shipper_reference, autocomplete: "off" %>&nbsp;</span>
+    </div>
+    <div>
+      <strong>CARRIER <span class="pull-right">:</span></strong>
+      <span><%= f.text_field :carrier, autocomplete: "off" %>&nbsp;</span>
+    </div>
+    <div>
+      <strong>SHIPPER <span class="pull-right">:</span></strong>
+      <span><%= f.collection_select :shipper_id, Shipper.order(:company_name), :id, :company_name, { include_blank: "Select Shipper" }  %>&nbsp;</span>
+    </div>
+    <div>
+      <strong>CONSIGNEE <span class="pull-right">:</span></strong>
+      <span><%= f.collection_select :consignee_id, Consignee.order(:company_name), :id, :company_name, { include_blank: "Select Consignee" }  %>&nbsp;</span>
+    </div>
+    <div>
+      <strong>TRADE <span class="pull-right">:</span></strong>
+      <span><%= f.text_field :trade, autocomplete: "off" %>&nbsp;</span>
+    </div>
+  </div>
+  </div>
+  
+  <div class="span6" style="margin-left: 0;">
+  <div class="details">
+    <div>
+      <strong>OWNER <span class="pull-right">:</span></strong>
+      <span><%= f.text_field :owner, autocomplete: "off" %>&nbsp;</span>
+    </div>
+    <div>
+      <strong>VESSEL <span class="pull-right">:</span></strong>
+      <span><%= f.text_field :first_vessel_name, autocomplete: "off" %>&nbsp;</span>
+    </div>
+    <div>
+      <strong>ETD <span class="pull-right">:</span></strong>
+      <span><%= f.text_field :first_etd_date, autocomplete: "off" %>&nbsp;</span>
+    </div>
+    <div>
+      <strong>POL <span class="pull-right">:</span></strong>
+      <span><%= f.text_field :port_of_loading, autocomplete: "off" %>&nbsp;</span>
+    </div>
+    <div>
+      <strong>POD <span class="pull-right">:</span></strong>
+      <span><%= f.text_field :port_of_discharge, autocomplete: "off" %>&nbsp;</span>
+    </div>
+    <div>
+      <strong>DESTINATION <span class="pull-right">:</span></strong>
+      <span><%= f.text_field :final_destination, autocomplete: "off" %>&nbsp;</span>
+    </div>
+    <div>
+      <strong>VOLUME <span class="pull-right">:</span></strong>
+      <span><%= f.text_field :volume, autocomplete: "off" %>&nbsp;</span>
+    </div>
+  </div>
+  </div> -->
+
+  <div id="revenue-description" style="margin-top: 10px">
+    <table width="100%" border="1" class="revenue-table">
+      <thead>
+        <tr>
+          <th colspan="2">&nbsp;</th>
+          <th colspan="5">SELL</th>
+          <th colspan="5">COST</th>
+          <!-- <th colspan="2">PROFIT</th> -->
+        </tr>
+        <tr>
+          <th rowspan="2">NO</th>
+          <th rowspan="2" width="300">DESCRIPTION</th>
+          <th rowspan="2" style="width:134px">QTY</th>
+          <th colspan="2">AMOUNT</th>
+          <th rowspan="2" style="width:134px">TOTAL</th>
+          <th rowspan="2" style="width:134px">TOTAL AFTER TAX</th>          
+          <th rowspan="2" style="width:134px">QTY</th>
+          <th colspan="2">AMOUNT</th>
+          <th rowspan="2" style="width:134px">TOTAL</th>
+          <th rowspan="2" style="width:134px">TOTAL AFTER TAX</th>
+        </tr>
+        <tr>
+          <th style="width:134px">USD</th>
+          <th style="width:134px">IDR</th>
+          <th style="width:134px">USD</th>
+          <th style="width:134px">IDR</th>        
+        </tr>
+      </thead>
+      <tbody>
+        <% count = 1 %>
+        <%# f.fields_for :cost_revenue_items do |builder| %>
+          <%# render 'cost_revenue_item_fields', :f => builder, :count => count %>
+          <%# count += 1 %>
+        <%# end %>
+        <%= f.fields_for :volume_items do |builder| %>
+          <%= render 'cost_revenue_item_fields', :f => builder, :count => count %>
+          <% count += 1 %>
+        <% end %>
+
+        <tr class="volume_group hidden"></tr>
+        <%= f.fields_for :shipper_items do |builder| %>
+          <%= render 'cost_revenue_item_fields', :f => builder, :count => count %>
+          <% count += 1 %>
+        <% end %>
+
+        <tr class="shipper_group hidden"></tr>
+        <%= f.fields_for :carrier_items do |builder| %>
+          <%= render 'cost_revenue_item_fields', :f => builder, :count => count %>
+          <% count += 1 %>
+        <% end %>
+
+        <tr class="carrier_group hidden"></tr>
+        <%= f.fields_for :active_items do |builder| %>
+          <%= render 'cost_revenue_item_fields', :f => builder, :count => count %>
+          <% count += 1 %>
+        <% end %>
+
+        <tr class="active_group hidden"></tr>
+      </tbody>
+      <tfoot>
+        <%= f.fields_for :fixed_items do |builder| %>
+          <%= render 'fixed_item_fields', :f => builder, :count => count %>
+          <% count += 1 %>
+        <% end %>
+        <tr>
+          <td colspan="5" class="text-left">OTHER</td>
+          <td class="text-right">
+            <%= f.text_field :selling_other, class: "cost_revenue_field money_text selling_usd", autocomplete: "off" %>
+          </td>
+          <td colspan="4"></td>
+          <td class="text-right">
+            <%= f.text_field :buying_other, class: "cost_revenue_field money_text selling_usd", autocomplete: "off" %>
+          </td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="5" class="text-left">RATE</td>
+          <td class="text-right">
+            <%= f.text_field :selling_rate, class: "cost_revenue_field money_text selling_usd", autocomplete: "off" %>
+          </td>
+          <td colspan="4"></td>
+          <td class="text-right">
+            <%= f.text_field :buying_rate, class: "cost_revenue_field money_text selling_usd", autocomplete: "off" %>
+          </td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="5" class="text-left">VAT 10%</td>
+          <td class="text-right">
+            <%= f.text_field :selling_vat_10, class: "cost_revenue_field money_text selling_usd", autocomplete: "off" %>
+          </td>
+          <td colspan="4"></td>
+          <td class="text-right">
+            <%= f.text_field :buying_vat_10, class: "cost_revenue_field money_text selling_usd", autocomplete: "off" %>
+          </td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="5" class="text-left">VAT 1%</td>
+          <td class="text-right">
+            <%= f.text_field :selling_vat_1, class: "cost_revenue_field money_text selling_usd", autocomplete: "off" %>
+          </td>
+          <td colspan="4"></td>
+          <td class="text-right">
+            <%= f.text_field :buying_vat_1, class: "cost_revenue_field money_text selling_usd", autocomplete: "off" %>
+          </td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="5" class="text-left">PPH 23</td>
+          <td class="text-right">
+            <%= f.text_field :selling_pph_23, class: "cost_revenue_field money_text selling_usd", autocomplete: "off" %>
+          </td>
+          <td colspan="4"></td>
+          <td class="text-right">
+            <%= f.text_field :buying_pph_23, class: "cost_revenue_field money_text selling_usd", autocomplete: "off" %>
+          </td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="5" class="text-left">TOTAL INVOICE</td>
+          <td id="total_selling" class="text-right"></td>
+          <td colspan="4"></td>
+          <td id="total_buying" class="text-right"></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="5" class="text-left" style="font-weight: normal;">ADDA</td>
+          <td class="text-right"><%= f.text_field :adda, class: "cost_revenue_field money_text selling_usd", autocomplete: "off" %></td>
+          <td>&nbsp;</td>
+          <td colspan="5" rowspan="6" class="text-left">
+            <a id="notes" data-toggle="modal" href="#notesModal" data-no-turbolink="true">Notes</a><br/>
+            <a id="shipment_comparison" data-toggle="modal" href="#shipmentComparisonModal" data-no-turbolink="true">Shipment Comparison</a>
+            <!-- - <a id="update_shipment_comparison">Update</a> --><br/>
+            <a id="cost_comparison" data-toggle="modal" href="#costComparisonModal" data-no-turbolink="true">Cost Comparison</a><br/>
+            <a id="sell_comparison" data-toggle="modal" href="#sellComparisonModal" data-no-turbolink="true">Sell Comparison</a><br/>
+            <a id="cost_revenue_analysis" data-toggle="modal" href="#costRevenueAnalysisModal" data-no-turbolink="true">C/R</a><br/>
+            Status : <%= select_tag "status", options_for_select([["Open", "0"], ["Complete", "1"]], @cost_revenue.status.to_s), style: "margin-bottom: 0; width: 100px" %>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="5" class="text-left" style="font-weight: normal;">ADDB</td>
+          <td class="text-right"><%= f.text_field :addb, class: "cost_revenue_field money_text selling_usd", autocomplete: "off" %></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="5" class="text-left" style="font-weight: normal;">ADDC</td>
+          <td class="text-right"><%= f.text_field :addc, class: "cost_revenue_field money_text selling_usd", autocomplete: "off" %></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="5" class="text-left">ADDT</td>
+          <td id="addt" class="text-right"></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="5" class="text-left">GPT</td>
+          <td id="gpt" class="text-right"></td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="5" class="text-left">NPT</td>
+          <td id="npt" class="text-right"></td>
+          <td>&nbsp;</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div class="actions" style="margin-top: 20px">
+    <button type="submit" class="btn btn-primary"><i class="icon-save"></i> Save Cost & Revenue</button>
+    <a class="btn" href="<%= cost_revenues_path %>"><i class="icon-reply"></i> Back</a>
+  </div>
+<% end %>
+
+<%= render "cost_revenues/notes", :@cost_revenue => @cost_revenue, :field => "cost_revenue_notes" %>
+<%= render "cost_revenues/shipment_comparison", :@cost_revenue => @cost_revenue, :field => "cost_revenue_notes" %>
+<%= render "cost_revenues/cost_comparison", :@cost_revenue => @cost_revenue, :field => "cost_revenue_notes" %>
+<%= render "cost_revenues/sell_comparison", :@cost_revenue => @cost_revenue, :field => "cost_revenue_notes" %>
+<%= render "cost_revenues/cost_revenue_analysis", :@cost_revenue => @cost_revenue, :field => "cost_revenue_notes" %>
+
+
+<% if @cost_revenue.new_record? %>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#cost_revenue_si_no").typeahead({
+      minLength: 3,
+      source: function(query, process){
+        $.ajax({
+          url: "/shipping_instructions.json",
+          dataType: "json",
+          data: {query: query, status: 0},
+          success: function(data){
+            bls = [];
+            $.each(data, function(i, bl){
+              bls.push(bl.si_no);
+            });
+            return process(bls);
+          }
+        })
+      }
+    });
+
+    $("#loadSI").click(function(){
+      if($("#cost_revenue_si_no").val() != ''){
+        $(this).button('loading');
+        $.ajax({
+          url: "/load-si-data",
+          //dataType: "json",
+          data: {query: $("#cost_revenue_si_no").val(), status: 0},
+          success: function(data){
+            if(data != ''){
+              $("#cost_revenue_shipping_instruction_id").val(data.id);
+              $("#cost_revenue_bl_si_number").val([data.si_no, data.master_bl_no].join(' / '));
+              $("#cost_revenue_shipper_reference").val(data.shipper_reference);
+              $("#cost_revenue_shipper").val(data.shipper);
+              $("#cost_revenue_vessel").val(data.vessel_name);
+              $("#cost_revenue_etd").val(data.etd_date);
+              $("#cost_revenue_port_of_loading").val(data.port_of_loading);
+              $("#cost_revenue_destination").val(data.final_destination);
+              $("#cost_revenue_volume").val(data.volume);
+              $("#cost_revenue_payment_number").val(data.payment);
+              $("#ibl_ref_link").attr("href", data.link_to);
+            }
+            else{
+              alert("Shipping Instruction didn't have bill of lading or not found...");
+            }
+            $("#loadSI").button('reset'); 
+          }
+        });
+      }
+      else{
+        alert("Please enter the SI No.");
+      }
+    });
+
+    $(function(){
+      if($("#cost_revenue_si_no").val() != ''){
+        $("#loadSI").trigger( "click" );
+      }
+    });
+  })
+</script>
+<% end %>
+<script type="text/javascript">
+  $(document).ready(function(){
+    // $("#cost_revenue_payment_no").tagsInput({
+    //   'width':'100%',
+    //   'height':'auto',
+    //   'defaultText': 'Add Number',
+    //   'minChars': 12
+    // });
+
+    // $("#cost_revenue_payment_no_tag").typeahead({
+    //   source: function(query, process){
+    //     $.ajax({
+    //       url: "/payments-list.json",
+    //       dataType: "json",
+    //       data: {SI: $("#cost_revenue_si_no").val(), query: query, status: 0},
+    //       success: function(data){
+    //         bls = [];
+    //         $.each(data, function(i, bl){
+    //           bls.push(bl.payment_no);
+    //         });
+    //         return process(bls);
+    //       }
+    //     })
+    //   }
+    // });
+    $("#import_cnr_data").on("click", function(e) {
+      e.preventDefault();
+      $.getJSON($(this).attr('href'), function(data){
+        if (data == "") {
+          alert("No data to be imported");
+        } else {
+          var row_count = $("#revenue-description").find("tbody tr").length;
+          if (data.length > row_count) {
+            for (var i = 0; i < (data.length - row_count); i++)
+              add_revenue_fields();
+            add_revenue_fields();
+            $("#import_cnr_data").trigger("click");
+            return;
+          }
+
+          var key = "cost_revenue_cost_revenue_items_attributes_";
+
+          for (var index in data) {
+            var id = "#" + key + index;
+            $(id + "_description").val(data[index].description);
+            $(id + "_selling_usd").val(accounting.formatMoney(data[index].selling.usd, "", 2, ",", ".")).trigger("focusout");
+            $(id + "_selling_idr").val(accounting.formatMoney(data[index].selling.idr, "", 2, ",", ".")).trigger("focusout");
+            $(id + "_buying_usd").val(accounting.formatMoney(data[index].buying.usd, "", 2, ",", ".")).trigger("focusout");
+            $(id + "_buying_idr").val(accounting.formatMoney(data[index].buying.idr, "", 2, ",", ".")).trigger("focusout");
+          }
+
+          alert("Import done...");
+        }
+      })
+    });
+
+    $(".cost_revenue_description").livequery(function(){
+      $(this).typeahead({
+        source: [
+          <% @details.each do |c| %>
+            "<%= c.description %>",
+          <% end %>
+        ]
+      });
+    });
+
+    $(".money_text").livequery(function(){
+      $(this).focus(function(){
+        var number = $(this).val() == '' ? 0 : $(this).val();
+        $(this).val(accounting.unformat(number, ""));
+      });
+      $(this).focusout(function(){
+        var number = $(this).val() == '' ? 0 : $(this).val();
+        $(this).val(accounting.formatMoney(number, "", 2, ",", "."));
+      });
+    });
+
+    // $(".selling_usd, .selling_idr, .buying_usd, .buying_idr").livequery(function(){
+    //   $(this).focusout(function(){
+    //     var total = 0;
+    //     var current = $(this).attr("class").split(" ")[2];
+    //     $("." + current).each(function(){
+    //       var parent = $(this).parent().parent();
+    //       if(!parent.hasClass("hidden")){
+    //         var temp = $(this).val();
+    //         total += accounting.unformat(temp, "");
+    //       }
+    //     });
+    //     $("#total_" + current).text(accounting.formatMoney(total, "", 2, ",", "."));
+    //   });
+    // });
+
+    // $(".selling_usd, .buying_usd").livequery(function(){
+    //   $(this).focusout(function(){
+    //     var tr = $(this).parent().parent();
+    //     var selling = tr.find("td:eq(2) input").val() == "" ? 0 : accounting.unformat(tr.find("td:eq(2) input").val());
+    //     var buying = tr.find("td:eq(4) input").val() == "" ? 0 : accounting.unformat(tr.find("td:eq(4) input").val());
+    //     var total = 0;
+    //     tr.find("td:eq(6) input").val(accounting.formatMoney(selling - buying, "", 2, ",", "."));
+    //     $(".profit_usd").each(function(){
+    //       var parent = $(this).parent().parent();
+    //       if(!parent.hasClass("hidden")){
+    //         var temp = $(this).val();
+    //         total += accounting.unformat(temp, "");
+    //       }
+    //     });
+    //     $("#total_profit_usd").text(accounting.formatMoney(total, "", 2, ",", "."));      
+    //   });
+    // });
+
+    // $(".selling_idr, .buying_idr").livequery(function(){
+    //   $(this).focusout(function(){
+    //     var tr = $(this).parent().parent();
+    //     var selling = tr.find("td:eq(3) input").val() == "" ? 0 : accounting.unformat(tr.find("td:eq(3) input").val());
+    //     var buying = tr.find("td:eq(5) input").val() == "" ? 0 : accounting.unformat(tr.find("td:eq(5) input").val());
+    //     var total = 0;
+    //     tr.find("td:eq(7) input").val(accounting.formatMoney(selling - buying, "", 2, ",", "."));
+    //     $(".profit_idr").each(function(){
+    //       var parent = $(this).parent().parent();
+    //       if(!parent.hasClass("hidden")){
+    //         var temp = $(this).val();
+    //         total += accounting.unformat(temp, "");
+    //       }
+    //     });
+    //     $("#total_profit_idr").text(accounting.formatMoney(total, "", 2, ",", "."));
+    //   });
+    // });
+
+    // $("table tbody tr:not('.hidden'):last td:eq(1) input").livequery(function(){
+    //   $(this).focusout(function(){      
+    //     if($("table tbody tr:not('.hidden'):last td:eq(1) input").val() != "")
+    //       add_revenue_fields();
+    //   })
+    // });
+
+    $(".revenue-table tbody tr:not('.hidden'):last td:eq(1) input").livequery(function(){
+      $(this).focusout(function(e){
+        e.preventDefault();
+        if($(".revenue-table tbody tr:not('.hidden'):last td:eq(1) input").val() != "")
+          add_revenue_fields();
+          // alert($(this).val());
+      })
+    });
+
+    $("form").submit(function(){
+      $(".selling_usd").each(function(){ $(this).val(accounting.unformat($(this).val())) });
+      $(".selling_idr").each(function(){ $(this).val(accounting.unformat($(this).val())) });
+      $(".buying_usd").each(function(){ $(this).val(accounting.unformat($(this).val())) });
+      $(".buying_idr").each(function(){ $(this).val(accounting.unformat($(this).val())) });
+    });
+
+    $("#cost_revenue_carrier").typeahead({
+      source: [
+      <% Carrier.all.each do |c| %>
+      "<%= c.name %>",
+      <% end %>
+      ]
+    });
+
+    $(".selling_usd, .selling_idr, .buying_usd, .buying_idr").livequery(function(){
+      $(this).focusout(function(){
+        $(this).text(accounting.formatMoney($(this).val(), "", 2, ",", "."));
+      });
+    });
+
+    $("#cost_revenue_carrier").change(function(){
+      if($(this).val() != ''){
+        $.ajax({
+          url: '<%= get_carrier_charges_path %>',
+          dataType: "json",
+          data: {id: $(this).val()},
+          success: function(data){
+            // if(data.success){
+            //   $(".revenue-table tr.carrier .remove_cost_revenue_description").click();
+            //   $.each(data.charges, function(key, value) {
+            //     add_charge_fields('carrier');
+            //     $(".cost_revenue_description").last().val(value.description);
+            //     $(".selling_volume").last().val(value.selling_volume);
+            //     $(".selling_usd").last().val(value.selling_usd);
+            //     $(".selling_idr").last().val(value.selling_idr);
+            //     $(".buying_volume").last().val(value.buying_volume);
+            //     $(".buying_usd").last().val(value.buying_usd);
+            //     $(".buying_idr").last().val(value.buying_idr);
+            //   });
+            // }
+            // else{
+            //   alert(data.message);
+            // }
+            var base = $(".revenue-table tr.carrier");
+            if(data.success){
+              base.find(".remove_cost_revenue_description").click();
+              $.each(data.charges, function(key, value) {
+                add_charge_fields('carrier');
+
+                base = $(".revenue-table tr.carrier");
+                base.last().find(".cost_revenue_description").val(value.description);
+                base.last().find(".selling_volume").val(1);
+                base.last().find(".selling_usd").val(value.amount_usd);
+                base.last().find(".selling_idr").val(value.amount_idr);
+                base.last().find(".buying_volume").val(1);
+                base.last().find(".buying_usd").val(value.amount_usd);
+                base.last().find(".buying_idr").val(value.amount_idr);
+              });
+            }
+            else{
+              alert(data.message);
+            }
+          }
+        });
+      }
+    });
+
+    $("#cost_revenue_shipper_id").change(function(){
+      if($(this).val() != ''){
+        $.ajax({
+          url: '<%= get_shipper_charges_path %>',
+          dataType: "json",
+          data: {id: $(this).val()},
+          success: function(data){
+            var base = $(".revenue-table tr.shipper");
+            if(data.success){
+              base.find(".remove_cost_revenue_description").click();
+              $.each(data.charges, function(key, value) {
+                add_charge_fields('shipper');
+                
+                base = $(".revenue-table tr.shipper");
+                base.last().find(".cost_revenue_description").val(value.description);
+                base.last().find(".selling_volume").val(1);
+                base.last().find(".selling_usd").val(value.amount_usd);
+                base.last().find(".selling_idr").val(value.amount_idr);
+                base.last().find(".buying_volume").val(1);
+                base.last().find(".buying_usd").val(value.amount_usd);
+                base.last().find(".buying_idr").val(value.amount_idr);
+              });
+            }
+            else{
+              alert(data.message);
+            }
+          }
+        });
+      }
+    });
+
+    function add_charge_fields(name) {
+      var global_count = $(".revenue-table tbody tr:not('.hidden')").length;
+      // var base = $(".revenue-table tr."+name);
+      var base = $(".revenue-table tr."+name);
+      var count = base.length;
+      var attr = name+'_items_attributes';
+      var tmp = '' +
+      '<tr class="' + name + '">' +
+        '<td align="center">' + (global_count+1) + '</td>' +
+        '<td>' +
+          '<input type="text" name="cost_revenue[' + attr + '][' + count + '][description]" id="cost_revenue_' + attr + '_' + count + '_description" class="cost_revenue_field cost_revenue_description" autocomplete="off">' +
+          '<input type="hidden" name="cost_revenue[' + attr + '][' + count + '][_destroy]" id="cost_revenue_' + attr + '_' + count + '__destroy" class="span12">' +
+          '<a title="Remove" href="#" tabindex="-1" onclick="remove_revenue_fields(this); return false;" class="remove_cost_revenue_description"><i class="icon-remove-sign"></i></a>' +
+          '<input type="hidden" value="carrier" name="cost_revenue[' + attr + '][' + count + '][item_type]" id="cost_revenue_' + attr + '_' + count + '_item_type" class="span12">' +
+        '</td>' +
+
+        '<td class="text-right"><input type="text" name="cost_revenue[' + attr + '][' + count + '][selling_volume]" id="cost_revenue_' + attr + '_' + count + '_selling_volume" class="cost_revenue_field cost_revenue_volume money_text selling_volume" autocomplete="off"></td>' +
+        '<td><input type="text" name="cost_revenue[' + attr + '][' + count + '][selling_usd]" id="cost_revenue_' + attr + '_' + count + '_selling_usd" class="cost_revenue_field money_text selling_usd" autocomplete="off"></td>' +
+        '<td><input type="text" name="cost_revenue[' + attr + '][' + count + '][selling_idr]" id="cost_revenue_' + attr + '_' + count + '_selling_idr" class="cost_revenue_field money_text selling_idr" autocomplete="off"></td>' +
+        '<td class="text-right cost_revenue_static"></td>' +
+        '<td class="text-right cost_revenue_static"></td>' +
+        
+        '<td class="text-right"><input type="text" name="cost_revenue[' + attr + '][' + count + '][buying_volume]" id="cost_revenue_' + attr + '_' + count + '_buying_volume" class="cost_revenue_field cost_revenue_volume money_text buying_volume" autocomplete="off"></td>' +
+        '<td><input type="text" name="cost_revenue[' + attr + '][' + count + '][buying_usd]" id="cost_revenue_' + attr + '_' + count + '_buying_usd" class="cost_revenue_field money_text buying_usd" autocomplete="off"></td>' +
+        '<td><input type="text" name="cost_revenue[' + attr + '][' + count + '][buying_idr]" id="cost_revenue_' + attr + '_' + count + '_buying_idr" class="cost_revenue_field money_text buying_idr" autocomplete="off"></td>' +
+        '<td class="text-right cost_revenue_static"></td>' +
+        '<td class="text-right cost_revenue_static"></td>' +
+      '</tr>';
+      // base.last().after( tmp );
+      $(".revenue-table tr."+name+"_group").before( tmp );
+      counter_revenue_fields();
+    };
+
+    $(".cost_revenue_cr_containers_volum").change(function(){
+      alert($(this).val());
+      
+    });
+  })
+</script>

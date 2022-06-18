@@ -1,0 +1,45 @@
+o: ActiveSupport::Cache::Entry:@valueI"–  <tr class="">
+    <td>
+      <a href="/shipping_instructions/36483?year=2022" title="Show Shipping Instruction"><i class="icon-eye-open icon-large"></i></a>
+
+      <a href="/shipping_instructions/36483/edit?year=2022" title="Edit Shipping Instruction"><i class="icon-edit-sign icon-large"></i></a>
+
+      <a href="/shipping_instructions/36483/email?year=2022" target="_blank" title="Email"><i class="icon icon-envelope"></i></a>
+
+          <div>
+              <a data-confirm="Already update SI data?" href="/createBL/36483">Create BL</a>
+          </div>
+          <div>
+            <a data-confirm="Are you sure?" href="/shipping_instructions/36483/cancel?year=2022">Cancel SI</a>
+          </div>
+    </td>
+    <td>
+      IBL221273
+      
+      
+    </td>
+    <td></td>
+    <td>INDEVCO PTE LTD</td>
+    <td>20x20FT</td>
+    <td>BRISBANE</td>
+    <td>01-May-2022</td>
+    <td>23-Apr-2022</td>
+    <td>PT. SAMUDERA ARTHA LOGISTICS</td>
+    <td>TBA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>TG. PRIOK, JAKARTA, INDONESIA</td>
+    <td></td>
+    <td></td>
+    <td> (TRUCKING, PEB)</td>
+    <td>Hilman</td>
+    <td class="hidden disable">May 2022</td>
+    <td class="hidden disable">05/01/2022</td>
+    <td class="hidden disable row_id">36483</td>
+    <td class="hidden disable ibl_ref">IBL221273</td>
+    <td class="hidden disable status">
+      
+      
+    </td>
+    <td class="hidden disable additional_si">false</td>
+  </tr>
+:ET:@created_atf1651329347.0314908:@expires_in0

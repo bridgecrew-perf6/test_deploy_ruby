@@ -1,0 +1,88 @@
+<%# cache_unless(row.cost_revenue.nil?, ["cost-revenues", shipping_instruction]) do %>
+<% cache ["list-cr", row, row.cost_revenue] do %>
+  <% if row.cost_revenue.blank? %>
+    <tr>
+      <td>
+        <%= link_to "Input", new_cost_revenue_path(:ibl_ref => row.ibl_ref) %>
+      </td>
+      <td>
+        <%= row.ibl_ref %>
+        <%= '<span class="label label-warning">Cancel</span>'.html_safe if row.is_canceled? %>
+      </td>
+      <td><%= row.master_bl_no %></td>
+      <td><%= row.carrier %></td>
+      <td><%= row.shipper_reference %></td>
+      <td><%= row.shipper_company_name %></td>
+      <td><%= row.consignee_company_name %></td>
+      <td><%= row.first_vessel_name %></td>
+      <td><%= si_date_format row.first_etd_date %></td>
+      <td><%= row.port_of_loading %></td>
+      <td><%= row.port_of_discharge %></td>
+      <td><%= row.final_destination %></td>
+      <td><%= row.volume %></td>
+      <td><%=  %></td>
+      <td>No Status</td>
+      <td><%= row.trade %></td>
+      <td style="text-align:right"><%=  %></td>
+      <td style="text-align:right"><%=  %></td>
+      <td style="text-align:right"><%=  %></td>
+      <td style="text-align:right"><%=  %></td>
+      <td class="hidden disable"><%= monthly_format row.first_etd_date %></td>
+      <td class="hidden disable"><%= datepicker_format row.first_etd_date %></td>
+      <td class="hidden disable row_id"><%= row.id %></td>
+      <td class="hidden disable ibl_ref"><%= row.ibl_ref %></td>
+      <td class="hidden disable status"><%= row.status_text.join("<br>").html_safe %></td>
+      <td class="hidden disable sell_vat_10"><%=  %></td>
+      <td class="hidden disable sell_vat_1"><%=  %></td>
+      <td class="hidden disable sell_pph_23"><%=  %></td>
+      <td class="hidden disable cost_vat_10"><%=  %></td>
+      <td class="hidden disable cost_vat_1"><%=  %></td>
+      <td class="hidden disable cost_pph_23"><%=  %></td>
+      <td class="hidden disable addt"><%=  %></td>
+      <td class="hidden disable npt"><%=  %></td>
+    </tr>
+  <% else %>
+    <% cost_revenue = row.cost_revenue %>
+    <tr>
+      <td>
+        <%= link_to "Input", edit_cost_revenue_path(cost_revenue) if cost_revenue.is_open? %>
+        <%= link_to "View", cost_revenue %>
+      </td>
+      <td>
+        <%= cost_revenue.ibl_ref %>
+        <%= '<span class="label label-warning">Cancel</span>'.html_safe if row.is_canceled? %>
+      </td>
+      <td><%= cost_revenue.master_bl_no %></td>
+      <td><%= cost_revenue.carrier_name %></td>
+      <td><%= cost_revenue.shipper_reference %></td>
+      <td><%= cost_revenue.shipper_company_name %></td>
+      <td><%= cost_revenue.consignee_company_name %></td>
+      <td><%= cost_revenue.vessel_name %></td>
+      <td><%= si_date_format cost_revenue.etd_date %></td>
+      <td><%= cost_revenue.port_of_loading %></td>
+      <td><%= cost_revenue.port_of_discharge %></td>
+      <td><%= cost_revenue.final_destination %></td>
+      <td><%= cost_revenue.volume %></td>
+      <td><%# cost_revenue.owner %><%= cost_revenue.owner_name %></td>
+      <td><%= cost_revenue.status_text.join("<br>").html_safe %></td>
+      <td><%= cost_revenue.trade %></td>
+      <td style="text-align:right"><%= sell_usd(cost_revenue).join('<br>').html_safe %></td>
+      <td style="text-align:right"><%= sell_idr(cost_revenue).join('<br>').html_safe %></td>
+      <td style="text-align:right"><%= cost_usd(cost_revenue).join('<br>').html_safe %></td>
+      <td style="text-align:right"><%= cost_idr(cost_revenue).join('<br>').html_safe %></td>
+      <td class="hidden disable"><%= monthly_format row.first_etd_date %></td>
+      <td class="hidden disable"><%= datepicker_format row.first_etd_date %></td>
+      <td class="hidden disable row_id"><%= row.id %></td>
+      <td class="hidden disable ibl_ref"><%= row.ibl_ref %></td>
+      <td class="hidden disable status"><%= row.status_text.join("<br>").html_safe %></td>
+      <td class="hidden disable sell_vat_10"><%= money_format cost_revenue.selling_vat_10 %></td>
+      <td class="hidden disable sell_vat_1"><%= money_format cost_revenue.is_open? ? cost_revenue.default_selling_vat_1 : cost_revenue.selling_vat_1 %></td>
+      <td class="hidden disable sell_pph_23"><%= money_format cost_revenue.is_open? ? cost_revenue.default_selling_pph_23 : cost_revenue.selling_pph_23 %></td>
+      <td class="hidden disable cost_vat_10"><%= money_format cost_revenue.buying_vat_10 %></td>
+      <td class="hidden disable cost_vat_1"><%= money_format cost_revenue.buying_vat_1 %></td>
+      <td class="hidden disable cost_pph_23"><%= money_format cost_revenue.buying_pph_23 %></td>
+      <td class="hidden disable addt"><%= money_format cost_revenue.addt %></td>
+      <td class="hidden disable npt"><%= money_format cost_revenue.is_open? ? cost_revenue.default_npt : cost_revenue.npt %></td>
+    </tr>
+  <% end %>
+<% end %>

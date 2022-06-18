@@ -1,0 +1,25 @@
+o: ActiveSupport::Cache::Entry:@valueI"'    <tr>
+      <td data-no-turbolink="true">
+                <a data-confirm="Detail cost is empty. Proceed?" href="/payments/calculate_invoice?sid=36081&amp;year=2022">Input</a>
+          
+      </td>
+      <td>IBL220960</td>
+      <td>080200165029</td>
+      <td>EGLV080200165029</td>
+      <td>5x20FT FLEXIBAG</td>
+      <td>EVERGREEN LINE</td>
+      <td>PT. SMART TBK</td>
+      <td>JAKARTA, INDONESIA</td>
+      <td>HUANGPU, CHINA</td>
+      <td></td>
+      <td></td>
+      <td>15-Apr-2022</td>
+      <td>No</td>
+      <td>On Going</td>
+      <td class="hidden disable">April 2022</td>
+      <td class="hidden disable">04/15/2022</td>
+      <td class="hidden disable row_id">36081</td>
+      <td class="hidden disable ibl_ref">IBL220960</td>
+      <td class="hidden disable row_ref_id"></td>
+    </tr>
+:ET:@created_atf1648566529.4057605:@expires_in0

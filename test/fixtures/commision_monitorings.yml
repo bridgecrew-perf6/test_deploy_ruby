@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  shipping_instruction_id: 
+  exported: false
+  exported_at: 2015-02-17 07:37:19
+
+two:
+  shipping_instruction_id: 
+  exported: false
+  exported_at: 2015-02-17 07:37:19

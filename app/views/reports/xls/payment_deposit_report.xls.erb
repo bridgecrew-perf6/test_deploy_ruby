@@ -1,0 +1,127 @@
+<% columns = @report.columns %>
+<% base = [] %>
+<% 
+  head = []
+  head.push "Carrier\t"
+  head.push "IBL Deposit\t"
+  head.push "Use Deposit\t"
+  head.push "Overpaid\t"
+  head.push "Balance\t"
+  head.push "IBL Ref\t"
+  head.push "Req No\t"
+  head.push "Date\t"
+  head.push "Close Deposit\t"
+%>
+<%= head.join("").html_safe %>
+<% @results.each do |key, value| %>
+<%  total_balance = {}
+    total_balance["IDR"] = 0
+    total_balance["USD"] = 0
+
+    has_idr = false
+    has_usd = false
+%>
+<% carrier = true %>
+<% value.each do |reference| %>
+<% ibl_ref = true %>
+<%  balance = {}
+    balance["IDR"] = 0
+    balance["USD"] = 0
+%>  
+<% reference.each_with_index do |row, index| %>
+<% body = [] %>
+<%  if carrier
+      body.push "#{Carrier.find(key).try(:name)}\t"
+      carrier = false
+    else
+      body.push "\t"
+    end
+    if ibl_ref
+      body.push "#{[row.ibl_ref, row.master_bl_no].join(" - ")}#{" - #{row.currency}" if row.currency == "USD"}\t"
+      ibl_ref = false
+    else
+      body.push "\t"
+    end
+
+    if row.kind_of? PaymentReference
+      
+      has_idr = true if row.currency == "IDR"
+      has_usd = true if row.currency == "USD"
+
+      balance[row.currency] += row.amount_overpaid.to_f
+      balance_text = []
+      balance_text.push money_with_currency_format(balance["IDR"], "IDR") unless balance["IDR"] == 0
+      balance_text.push money_with_currency_format(balance["USD"], "USD") unless balance["USD"] == 0
+      
+      body.push "\t"
+      body.push "#{money_with_currency_format(row.amount_overpaid, row.currency)}\t"
+      body.push "#{balance_text.join(" ")}\t"
+      body.push "\t"
+      body.push "#{row.req_no}\t"
+      body.push "#{si_date_format(row.payment_date)}\t"
+      body.push "\t"
+    elsif row.kind_of? PaymentDeposit
+      balance[row.currency] -= row.amount.to_f
+      balance_text = []
+      balance_text.push money_with_currency_format(balance["IDR"], "IDR") unless balance["IDR"] == 0
+      balance_text.push money_with_currency_format(balance["USD"], "USD") unless balance["USD"] == 0
+
+      balance_text.push "0 IDR" if row.currency == "IDR" && balance["IDR"] == 0
+      balance_text.push "0 USD" if row.currency == "USD" && balance["USD"] == 0
+
+      body.push "#{money_with_currency_format(row.amount, row.currency)}\t"
+      body.push "\t"
+      body.push "#{balance_text.join(" ")}\t"
+      body.push "#{[row.ibl_ref, row.master_bl_no_2].join(" - ")}\t"
+      body.push "#{row.req_no}\t"
+      body.push "#{si_date_format(row.payment_date)}\t"
+      body.push "\t"
+    elsif row.kind_of? PaymentCloseDeposit
+      balance[row.currency] -= row.amount.to_f
+      balance_text = []
+      balance_text.push money_with_currency_format(balance["IDR"], "IDR") unless balance["IDR"] == 0
+      balance_text.push money_with_currency_format(balance["USD"], "USD") unless balance["USD"] == 0
+
+      balance_text.push "0 IDR" if row.currency == "IDR" && balance["IDR"] == 0
+      balance_text.push "0 USD" if row.currency == "USD" && balance["USD"] == 0
+
+      body.push "#{money_with_currency_format(row.amount, row.currency)}\t"
+      body.push "\t"
+      body.push "#{balance_text.join(" ")}\t"
+      # body.push "#{[row.ibl_ref, row.master_bl_no].join(" - ")}\t"
+      # body.push "#{row.req_no}\t"
+      body.push "\t"
+      body.push "\t"
+      body.push "#{si_date_format(row.payment_date)}\t"
+      body.push "#{row.note.squish}\t"
+    end
+%>
+<%= body.join("").html_safe %>
+<% end %>
+<%  total_balance["IDR"] += balance["IDR"]
+    total_balance["USD"] += balance["USD"]
+%>
+<% end %>
+<%  total_balance_text = []
+    total_balance_text.push money_with_currency_format(total_balance["IDR"], "IDR") unless total_balance["IDR"] == 0
+    total_balance_text.push money_with_currency_format(total_balance["USD"], "USD") unless total_balance["USD"] == 0
+              
+    total_balance_text.push "0 IDR" if has_idr && total_balance["IDR"] == 0
+    total_balance_text.push "0 USD" if has_usd && total_balance["USD"] == 0
+%>
+<%
+  total = true
+  total_balance_text.each do |v|
+    foot = []
+    if total
+     foot.push "Total\t"
+     total = false
+    else
+     foot.push "\t"
+    end  
+    foot.push "#{v}\t"
+%>
+<%= foot.join("").html_safe %>
+<% end %>
+
+<% end %>

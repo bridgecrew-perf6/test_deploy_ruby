@@ -1,0 +1,49 @@
+<div class="page-header">
+  <h3>New Additional SI</h3>
+</div>
+<style type="text/css">
+  #attachment-wrapper {
+    display: none;
+  }
+</style>
+<input type="text" id="si_no" placeholder="SI Number"/>
+<button id="load_add_si" type="button" class="btn" style="margin-bottom: 10px;" data-disable-with="Loading Data..
+.">Load Data</button>
+
+<% unless @shipping_instruction.nil? %>
+  <%= form_for @shipping_instruction, url: create_add_si_shipping_instructions_path, html: {class: "form-horizontal"} do |f| %>
+    <input type="hidden" name="id_si" value="<%= params[:id] %>"/>
+    <%= render 'form' %>
+  <% end %>
+<% end %>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    $("#load_add_si").click(function () {
+      var si_no = $("#si_no").val();
+      var button = $(this);
+      button.text(button.data("disable-with")).attr("disabled", "disabled");
+      if (si_no != '') {
+        $.ajax({
+          url: "<%= load_add_si_shipping_instructions_path %>",
+          data: { si_no: si_no }
+        }).done(function (data) {
+          if (data.trim() != '') {
+            Turbolinks.visit("?id=" + data);
+          }
+          else {
+            button.text("Load Data").removeAttr("disabled");
+            alert("SI Not Found");
+          }
+        }).fail(function () {
+          button.text("Load Data").removeAttr("disabled");
+          alert("an error");
+        })
+      }
+      else {
+        button.text("Load Data").removeAttr("disabled");
+        alert("SI Number Empty");
+      }
+    })
+  })
+</script>

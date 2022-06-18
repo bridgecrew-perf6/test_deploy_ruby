@@ -1,0 +1,67 @@
+<%
+  total_req_fund_idr = 0
+  total_req_fund_usd = 0
+%>
+<% @payment_invoices.group_by(&:payment_date).each do |date, invoices| %>
+<%
+  total_idr = 0
+  total_usd = 0
+  invoices.each do |invoice|
+    total_idr += invoice.total_invoice.to_f if invoice.currency == "IDR"
+    total_usd += invoice.total_invoice.to_f if invoice.currency == "USD"
+  end
+  total_req_fund_idr += total_idr
+  total_req_fund_usd += total_usd
+%>
+  <table class="table table-striped table-bordered" width="100%">
+    <thead>
+    <tr>
+      <th width="75">IBL REF</th>
+      <th width="75">Booking No</th>
+      <th width="100">Carrier</th>
+      <th width="100">Shipper</th>
+      <th width="100">POL</th>
+      <th width="100">Destination</th>
+      <th width="100">Amount</th>
+      <th width="75">Payment Date</th>
+      <th width="75">ETD Vessel</th>
+      <th width="75">BL Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <%= render partial: 'payment_reports/row', :collection => invoices, :as => :row %>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="6">TOTAL</td>
+        <td style="text-align: right;"><%# money_format invoices.map{|p| p.total_invoice}.sum(&:to_f) %>
+          <% 
+            str = []
+            str.push "#{money_format total_idr}" if total_idr.to_f > 0
+            str.push "#{money_format total_usd}" if total_usd.to_f > 0
+          %>
+          <%= str.join("<br>").html_safe %>
+        </td>
+        <td colspan="3"></td>
+      <tr>
+    </tfoot>
+  </table>
+  <br>
+  <div class="clearfix"></div>
+<% end %>
+<div class="row-fluid">
+  <div class="span6">
+    <div class="control-group">
+      <strong>TOTAL REQ FUND :</strong>
+      <%# money_format @payment_invoices.map{|p| p.total_invoice}.sum(&:to_f) %>
+      <% 
+        str = []
+        str.push "#{money_format total_req_fund_idr}" if total_req_fund_idr.to_f > 0
+        str.push "#{money_format total_req_fund_usd}" if total_req_fund_usd.to_f > 0
+      %>
+      <%= str.join("<br>").html_safe %>
+    </div>
+  </div>
+  <div class="span6">
+  </div>
+</div>

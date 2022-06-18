@@ -1,0 +1,890 @@
+<style type="text/css">
+  .details > div{
+    margin-bottom: 5px
+  }
+  .details input{
+    margin-bottom: 0
+  }
+  .invoice_field{
+    margin-bottom: 0!important;
+    border: none!important;
+    padding: 0!important;
+    float: left;
+    /*min-width: 115px;*/
+    /*min-width: 80px;*/
+    /*max-width: 86px;*/
+    /*width: 100%;*/
+    text-align: right;
+  }
+  .invoice_field, .invoice_field:focus{
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+  }
+  .invoice_description{
+    /*min-width: 170px;*/
+    /*max-width: 180px;*/
+    width: 90%;
+    text-align: left;
+  }
+  .remove_invoice_description {
+    /*float: right;*/
+    /*margin-top: -20px;*/
+    position: absolute;
+  }
+  .invoice_volume{
+    margin-bottom: 0!important;
+    border: none!important;
+    padding: 0!important;
+    float: right;
+    /*min-width: 30px;*/
+    /*max-width: 134px;*/
+    min-width: 50px;
+    width: 100%;
+    text-align: right;
+  }
+  .invoice_static{
+    min-width: 80px;
+    max-width: 134px;
+    text-align: right;
+  }
+  .invoice_checkbox{
+    margin-top: 0 !important;
+  }
+  tfoot td{
+    font-weight: bold;
+    text-align: center;
+  }
+  .amount_usd, .amount_idr, .total, .total_after_tax{
+    float: right;
+    min-width: 100px;
+    width: 100%;
+  }
+  input:disabled{
+    border-radius: 0;
+  }
+</style>
+<style type="text/css">
+  .padding {
+    padding: 5px 0;
+    font-weight: normal;
+  }
+  .form-horizontal .control-group {
+    margin-bottom: 0;
+  }
+  .form-horizontal .control-group label {
+    text-align: left;
+    font-weight: 700;
+  }
+  .form-horizontal .control-group input {
+    margin-bottom: 5px;
+  }
+</style>
+<%= form_for(@calculate_invoice, url: update_calculate_invoice_bill_of_ladings_path(sid: @calculate_invoice.id), html: { class: "form-horizontal"}) do |f| %>
+  <% if @calculate_invoice.errors.any? %>
+    <div class="alert alert-error">
+      <ul class="unstyled">
+        <% @calculate_invoice.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+  <% end %>
+  <div class="row-fluid">
+    <div class="span6 detail_cr">
+    <% unless @cost_revenue.blank? %>
+      <div class="control-group">
+        <label for="" class="control-label">IBL REF</label>
+        <div class="controls padding">:
+          <%= @cost_revenue.created_at %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">SHIPPER</label>
+        <div class="controls padding">:
+          <%= @cost_revenue.shipper_company_name %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">SHIPPER REF</label>
+        <div class="controls padding">:
+          <%= @cost_revenue.shipper_reference %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">CARRIER</label>
+        <div class="controls padding">:
+          <%= @cost_revenue.carrier %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">BL NO</label>
+        <div class="controls padding">:
+          <%= @cost_revenue.master_bl_no %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">VOLUME</label>
+        <div class="controls padding">:
+          <%= @cost_revenue.volume %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">VESSEL</label>
+        <div class="controls padding">:
+          <%= @cost_revenue.vessel_name %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">POL</label>
+        <div class="controls padding">:
+          <%= @cost_revenue.port_of_loading %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Destination</label>
+        <div class="controls padding">:
+          <%= @cost_revenue.final_destination %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">ETD</label>
+        <div class="controls padding">:
+          <%= normal_date_format @cost_revenue.etd_date %>
+        </div>
+      </div>
+      <!-- <div class="control-group">
+        <label for="" class="control-label">ETA</label>
+        <div class="controls padding">:
+          <%= normal_date_format @shipping_instruction.last_eta_date %>
+        </div>
+      </div> -->
+    <% end %>
+    </div>
+    <div class="span6 detail_si">
+      <div class="control-group">
+        <label for="" class="control-label">IBL REF</label>
+        <div class="controls padding">:
+          <%= @shipping_instruction.si_no %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Time Update</label>
+        <div class="controls padding" id="created_at"> :
+          <%= @shipping_instruction.updated_at.strftime("%F") %>
+
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">SHIPPER</label>
+        <div class="controls padding">:
+          <%= @shipping_instruction.shipper_company_name %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">SHIPPER REF</label>
+        <div class="controls padding">:
+          <%= @shipping_instruction.shipper_reference %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">CARRIER</label>
+        <div class="controls padding">:
+          <%= @shipping_instruction.carrier %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">BL NO</label>
+        <div class="controls padding">:
+          <%= @shipping_instruction.master_bl_no %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">VOLUME</label>
+        <div class="controls padding">:
+          <%= @shipping_instruction.volume %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">VESSEL</label>
+        <div class="controls padding">:
+          <%= @shipping_instruction.feeder_vessel %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">POL</label>
+        <div class="controls padding">:
+          <%= @shipping_instruction.port_of_loading %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Destination</label>
+        <div class="controls padding">:
+          <%= @shipping_instruction.final_destination %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">ETD</label>
+        <div class="controls padding">:
+          <%= normal_date_format @shipping_instruction.first_etd_date %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">ETA</label>
+        <div class="controls padding">:
+          <%= normal_date_format @shipping_instruction.last_eta_date %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Total Invoice</label>
+        <div class="controls">:
+          <%= f.text_field :total_bill_of_lading_invoices, class: "money_text total_bill_of_lading_invoices", autocomplete: "off", disabled: "disabled", style: "font-weight: bold;" %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row-fluid">
+    <div class="span6">
+      <div style="height: 30px;"></div>
+      <div class="span12" style="margin-left: 0;">
+        <table width="100%" border="1">
+          <thead>
+            <tr>
+              <th colspan="7">SELL</th>
+            </tr>
+            <tr style="height:43px;">
+              <td class="hidden"></td>
+              <th>DESCRIPTION</th>
+              <th width="45">QTY</th>
+              <th width="100">AMOUNT USD</th>
+              <th width="100">AMOUNT IDR</th>
+              <th width="100">TOTAL</th>
+              <th width="100" class="hidden">TOTAL AFTER TAX</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% unless @cost_revenue.blank? %>
+              <% @cost_revenue.cost_revenue_items.each do |item| %>
+                <%= render 'sell_item_fields', item: item %>
+              <% end %>
+            <% else %>
+              <tr>
+                <td colspan="7">Data Not Found</td>
+              </tr>
+            <% end %>
+          </tbody>
+          <tfoot>
+            <% unless @cost_revenue.blank? %>
+              <tr>
+                <td colspan="4" class="text-left">OTHER</td>
+                <td class="text-right" style="font-weight: normal;"><%= money_format @cost_revenue.selling_other %></td>
+                <td class="hidden"></td>
+              </tr>
+              <tr>
+                <td colspan="4" class="text-left">RATE</td>
+                <td class="text-right"><%= money_format @cost_revenue.selling_rate %></td>
+                <td class="hidden"></td>
+              </tr>
+              <tr>
+                <td colspan="4" class="text-left">VAT 10%</td>
+                <td class="text-right" style="font-weight: normal;"><%= money_format @cost_revenue.selling_vat_10 %></td>
+                <td class="hidden"></td>
+              </tr>
+              <tr>
+                <td colspan="4" class="text-left">VAT 1%</td>
+                <td class="text-right" style="font-weight: normal;"><%= money_format @cost_revenue.default_selling_vat_1 %></td>
+                <td class="hidden"></td>
+              </tr>
+              <tr>
+                <td colspan="4" class="text-left">PPH 23</td>
+                <td class="text-right" style="font-weight: normal;"><%= money_format @cost_revenue.default_selling_pph_23 %></td>
+                <td class="hidden"></td>
+              </tr>
+              <tr>
+                <td colspan="4" class="text-left">TOTAL INVOICE</td>
+                <td class="text-right"><%= money_format @cost_revenue.default_selling_total_invoice %></td>
+                <td class="hidden"></td>
+              </tr>
+            <% end %>
+          </tfoot>
+        </table>
+      </div>
+      <div class="clearfix">&nbsp;</div>
+      <div>
+        <strong>Notes :</strong>
+        <pre class="free" style="font-weight: normal;"><%= @cost_revenue.notes unless @cost_revenue.blank? %></pre>
+      </div>
+    </div>
+    <div class="span6" id="sell-invoices">
+      <%= f.fields_for :bill_of_lading_invoices do |invoice| %>
+        <div class="row-fluid"<%= " style=display:none;" if invoice.object.marked_for_destruction? %>>
+          <div class="span12">
+            <div class="control-group">
+              <label for="" class="control-label"></label>
+              <div class="controls">
+                <%= invoice.check_box :is_tick_all, class: "is_tick_all" %> Tick All &nbsp;&nbsp;
+                <%= invoice.check_box :is_ai, class: "is_ai" %> AI &nbsp;&nbsp;
+                <%= invoice.check_box :is_gi, class: "is_gi" %> GI &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <%# link_to 'Export', create_new_invoice_path(bid: @shipping_instruction.bill_of_lading.id.to_s, iid: invoice.object.id), target: '_blank' %>
+                <% unless invoice.object.new_record? || @shipping_instruction.is_cr_completed? %>
+                <a href= "<%= create_new_invoice_path(bid: @shipping_instruction.bill_of_lading.id.to_s, iid: invoice.object.id) %>" class="import_invoice_data" target="_blank">Export</a> &nbsp;&nbsp;
+                <input type="text" class="invoice_no" autocomplete="off" style="width: 100px;padding-top: 0;padding-bottom: 0;" data-href="<%= create_new_invoice_path(bid: @shipping_instruction.bill_of_lading.id.to_s, iid: invoice.object.id) %>"/>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <div class="span12" style="overflow-x: scroll;margin-left: 0;">
+            <table width="100%" border="1" class="invoice-table">
+              <thead>
+                <tr>
+                  <th colspan="10">INVOICE</th>
+                </tr>
+                <tr style="height:43px;">
+                  <th class="hidden"></th>
+                  <th>DESCRIPTION</th>
+                  <th>QTY</th>
+                  <th>AMOUNT USD</th>
+                  <th>AMOUNT IDR</th>
+                  <th>TOTAL</th>
+                  <th>TOTAL AFTER TAX</th>
+                  <th>VAT 10%</th>
+                  <th>VAT 1%</th>
+                  <th>PPH 23</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% count = 1 %>
+                <%= invoice.fields_for :bill_of_lading_items do |builder| %>
+                  <%= render 'invoice_item_fields', :f => builder, :count => count %>
+                  <% count += 1 %>
+                <% end %>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td class="hidden"></td>
+                  <td colspan="5" class="text-left">OTHER</td>
+                  <td>
+                    <%= invoice.text_field :other, class: "invoice_field money_text amount_idr other", autocomplete: "off" %>
+                  </td>
+                  <td colspan="3"></td>
+                </tr>
+                <tr>
+                  <td class="hidden"></td>
+                  <td colspan="5" class="text-left">RATE</td>
+                  <td>
+                    <%= invoice.text_field :rate, class: "invoice_field money_text amount_idr rate", autocomplete: "off" %>
+                  </td>
+                  <td colspan="3"></td>
+                </tr>
+                <tr>
+                  <td class="hidden"></td>
+                  <td colspan="5" class="text-left">VAT 10%</td>
+                  <td>
+                    <%= invoice.text_field :vat_10, class: "invoice_field money_text amount_idr vat_10", autocomplete: "off" %>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="hidden"></td>
+                  <td colspan="5" class="text-left">VAT 1%</td>
+                  <td>
+                    <%= invoice.text_field :vat_1, class: "invoice_field money_text amount_idr vat_1", autocomplete: "off" %>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="hidden"></td>
+                  <td colspan="5" class="text-left">PPH 23</td>
+                  <td>
+                    <%= invoice.text_field :pph_23, class: "invoice_field money_text amount_idr pph_23", autocomplete: "off", disabled: "disabled" %>
+                  </td>
+                  <td colspan="3"><%= invoice.hidden_field :default_pph_23, class: "invoice_field money_text amount_idr default_pph_23", autocomplete: "off", disabled: "disabled" %></td>
+                </tr>
+                <tr>
+                  <td class="hidden"></td>
+                  <td colspan="5" class="text-left">TOTAL INVOICE EXCLUDE PPH 23</td>
+                  <td><%= invoice.text_field :total_invoice_exclude_pph_23, class: "invoice_field money_text amount_idr total_invoice_exclude_pph_23", autocomplete: "off", disabled: "disabled", disabled: "disabled" %></td>
+                  <td colspan="3"><%= invoice.hidden_field :default_total_invoice_exclude_pph_23, class: "invoice_field money_text amount_idr default_total_invoice_exclude_pph_23", autocomplete: "off", disabled: "disabled" %></td>
+                </tr>
+                <tr>
+                  <td class="hidden"></td>
+                  <td colspan="5" class="text-left">TOTAL INVOICE</td>
+                  <td><%= invoice.text_field :total_invoice, class: "invoice_field money_text amount_idr total_invoice", autocomplete: "off", disabled: "disabled" %></td>
+                  <td colspan="3"><%= invoice.hidden_field :default_total_invoice, class: "invoice_field money_text amount_idr default_total_invoice", autocomplete: "off", disabled: "disabled" %></td>
+                </tr>
+              </tfoot>
+            </table>
+            <div class="text-right">
+              <% if invoice.index == 0 %>
+                <a href="#" onclick="add_bill_of_lading_invoice_fields(); add_bill_of_lading_invoice_data(); return false;">ADD INVOICE</a>
+              <% else %>
+                <%# invoice.hidden_field :_destroy, class: "span12" %>
+                <% if invoice.object.marked_for_destruction? %>
+                  <%= invoice.hidden_field :_destroy, class: "span12", value: 1 %>
+                <% else %>
+                  <%= invoice.hidden_field :_destroy, class: "span12" %>
+                <% end %>
+                <a href="#" onclick="remove_bill_of_lading_invoice_fields(this); return false;" tabindex="-1">DELETE</a>
+              <% end %>
+            </div>
+          </div>
+          <div class="clearfix">&nbsp;</div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="actions" style="margin-top: 20px">
+    <button type="submit" class="btn btn-primary"><i class="icon-save"></i> Save</button>
+    <a class="btn" href="<%= bill_of_ladings_path %>"><i class="icon-reply"></i> Back</a>
+    <a class="btn" href="<%= edit_shipping_instruction_path(@shipping_instruction) %>" target="_blank"><i class="icon-edit-sign"></i> Update SI</a>
+  </div>
+<% end %>
+
+<% if @shipping_instruction.new_record? %>
+<script type="text/javascript">
+  // $(document).ready(function(){
+    $("#invoice_si_no").typeahead({
+      minLength: 3,
+      source: function(query, process){
+        $.ajax({
+          url: "/shipping_instructions.json",
+          dataType: "json",
+          data: {query: query, status: 0},
+          success: function(data){
+            bls = [];
+            $.each(data, function(i, bl){
+              bls.push(bl.si_no);
+            });
+            return process(bls);
+          }
+        })
+      }
+    });
+
+    $("#loadSI").click(function(){
+      if($("#invoice_si_no").val() != ''){
+        $(this).button('loading');
+        $.ajax({
+          url: "/load-si-data",
+          //dataType: "json",
+          data: {query: $("#invoice_si_no").val(), status: 0},
+          success: function(data){
+            if(data != ''){
+              $("#invoice_shipping_instruction_id").val(data.id);
+              $("#invoice_bl_si_number").val([data.si_no, data.master_bl_no].join(' / '));
+              $("#invoice_shipper_reference").val(data.shipper_reference);
+              $("#invoice_shipper").val(data.shipper);
+              $("#invoice_vessel").val(data.vessel_name);
+              $("#invoice_etd").val(data.etd_date);
+              $("#invoice_port_of_loading").val(data.port_of_loading);
+              $("#invoice_destination").val(data.final_destination);
+              $("#invoice_volume").val(data.volume);
+              $("#invoice_payment_number").val(data.payment);
+              $("#ibl_ref_link").attr("href", data.link_to);
+            }
+            else{
+              alert("Shipping Instruction didn't have bill of lading or not found...");
+            }
+            $("#loadSI").button('reset');
+          }
+        });
+      }
+      else{
+        alert("Please enter the SI No.");
+      }
+    });
+
+    $(function(){
+      if($("#invoice_si_no").val() != ''){
+        $("#loadSI").trigger( "click" );
+      }
+    });
+  // })
+</script>
+<% end %>
+<script type="text/javascript">
+  // $(document).ready(function(){
+    $(".invoice_description").livequery(function(){
+      $(this).typeahead({
+        source: [
+          <% @details.each do |c| %>
+            "<%= c.description %>",
+          <% end %>
+        ]
+      });
+    });
+
+    // $("#invoice-description table tbody tr:not('.hidden'):last td:eq(1) input").livequery(function(){
+    //   $(this).focusout(function(e){
+    //     e.preventDefault();
+    //     // alert($(this).val());
+    //     if($(this).val() != "")
+    //       add_sell_cost_invoice_fields('bill_of_lading');
+    //   })
+    // });
+
+    // $(".invoice-table tbody tr:not('.hidden'):last td:eq(1) input").livequery(function(){
+    $(".invoice_description").livequery(function(){
+      $(this).focusout(function(e){
+        e.preventDefault();
+        // if($(this).val() != "")
+        if($(".invoice-table tbody tr:not('.hidden'):last td:eq(1) input").val() != "")
+          add_sell_invoice_fields();
+          // alert($(this).val());
+      })
+    });
+
+    $(".money_text, .volume_text").livequery(function(){
+      $(this).focusout(function(){
+        calculate();
+      });
+    });
+
+    $(".is_ai").livequery(function(){
+      $(this).change(function(){
+        var table = $(".invoice-table");
+        table.each(function(index){
+          var invoice = $(this).parent().parent().find('.span12').first();
+          if(invoice.find(".is_ai").is(":checked"))
+            invoice.find(".is_gi").attr('checked', false);
+          else
+            invoice.find(".is_gi").attr('checked', true);
+        });
+        calculate();
+      });
+    });
+
+    $(".is_gi").livequery(function(){
+      $(this).change(function(){
+        var table = $(".invoice-table");
+        table.each(function(index){
+          var invoice = $(this).parent().parent().find('.span12').first();
+          if(invoice.find(".is_gi").is(":checked"))
+            invoice.find(".is_ai").attr('checked', false);
+          else
+            invoice.find(".is_ai").attr('checked', true);
+        });
+        calculate();
+      });
+    });
+
+    $(".add_vat_10, .add_vat_1, .add_pph_23").livequery(function(){
+      $(this).change(function(){
+        calculate();
+      });
+    });
+
+    $(".is_tick_all").livequery(function(){
+      $(this).change(function(){
+        var i = $(this).index(".is_tick_all");
+        var table = $(".invoice-table");
+        table.each(function(index){
+          var invoice = $(this).parent().parent().find('.span12').first();
+          if(invoice.find(".is_tick_all").is(":checked") && i == index){
+            $(this).find(".add_vat_1").prop('checked', true);;
+            $(this).find(".add_pph_23").prop('checked', true);
+          }
+        });
+        calculate();
+      });
+    });
+
+    // calculate();
+    // if($(".is_gi").is(":checked") == false){
+    //   $(".is_ai").attr('checked', true);
+    // }
+
+    $(".invoice_no").on("change", function(e) {
+      // e.preventDefault();
+      // var invoice_no = $(this).next('input[type=text]').val();
+      var invoice_no = $(this).val();
+      // var href = $(this).attr('href');
+      var href = $(this).data('href');
+      if($(this).val() != ''){
+        $(this).prev("a").attr('href', href+'&invoice_no='+invoice_no);
+      }
+      else{
+        $(this).prev("a").attr('href', href);
+      }
+      return false;
+    });
+  // });
+</script>
+<script type="text/javascript">
+  function calculate(){
+    var total_bill_of_lading_invoices = 0;
+
+    var table = $(".invoice-table:not('.hidden')");
+    table.each(function(index){
+      var tbody = $(this).find("tbody");
+      var rows = tbody.find("tr:not('.hidden')");
+      var tfoot = $(this).find("tfoot");
+      var sum_total_after_tax = 0;
+      var total_invoice = 0;
+
+      var invoice = $(this).parent().parent().find('.span12').first();
+
+      // var rate = number_format($("#shipping_instruction_bill_of_lading_invoice_attributes_rate").val());
+      var rate = number_format(tfoot.find(".rate").val());
+      rate = rate == 0 ? 1 : rate;
+
+      rows.each(function(){
+        var parent = $(this);
+        var volume = number_format(parent.find(".volume").val());
+        var amount_usd = number_format(parent.find(".amount_usd").val());
+        var amount_idr = number_format(parent.find(".amount_idr").val());
+
+        var total = 0;
+        if(amount_usd != 0)
+          total = volume * amount_usd * rate;
+        else if(amount_idr != 0)
+          total = volume * amount_idr;
+
+        parent.find(".total").val(money_format(total));
+
+        // total_invoice += total;
+        // total_invoice += number_format(parent.find(".total").val());
+      });
+      // console.log(total_invoice);
+
+      var default_vat_10 = 0;
+      var default_vat_1 = 0;
+      var default_pph_23 = 0;
+
+      var tmp = 0;
+
+      rows.each(function(){
+        var parent = $(this);
+
+        var total_after_tax = 0;
+        var date_created_at = $('#created_at').html().replace(":", "").trim();
+        var tanggal_baru = new Date("2022-04-01").getTime();
+
+        var tgl_baru = new Date(2022, 3, 1, 0,0,0,0).getTime();
+        var parts =date_created_at.split('-');
+        var create_baru = new Date(parts[0], parts[1] - 1, parts[2], 0, 0, 0, 0).getTime();
+
+        total = number_format(parent.find(".total").val());
+        total_after_tax += total;
+        console.log(total, parseFloat(total), number_format(total));
+        // console.log('hanca', date_created_at)
+        // console.log(tanggal_baru);
+        // console.log('tgl baru', tgl_baru);
+        // console.log('create baru', create_baru);
+
+        // if($(".is_ai").is(":checked")){
+          // if(total != 0){
+
+          //var parts ='2014-04-03'.split('-');
+          // Please pay attention to the month (parts[1]); JavaScript counts months from 0:
+          // January - 0, February - 1, etc.
+          //var mydate = new Date(parts[0], parts[1] - 1, parts[2]);
+          //console.log(mydate.toDateString());
+
+          // console.log(create_baru < tgl_baru);
+        if (create_baru < tgl_baru) {
+            if(parent.find(".add_vat_10").is(":checked")){
+              if(invoice.find(".is_gi").is(":checked")) {
+                tmp = number_format(money_format(total*0.1));
+              }
+              else {
+                tmp = number_format(money_format(total/11));
+                total_after_tax -= tmp;
+              }
+              default_vat_10 += tmp;
+            }
+          }
+        else {
+            if(parent.find(".add_vat_10").is(":checked")){
+              if(invoice.find(".is_gi").is(":checked")) {
+                tmp = number_format(money_format(total*0.11));
+                total_after_tax -= tmp;
+              }
+            else{
+              tmp = number_format(money_format(total/111*11));
+              total_after_tax -= tmp;
+            }
+            default_vat_10 += tmp;
+          }
+        }
+
+        if (create_baru < tgl_baru){
+            if(parent.find(".add_vat_1").is(":checked")){
+              if(invoice.find(".is_gi").is(":checked"))
+                tmp = number_format(money_format(total*0.01));
+              else{
+                tmp = number_format(money_format(total/101));
+                total_after_tax -= tmp;
+              }
+              default_vat_1 += tmp;
+            }
+          }
+        else {
+          if(parent.find(".add_vat_1").is(":checked")){
+            if(invoice.find(".is_gi").is(":checked"))
+              tmp = number_format(money_format(total*0.011));
+            else{
+              tmp = number_format(money_format(total*1.1/101.1));
+              total_after_tax -= tmp;
+            }
+            default_vat_1 += tmp;
+            }
+          }
+          // }
+        // }
+        parent.find(".total_after_tax").val(money_format(total_after_tax));
+
+        sum_total_after_tax += number_format(parent.find(".total_after_tax").val());
+        if(parent.find(".add_pph_23").is(":checked")){
+          default_pph_23 += number_format(money_format(number_format(parent.find(".total_after_tax").val())*(-0.02)));
+          // console.log(monefy_format(number_format(parent.find(".total_after_tax").val())*(-0.02)));
+        }
+      });
+
+      // rows.each(function(){
+      //   var parent = $(this);
+
+      //   var total = number_format(parent.find(".total").val());
+
+      //   if(parent.find(".add_vat_10").is(":checked"))
+      //     vat_10 += total;
+      //   if(parent.find(".add_vat_1").is(":checked"))
+      //     vat_1 += total;
+      //   // if(parent.find(".add_pph_23").is(":checked"))
+      //   //   pph_23 += total;
+
+      //   // total_invoice += total;
+      //   // total_invoice += number_format(parent.find(".total").val());
+      // });
+
+      // $("#shipping_instruction_bill_of_lading_invoice_attributes_vat_10").val(money_format(vat_10));
+      // $("#shipping_instruction_bill_of_lading_invoice_attributes_vat_1").val(money_format(vat_1));
+      // $("#shipping_instruction_bill_of_lading_invoice_attributes_pph_23").val(money_format(pph_23));
+      // if($(".is_ai").is(":checked")){
+      //   vat_10 /= 11;
+      //   vat_1 /= 101;
+      // }
+      // else if($(".is_gi").is(":checked")){
+      //   vat_10 *= 0.1;
+      //   vat_1 *= 0.01;
+      // }
+      // else{
+      //   $(".is_ai").attr('checked', true);
+      //   // vat_10 = 0;
+      //   // vat_1 = 0;
+      //   vat_10 /= 11;
+      //   vat_1 /= 101;
+      // }
+
+      // rows.each(function(){
+      //   var parent = $(this);
+
+      //   if(parent.find(".add_pph_23").is(":checked"))
+      //     pph_23 += number_format(parent.find(".total_after_tax").val());
+      // });
+      // pph_23 *= (-0.02);
+      // console.log(vat_10);
+      // console.log(vat_1);
+      // console.log(pph_23);
+
+      tfoot.find(".default_vat_10").val(money_format(default_vat_10));
+      tfoot.find(".default_vat_1").val(money_format(default_vat_1));
+      tfoot.find(".default_pph_23").val(money_format(default_pph_23));
+
+      tfoot.find(".vat_10").val(money_format(default_vat_10));
+      tfoot.find(".vat_1").val(money_format(default_vat_1));
+      tfoot.find(".pph_23").val(money_format(default_pph_23));
+
+      var vat_10 = number_format(tfoot.find(".vat_10").val());
+      var vat_1 = number_format(tfoot.find(".vat_1").val());
+      var pph_23 = number_format(tfoot.find(".pph_23").val());
+
+      // var other = number_format($("#shipping_instruction_bill_of_lading_invoice_attributes_other").val());
+      var other = number_format(tfoot.find(".other").val());
+
+      var total_invoice_exclude_pph_23 = sum_total_after_tax + other + vat_10 + vat_1;
+      // $("#shipping_instruction_bill_of_lading_invoice_attributes_total_invoice_after_exclude_pph_23").val(money_format(total_invoice_exclude_pph_23));
+      // console.log(total_invoice_exclude_pph_23);
+      tfoot.find(".total_invoice_exclude_pph_23").val(money_format(total_invoice_exclude_pph_23));
+
+      var total_invoice = total_invoice_exclude_pph_23 + pph_23;
+      // $("#shipping_instruction_bill_of_lading_invoice_attributes_total_invoice").val(money_format(total_invoice));
+      tfoot.find(".total_invoice").val(money_format(total_invoice));
+
+
+      var default_total_invoice_exclude_pph_23 = sum_total_after_tax + other + default_vat_10 + default_vat_1;
+      tfoot.find(".default_total_invoice_exclude_pph_23").val(money_format(default_total_invoice_exclude_pph_23));
+
+      var default_total_invoice = default_total_invoice_exclude_pph_23 + default_pph_23;
+      tfoot.find(".default_total_invoice").val(money_format(default_total_invoice));
+
+      total_bill_of_lading_invoices += default_total_invoice;
+    });
+    $(".total_bill_of_lading_invoices").val(money_format(total_bill_of_lading_invoices));
+  }
+
+  function add_bill_of_lading_invoice_data(){
+    $("#loading").show();
+    $.ajax({
+      url: '<%= import_data_cost_revenues_path %>',
+      type: 'GET',
+      dataType: "json",
+      data: {ibl_ref: '<%= @shipping_instruction.ibl_ref %>'},
+      success: function(data){
+        $("#loading").hide();
+        if(data.success) {
+          var table = $(".invoice-table").last();
+          var tbody = table.find("tbody tr");
+          tbody.find(".remove_invoice_description").click();
+
+          var tfoot = table.find("tfoot");
+
+          $.each(data.items, function(key, value) {
+            add_sell_invoice_fields();
+
+            rows = $(".invoice-table").last().find("tbody tr");
+            rows.last().find(".invoice_description").val(value.description);
+            rows.last().find(".invoice_volume").val(value.selling_volume);
+            rows.last().find(".amount_usd").val(value.selling_usd);
+            rows.last().find(".amount_idr").val(value.selling_idr);
+            rows.last().find(".item_type").val(value.item_type);
+          });
+
+          // tfoot.find(".other").val(data.selling_other);
+          // tfoot.find(".rate").val(data.selling_rate);
+          // tfoot.find(".vat_10").val(data.selling_vat_10);
+          // tfoot.find(".vat_1").val(data.selling_vat_1);
+          // tfoot.find(".pph_23").val(data.selling_pph_23);
+
+
+          calculate();
+          alert("Import done...");
+        } else {
+          add_sell_invoice_fields();
+          alert(data.message);
+        }
+      }
+    });
+  }
+
+  function highlighter(){
+    var column2 = $(".detail_cr .control-group");
+    var column1 = $(".detail_si .control-group");
+
+    column2.each(function(index){
+      if($(this).html() == column1.eq(index).html()){
+        $(this).css('color', 'black');
+        column1.eq(index).css('color', 'black');
+      }
+      else{
+        $(this).css('color', 'blue');
+        column1.eq(index).css('color', 'blue');
+      }
+    });
+  }
+
+  highlighter();
+  add_sell_invoice_fields();
+</script>

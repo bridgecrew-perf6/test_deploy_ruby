@@ -1,0 +1,55 @@
+<%= render 'commons/pdf' %>
+<style type="text/css">
+  table {
+    border-collapse: collapse;
+  }
+  thead th, tbody td {
+    border: 1px solid black;
+  }
+</style>
+<%# columns = @report.columns %>
+<%# base = [] %>
+<%# 20.times{ |i| base.push i.to_s } %>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <% @results.sort_by(&:customer).group_by{|i| i.customer.squish}.each do |customer, invoices| %>
+    <table style="width: 100%" border="0">
+      <thead>
+        <tr>
+          <%
+            head = []
+            head.push ""
+            head.push "<th width=\"70\">IBL REF</th>"
+            head.push"<th width=\"200\">SHIPPER</th>"
+            head.push"<th width=\"200\">CUSTOMER</th>"
+            head.push"<th width=\"95\">INV REF</th>"
+            head.push"<th width=\"125\">USD</th>"
+            head.push"<th width=\"125\">IDR</th>"
+            head.push"<th width=\"100\">ETD DATE</th>"
+            head.push"<th width=\"100\">DUE DATE</th>"
+          %>
+          <%# (base-columns).reverse_each{ |column| head.delete_at(column.to_i) } %>
+          <%= head.join("").html_safe %>
+        </tr>
+      </thead>
+      <tbody>
+        <% invoices.each do |reference| %>
+          <tr>
+            <% body = report_list_cc_breakdown(reference, "pdf") %>
+            <%# (base-columns).reverse_each{ |column| body.delete_at(column.to_i) } unless body.blank? %>
+            <%= body.join("").html_safe unless body.blank? %>
+          </tr>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <%# index = columns.index("9") %>
+          <th colspan="4" style="text-align:left">TOTAL</th>
+          <th style="text-align:right"><%= money_format(invoices.map{|p| p.grand_total if p.currency_code == "USD" && p.is_uncanceled?}.sum(&:to_f)) %></th>
+          <th style="text-align:right"><%= money_format(invoices.map{|p| p.grand_total if p.currency_code == "IDR" && p.is_uncanceled?}.sum(&:to_f)) %></th>
+        </tr>
+      </tfoot>
+    </table>
+    <br>
+  <% end %>
+</div>

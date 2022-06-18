@@ -1,0 +1,13 @@
+.wrap.collapsed{height: 20px;overflow: hidden;}
+/*.ui-datepicker-calendar {display: none;}*/
+.ui-datepicker{z-index: 1061 !important;}
+.padding{padding: 5px 0;font-weight: 700;}
+table .yadcf-filter-wrapper input, table .yadcf-filter-wrapper select {
+    width: 100%;
+    min-width: 100px;
+    padding: 3px;
+    box-sizing: border-box;
+}
+table .yadcf-filter-range-date {
+    width: 80px !important;
+}

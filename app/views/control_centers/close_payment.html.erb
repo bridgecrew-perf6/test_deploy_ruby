@@ -1,0 +1,509 @@
+<div class="page-header">
+  <h3>Close Payment</h3>
+</div>
+
+<style type="text/css">
+  #close_payments tbody tr td{
+    /*padding: 0 !important;*/
+  }
+  #close_payments input, #close_payments textarea{
+    /*float: right;*/
+    /*width: 100%;*/
+  }
+  .money_text{
+    text-align: right;
+  }
+  .close_payment_field{
+    /*margin-bottom: 0!important;
+    border: none!important;
+    padding: 0!important;
+    float: left;*/
+    /*width: 90%;*/
+    /*text-align: left;*/
+  }
+  ./*close_payment_field, .close_payment_field:focus{
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important; 
+  }*/
+  .amount, .amount_deposit, .total{
+    text-align: right;
+  }
+  select.ibl_ref_with_invoice_no{
+    width: 100%;
+  }
+  .invoice_no{
+    width: 143px;
+  }
+  .rounding, .bank_charge, .discount, .short_paid, .deposit, .pph_23, .other, .note, .amount{
+    width: 85px !important;
+    height: 20px !important;
+  }
+  ./*padding{
+    padding: 5px 0;
+    font-weight: 700;
+  }
+  input:disabled{
+    border-radius: 0;
+  }*/
+
+  #close_payments, #invoice_payments{
+    width: 100%;
+  }
+  #invoice_deposits{
+    width: 570px;
+  }
+</style>
+<%= form_for(@invoice, url: update_close_payment_control_centers_path(close_ref: @invoice.close_payment_close_ref), html: { class: "form-horizontal"}) do |f| %>
+  <% if @invoice.errors.any? %>
+  <div class="alert alert-error">
+      <ul class="unstyled">
+      <% @invoice.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+  </div>
+  <% end %>
+  <% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+  <% end %>
+  
+  <div class="row-fluid">
+    <div class="span6">
+      <div class="control-group">
+        <label for="" class="control-label text-left">Close Ref :</label>
+        <div class="controls padding">
+        <% unless @invoice.close_payment_close_ref.blank? %>
+          <%= @invoice.close_payment_close_ref %>
+          <%= f.hidden_field :close_payment_close_ref, class: "close_payment_field close_payment_close_ref", autocomplete: "off" %>
+        <% else %>
+          <%= ClosePayment.generate_close_ref %>
+        <% end %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label text-left">Payment Date :</label>
+        <div class="controls">
+          <%# text_field_tag :payment_date, nil, class: "close_payment_field close_payment_date datepicker", autocomplete: "off" %>
+          <%= f.text_field :close_payment_date, class: "close_payment_field close_payment_date datepicker", autocomplete: "off", value: "#{normal_date_format(@invoice.close_payment_date) unless @invoice.close_payment_date.blank?}" %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label text-left">Status :</label>
+        <div class="controls">
+          <%# select_tag :status, options_for_select([["Open", "0"], ["Closed", "1"]]), class: "close_payment_status" %>
+          <%= f.select :close_payment_status, options_for_select([["Open", "0"], ["Closed", "1"]], @invoice.close_payment_status), {}, {class: "close_payment_status"} %>
+        </div>
+      </div>
+    </div>
+    <div class="span6">
+    </div>
+  </div>
+
+  <table class="table table-striped table-bordered" id="close_payments">
+    <thead>
+      <tr>
+        <th width="220">IBL Ref</th>
+        <th width="250">Customer</th>
+        <th width="250">Shipper</th>
+        <th width="85">Invoice No</th>
+        <th width="150">Amount</th>
+        <th width="150">Amount Paid</th>
+        <th width="10"></th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <th>RATE</th>
+        <th><%# text_field_tag :rate, nil, class: "close_payment_field close_payment_rate money_text", autocomplete: "off", style: "width: -moz-available;" %><%= f.text_field :close_payment_rate, class: "close_payment_field close_payment_rate money_text", autocomplete: "off", style: "width: -moz-available;" %></th>
+        <th></th>
+        <th>TOTAL</th>
+        <th style="text-align:right;font-size:12px;"><span class="close_payment_field close_payment_total_amount money_text"></span></th>
+        <th style="text-align:right;font-size:12px;"><%# text_field_tag :total_amount_paid, nil, class: "close_payment_field close_payment_total_amount_paid money_text", autocomplete: "off", disabled: "disabled", style: "width: 130px;" %><span class="close_payment_field close_payment_total_amount_paid money_text"></span></th>
+        <th></th>
+      </tr>
+    </tfoot>
+    <tbody>
+    	<%= f.fields_for :close_payments do |builder| %>
+        <%= render 'close_payment_fields', :f => builder %>
+		  <% end %>
+    </tbody>
+  </table>
+  <p><a onclick="add_close_payment_fields(); return false;" href="#" class="btn btn-small"><i class="icon-plus-sign"></i> Add Close Payment</a></p>
+
+  <table class="table table-striped table-bordered" id="invoice_payments">
+    <caption class="text-left"><h5>ADDITIONAL</h5></caption>
+    <thead>
+      <tr>
+        <th width="85">Invoice No</th>
+        <th width="150">Bank Charge</th>
+        <!-- <th width="150">Discount</th> -->
+        <th width="150">Rounding</th>
+        <th width="150">Short Paid</th>
+        <th width="150">Deposit</th>
+        <th width="150">PPH 23</th>
+        <th width="150">Other</th>
+        <th width="150">Note</th>
+        <th width="10"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= f.fields_for :additional_payments do |builder| %>
+        <%= render 'invoice_payment_fields', :f => builder %>
+      <% end %>
+    </tbody>
+  </table>
+  <p><a onclick="add_invoice_payment_fields(); return false;" href="#" class="btn btn-small"><i class="icon-plus-sign"></i> Add Additional</a></p>
+
+  <table class="table table-striped table-bordered" id="invoice_deposits">
+    <thead>
+      <tr>
+        <th width="220">IBL Deposit - Invoice No - Deposit Balance</th>
+        <th width="150">USE DEPOSIT</th>
+        <th width="85">Invoice No</th>
+        <th width="10"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= f.fields_for :deposit_payments do |builder| %>
+        <%= render 'invoice_deposit_fields', :f => builder %>
+      <% end %>
+    </tbody>
+  </table>
+  <p><a onclick="add_invoice_deposit_fields(); return false;" href="#" class="btn btn-small"><i class="icon-plus-sign"></i> Use Deposit</a></p>
+
+  <div class="actions" style="margin-top: 20px">
+    <button type="submit" class="btn btn-primary"><i class="icon-save"></i> Submit</button>
+    <a class="btn" href="<%= control_centers_path %>"><i class="icon-reply"></i> Back</a>
+  </div>
+<% end %>
+<script type="text/javascript">
+  var ibl_ref_with_invoice_no, invoice_deposit;
+  // $(document).ready(function(){ 
+    $("select.ibl_ref_with_invoice_no").livequery(function(){
+      if($(this).val() != '')
+      {
+        var customers = [];
+        var invoice_nos = [];
+        $("#close_payments tbody tr:not('.hidden')").each(function(){
+          var customer = $(this).find(".customer").val();
+          if(customer != ""){
+            if(jQuery.inArray( customer, customers ) == -1){
+              customers.push(customer);
+            }
+          }
+          var invoice_no = $(this).find(".invoice_no").val();
+          if(invoice_no != ""){
+            if(jQuery.inArray( invoice_no, invoice_nos ) == -1){
+              invoice_nos.push(invoice_no);
+            }
+          }
+        });
+
+        $.ajax({
+          url: '<%= get_ibl_ref_with_invoice_no_path %>',
+          type: 'GET',
+          dataType: "json",
+          data: {customer: customers},
+          success: function(data){
+            if(data.success)
+            {
+              results = data.results;
+              ibl_ref_with_invoice_no = data.results;
+              // console.log(ibl_deposit);
+              
+              $(".ibl_ref_with_invoice_no:last option").remove();
+              $(".ibl_ref_with_invoice_no:last").append('<option value="">Select IBL Ref</option>');
+              for(i in results){
+                var ibl_ref = results[i].ibl_ref;
+                var invoice_no = results[i].invoice_no;
+                if(jQuery.inArray( invoice_no, invoice_nos ) == -1){
+                  $(".ibl_ref_with_invoice_no:last").append('<option value="'+ ibl_ref +'">'+ [ibl_ref, invoice_no].join(" - ") +'</option>');
+                }
+              }
+              // console.log(data[i]);
+            }
+            else
+            {
+              // console.log(data);
+              alert(data.message);
+              $("table#close_payments tbody tr:not('.hidden')").last().find("a").click();
+            }
+          }
+        })
+      }
+      else{
+        // alert("Select a IBL Ref first");
+        // $("table#payment_deposits tbody tr:not('.hidden')").last().find("a").click();
+      }
+    });
+    
+    $("select.ibl_ref_with_invoice_no").livequery(function(){
+      $(this).change(function(){
+        if($(this).val() != '')
+        {
+          var parent = $(this).parent().parent();
+          var ibl_ref = $(this).find("option:selected").text().split(" - ")[0]; 
+          var invoice_no = $(this).find("option:selected").text().split(" - ")[1]; 
+          console.log(ibl_ref);
+          console.log(" ----- ");
+          console.log(invoice_no);
+
+          $("#close_payments tbody tr:not('.hidden')").each(function(){
+            var parent_2 = $(this);
+            invoice_no_2 = parent_2.find(".invoice_no").val();
+            if(invoice_no == invoice_no_2)
+            {
+              alert('Invoice No already exist');
+              $("#close_payments tbody tr:not('.hidden'):last").find("a").click();
+              return
+            }
+          });
+
+         
+          console.log("SEARCH IT");
+          for(i in ibl_ref_with_invoice_no){
+            console.log(ibl_ref_with_invoice_no[i].invoice_no);
+            if((ibl_ref_with_invoice_no[i].invoice_no == invoice_no) && (ibl_ref_with_invoice_no[i].ibl_ref == ibl_ref))
+            {
+              console.log("FOUND IT");
+              parent.find(".customer").val(ibl_ref_with_invoice_no[i].customer);
+              parent.find(".shipper").val(ibl_ref_with_invoice_no[i].shipper);
+              parent.find(".invoice_no").val(ibl_ref_with_invoice_no[i].invoice_no);
+              parent.find(".amount").val(ibl_ref_with_invoice_no[i].amount);
+              parent.find(".currency").val(ibl_ref_with_invoice_no[i].currency);
+
+              parent.find(".customer_text").html(ibl_ref_with_invoice_no[i].customer);
+              parent.find(".shipper_text").html(ibl_ref_with_invoice_no[i].shipper);
+              parent.find(".invoice_no_text").html(ibl_ref_with_invoice_no[i].invoice_no);
+              parent.find(".amount_text").html(parentheses_format(ibl_ref_with_invoice_no[i].amount, ibl_ref_with_invoice_no[i].currency));
+
+              calculate();
+              return
+            }
+          }
+        }
+      })
+    });
+
+    $("#invoice_payments tbody tr:not('.hidden') .invoice_no, #invoice_deposits tbody tr:not('.hidden') .invoice_no").livequery(function(){
+      var temp = [];
+      $("#close_payments tbody tr:not('.hidden') .invoice_no").each(function(){
+        temp.push($(this).val());
+      });
+      $(this).typeahead({
+        source: temp
+      });
+    });
+
+    $("#invoice_payments tbody tr:not('.hidden') .invoice_no, #invoice_deposits tbody tr:not('.hidden') .invoice_no").livequery(function(){
+      $(this).focusout(function(){
+        var invoice_no = $(this).val();
+        var valid = false;
+        if(invoice_no != ""){
+          $("#close_payments tbody tr:not('.hidden') .invoice_no").each(function(){
+            if($(this).val() == invoice_no){
+              valid = true;
+            }
+          });
+          if(!valid){
+            alert("Invoice No "+invoice_no+" Not Listed. Please revise");
+            $(this).val("");
+          }
+        }
+        calculate();
+      });
+    });
+
+    $("select.invoice_deposit").livequery(function(){      
+      var customers = [];
+      $("#close_payments tbody tr:not('.hidden')").each(function(){
+        var customer = $(this).find(".customer").val();
+        if(customer != ""){
+          if(jQuery.inArray( customer, customers ) == -1){
+            customers.push(customer);
+          }
+        }
+      });
+      console.log(customers);
+      if(customers.length != 0)
+      {
+        $.ajax({
+          url: '<%= get_invoice_deposit_path %>',
+          type: 'GET',
+          dataType: "json",
+          data: {customer: customers},
+          success: function(data){
+            if(data.success)
+            {
+              invoice_deposit = data.results;
+              console.log(invoice_deposit);
+              // $(".deposit_invoice_deposit").typeahead({
+              //   source: invoice_deposit
+              // });
+
+              $(".invoice_deposit:last option").remove();
+              $(".invoice_deposit:last").append('<option value="">Select Invoice Deposit</option>');
+              for(i in invoice_deposit){
+                var ibl_ref = invoice_deposit[i].ibl_ref;
+                var invoice_no = invoice_deposit[i].invoice_no;
+                var currency = invoice_deposit[i].currency;
+                var deposit_balance = parentheses_format(invoice_deposit[i].deposit_balance, currency);
+                $(".deposit_invoice_deposit:last").append('<option value="'+ invoice_no +'">'+ [ibl_ref, invoice_no, deposit_balance].join(" - ") +'</option>');
+              }
+              // console.log(data[i]);
+            }
+            else
+            {
+              // console.log(data);
+              alert(data.message);
+              $("table#invoice_deposits tbody tr:not('.hidden')").last().find("a").click();
+            }
+          }
+        })
+      }
+      else{
+        // alert("Please enter the SI No.");
+        alert("Select a Carrier first");
+        $("table#payment_deposits tbody tr:not('.hidden')").last().find("a").click();
+      }
+    });
+    
+    $("select.invoice_deposit").livequery(function(){
+      $(this).change(function(){
+        if($(this).val() != '')
+        {
+          var parent = $(this).parent().parent();
+          var ibl_ref = $(this).find("option:selected").text().split(" - ")[0];
+          var invoice_no = $(this).find("option:selected").text().split(" - ")[1]; 
+
+          parent.find(".ibl_deposit").val(ibl_ref);
+              
+          calculate();
+          return
+        }
+      })
+    });
+
+    $(".money_text, .volume_text").livequery(function(){
+      $(this).focusout(function(){
+        calculate();
+      });
+    });
+    
+    $("form").livequery(function(){
+      $(this).submit(function(){
+        // calculate();
+        $(".amount_paid").prop("disabled", false);
+        $(".payment_date").each(function(){ $(this).val($(".close_payment_date").val()) });
+        $(".rate").each(function(){ $(this).val(number_format($(".close_payment_rate").val())) });
+        $(".status").each(function(){ $(this).val($(".close_payment_status").val()) });
+      });
+    });
+  // })
+</script>
+<script type="text/javascript">
+  function calculate(){
+    console.log("Calculate Now!!!");
+    var total_amount = 0;
+    var total_amount_paid = 0;
+    
+    var rate = number_format($(".close_payment_rate").val());
+    rate = rate == 0 ? 1 : rate;
+
+    var parent, invoice_no, amount, amount_paid, rounding, bank_charge, discount, short_paid, deposit, pph_23, other, amount_add;
+    var amount_payment = [];    
+    $("#invoice_payments tbody tr:not('.hidden')").each(function(){
+      parent = $(this);
+      invoice_no = parent.find(".invoice_no").val();
+      bank_charge = number_format(parent.find(".bank_charge").val());
+      // discount = number_format(parent.find(".discount").val());
+      rounding = number_format(parent.find(".rounding").val());
+      short_paid = number_format(parent.find(".short_paid").val());
+      deposit = number_format(parent.find(".deposit").val());
+      pph_23 = number_format(parent.find(".pph_23").val());
+      other = number_format(parent.find(".other").val());
+      
+      // amount_add = 0 - bank_charge - discount - short_paid + deposit + pph_23 - other;
+      // amount_add = 0 - bank_charge - rounding - short_paid + deposit + pph_23 - other;
+      amount_add = bank_charge + rounding + short_paid + deposit + pph_23 + other;
+      if (amount_payment[invoice_no]) {
+        amount_payment[invoice_no] += amount_add;
+      } else {
+        amount_payment[invoice_no] = amount_add;
+      }
+    });
+
+    var amount_deposit = [];    
+    $("#invoice_deposits tbody tr:not('.hidden')").each(function(){
+      parent = $(this);
+      invoice_no = parent.find(".invoice_no").val();
+      amount = number_format(parent.find(".amount").val());
+      
+      if (amount_deposit[invoice_no]) {
+        amount_deposit[invoice_no] += amount;
+      } else {
+        amount_deposit[invoice_no] = amount;
+      }
+    });
+
+    var total_amount_usd = 0;
+    var total_amount_idr = 0;
+    var total_amount_paid_usd = 0;
+    var total_amount_paid_idr = 0;
+    $("#close_payments tbody tr:not('.hidden')").each(function(){
+      parent = $(this);
+      invoice_no = parent.find(".invoice_no").val();
+      currency = parent.find(".currency").val();
+      amount = number_format(parent.find(".amount").val());
+      // amount_paid = number_format(parent.find(".amount_paid").val());
+      
+      amount_paid = 0;
+      if(currency == "USD"){
+        amount_paid += number_format((amount * rate).toFixed(2));
+      }else if(currency == "IDR"){
+        amount_paid += amount;
+      }
+      if(amount_payment[invoice_no]){
+        amount_paid += amount_payment[invoice_no];
+      }
+      if(amount_deposit[invoice_no]){
+        amount_paid -= amount_deposit[invoice_no];
+      }
+      parent.find(".amount_paid").val(money_format(amount_paid));
+
+      // total_amount += amount;
+      // total_amount_paid += amount_paid;
+
+      var amount_text = parent.find(".amount_text").text();
+      if(amount_text.includes("USD")) total_amount_usd += number_format(amount_text);
+      else total_amount_idr += number_format(amount_text);
+
+      var amount_paid_text = parent.find(".amount_paid").val();
+      if(currency == "USD" && number_format($(".close_payment_rate").val()) == 0) total_amount_paid_usd += number_format(amount_paid_text); 
+      else total_amount_paid_idr += number_format(amount_paid_text);
+    });
+
+    console.log(total_amount_usd+" - "+total_amount_idr);
+    var total = [];
+    if(total_amount_idr != 0)
+      total.push(parentheses_format(total_amount_idr, "IDR"));
+    if(total_amount_usd != 0)
+      total.push(parentheses_format(total_amount_usd, "USD"));
+
+    // console.log(total+ " - "+total_amount_paid);
+
+    console.log(total_amount_paid_usd+" - "+total_amount_paid_idr);
+    var total_2 = [];
+    if(total_amount_paid_idr != 0)
+      total_2.push(parentheses_format(total_amount_paid_idr, "IDR"));
+    if(total_amount_paid_usd != 0)
+      total_2.push(parentheses_format(total_amount_paid_usd, "USD"));
+
+    // $(".close_payment_total_amount").html(parentheses_format(total_amount, "IDR"));
+    $(".close_payment_total_amount").html(total.join("<br>"));
+    // $(".close_payment_total_amount_paid").val(money_format(total_amount_paid));
+    $(".close_payment_total_amount_paid").html(total_2.join("<br>"));
+  }
+
+  calculate();
+</script>

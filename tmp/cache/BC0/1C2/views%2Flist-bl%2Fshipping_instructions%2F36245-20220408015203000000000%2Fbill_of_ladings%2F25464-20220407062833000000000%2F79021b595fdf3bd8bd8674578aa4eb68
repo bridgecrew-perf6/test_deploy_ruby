@@ -1,0 +1,60 @@
+o: ActiveSupport::Cache::Entry:@valueI"  <tr class="success ">
+    <td>
+      <a href="/bill_of_ladings/25464?year=2022" title="Show Bill of Lading"><i class="icon-eye-open icon-large"></i></a>
+      &nbsp;
+
+      <a href="/bill_of_ladings/25464/edit?year=2022" title="Edit Bill of Lading"><i class="icon-edit-sign icon-large"></i></a>
+      &nbsp;
+
+            <a data-confirm="Detail sell is empty. Proceed?" href="/bill_of_ladings/calculate_invoice?sid=36245&amp;year=2022" title="Calculate Invoice"><i class="icon-file icon-large"></i></a>
+        &nbsp;
+
+
+      
+      <a href="/cost_revenues/36245/print_cover?year=2022" target="_blank" title="Print"><i class="icon-print icon-large"></i></a>
+      &nbsp;
+      
+    </td>
+    <td>
+      IBL221090
+      
+      
+      
+        <span class="label label-warning">No Status CR</span>
+    </td>
+    <td>IBL220759/0665/0734</td>
+    <td>PT. MENTARI FREIGHT SERVICES</td>
+    <td>PT. INDESSO AROMA</td>
+    <td>TBA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>MBP</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+        <ul>
+            <li><a href="/invoices/33616?year=2022">IBLINV221003</a></li>
+        </ul>
+    </td>
+    <td>3.018 M3 LCL</td>
+    <td> (TRUCKING)</td>
+    <td>
+        <ul>
+            <li><a href="/payments/22154?year=2022">691/IDR/2022</a></li>
+        </ul>
+    </td>
+    <td>TG. PRIOK, JAKARTA, INDONESIA</td>
+    <td>17-Mar-2022</td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="25464">
+        <option selected="selected" value="Not Yet">Not Yet</option>
+<option value="Done">Done</option>
+      </select>
+    </td>
+    <td class="hidden disable">March 2022</td>
+    <td class="hidden disable">03/17/2022</td>
+    <td class="hidden disable reference_id">25464</td>
+    <td class="hidden disable ibl_ref">IBL221090</td>
+    <td class="hidden disable invoice">IBLINV221003</td>
+    <td class="hidden disable payment">691/IDR/2022</td>
+    <td class="hidden disable delivery_doc">Not Yet</td>
+  </tr>
+:ET:@created_atf1649612693.992371:@expires_in0

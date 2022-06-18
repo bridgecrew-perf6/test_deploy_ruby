@@ -1,0 +1,72 @@
+<div class="page-header">
+  <h3>List Agents</h3>
+</div>
+
+<% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<div class="row-fluid">
+  <div class="span2">
+    <%= link_to 'Add New Agent', new_agent_path, :class => "btn btn-primary" %>
+  </div>
+  <div class="span10">
+    <% if current_user.administrator? %>
+      <%= form_for(@report, url: report_agents_path, html: { class: "form-inline", target: "_blank"}) do |f| %>
+          <button type="submit" class="btn btn-primary">View Report</button>
+          Format :
+          <span style="display: inline-block;width: 220px;">
+            <select name="agent_report[format]" id="format">
+              <option value="pdf">PDF</option>
+              <option value="xls">XLS</option>
+            </select>
+          </span>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<div class="clearfix"></div>
+
+<table class="table table-striped table-bordered skip_checkbox" id="agents_table" width="100%">
+  <thead>
+    <tr>
+      <th colspan="3" width="10%">Actions</th>
+      <th rowspan="2">Company</th>
+      <th rowspan="2">Address</th>
+      <th rowspan="2">Phone</th>
+      <th rowspan="2">Fax</th>
+      <th rowspan="2">Email</th>
+      <th rowspan="2">PIC</th>
+    </tr>
+    <tr>
+      <th class="hidden">Show</th>
+      <th class="hidden">Edit</th>
+      <th class="hidden">Delete</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @agents.each do |agent| %>
+      <tr<%# " class=error" if agent.is_deleted %>>
+        <td><%= link_to '<i class="icon-eye-open icon-large"></i>'.html_safe, agent %></td>
+        <td><%= link_to '<i class="icon-edit-sign icon-large"></i>'.html_safe, edit_agent_path(agent) %></td>
+        <td>
+          <% if current_user.administrator? %>
+            <% unless agent.is_deleted %>
+              <%= link_to '<i class="icon-ok icon-large"></i>'.html_safe, agent_path(agent), method: "delete", data: {confirm: "Are you sure?"} %>
+            <% else %>
+              <%= link_to '<i class="icon-remove icon-large"></i>'.html_safe, enable_agent_path(agent) %>
+            <% end %>
+          <% end %>
+        </td>
+        <td><%= agent.name %></td>
+        <td><pre class="free"><%= agent.full_address %></pre></td>
+        <td><%= agent.custom_attribute('phone') %></td>
+        <td><%= agent.custom_attribute('fax') %></td>
+        <td><%= agent.custom_attribute('email') %></td>
+        <td><%= agent.custom_attribute('pic') %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

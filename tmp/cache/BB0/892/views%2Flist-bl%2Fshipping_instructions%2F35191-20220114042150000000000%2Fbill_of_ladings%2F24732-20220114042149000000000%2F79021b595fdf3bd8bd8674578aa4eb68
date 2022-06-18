@@ -1,0 +1,56 @@
+o: ActiveSupport::Cache::Entry:@valueI"ù  <tr class="success error cancel">
+    <td>
+      <a href="/bill_of_ladings/24732?year=2021" title="Show Bill of Lading"><i class="icon-eye-open icon-large"></i></a>
+      &nbsp;
+
+      
+      &nbsp;
+
+
+
+      
+      <a href="/cost_revenues/35191/print_cover?year=2021" target="_blank" title="Print"><i class="icon-print icon-large"></i></a>
+      &nbsp;
+      
+    </td>
+    <td>
+      IBL214736
+      <span class="label label-warning">Cancel BL</span>
+      <span class="label label-warning">Cancel SI</span>
+      
+        <span class="label label-warning">No Status CR</span>
+    </td>
+    <td>IBL220072/0088</td>
+    <td>PT. MENTARI FREIGHT SERVICES</td>
+    <td>PT. INDESSO AROMA</td>
+    <td>TBA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>MBP</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+        <ul>
+            <li><a href="/invoices/32668?year=2021">IBLINV215149 (Cancel)</a></li>
+        </ul>
+    </td>
+    <td>3.399 M3 LCL</td>
+    <td> (TRUCKING)</td>
+    <td>
+        No Payment Yet
+    </td>
+    <td>TG. PRIOK, JAKARTA, INDONESIA</td>
+    <td>30-Dec-2021</td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="24732">
+        <option selected="selected" value="Not Yet">Not Yet</option>
+<option value="Done">Done</option>
+      </select>
+    </td>
+    <td class="hidden disable">December 2021</td>
+    <td class="hidden disable">12/30/2021</td>
+    <td class="hidden disable reference_id">24732</td>
+    <td class="hidden disable ibl_ref">IBL214736</td>
+    <td class="hidden disable invoice">IBLINV215149 (Cancel)</td>
+    <td class="hidden disable payment">No Payment Yet</td>
+    <td class="hidden disable delivery_doc">Not Yet</td>
+  </tr>
+:ET:@created_atf1649082884.0091228:@expires_in0

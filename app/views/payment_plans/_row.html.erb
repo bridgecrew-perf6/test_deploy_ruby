@@ -1,0 +1,42 @@
+<%# cache payment do %>
+<% unless row.payment_invoices.blank? %>
+  <%= render partial: 'payment_plans/reference', collection: row.payment_invoices, as: :reference, locals: { row: row } %>
+<% else %>
+  <% cache ["list-payment-plan", row] do %>
+    <tr>
+      <td data-no-turbolink="true">
+        <%# if row.payment_invoices.blank? %>
+          <% unless row.is_cr_completed? %>
+            <% unless row.is_detail_cost_empty? %>
+              <%= link_to "Input", calculate_invoice_payments_path(sid: row.id) %>
+            <% else %>
+                <%= link_to "Input", calculate_invoice_payments_path(sid: row.id), data: {confirm: 'Detail cost is empty. Proceed?'} %>
+            <% end %>
+          <% end %>
+        <%# else %>
+          <%# link_to "Input", edit_cost_revenue_path(shipping_instruction.cost_revenue) if shipping_instruction.cost_revenue.is_open? %>
+          <%= link_to "View", view_calculate_invoice_payments_path(sid: row.id) unless row.payment_invoices.blank? %>
+        <%# end %>
+      </td>
+      <td><%= row.ibl_ref %></td>
+      <td><%= row.booking_no %></td>
+      <td><%= row.master_bl_no %></td>
+      <td><%= row.volume %></td>
+      <td><%= row.carrier %></td>
+      <td><%= row.shipper_company_name %></td>
+      <td><%= row.port_of_loading %></td>
+      <td><%= row.final_destination %></td>
+      <td><%=  %></td>
+      <td><%=  %></td>
+      <td><%= si_date_format row.first_etd_date %></td>
+      <td>No</td>
+      <td><%= row.bl_status %></td>
+      <td class="hidden disable"><%= monthly_format row.first_etd_date %></td>
+      <td class="hidden disable"><%= datepicker_format row.first_etd_date %></td>
+      <td class="hidden disable row_id"><%= row.id %></td>
+      <td class="hidden disable ibl_ref"><%= row.ibl_ref %></td>
+      <td class="hidden disable row_ref_id"><%=  %></td>
+    </tr>
+  <% end %>
+<% end %>
+<%# end %>

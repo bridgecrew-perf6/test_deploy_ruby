@@ -1,0 +1,86 @@
+<div class="row-fluid">
+  <form id="form-list-si" method="get" action="<%= list_si_reports_path %>" class="form-horizontal span6" target="_blank">
+    <fieldset>
+      <legend>Report List SI</legend>
+      <div class="control-group">
+        <label for="" class="control-label">Format</label>
+        <div class="controls">
+          <select name="format" id="format">
+            <option value="pdf">PDF</option>
+            <option value="xls">XLS</option>
+          </select>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Filter by</label>
+        <div class="controls">
+          <select id="filter_si_by" name="filter_si_by">
+            <%= options_for_select(Constant::SORTED_BY) %>
+          </select>
+          <!-- <input type="text" id="filter_si_by" class="filter_my" name="filter_si_by"> -->
+        </div>
+      </div>
+      <div class="control-group" id="sort-data-si">
+        <label for="" class="control-label">Filter Data</label>
+        <div class="controls">
+          <select id="filter_si_yearly" name="filter_si_yearly">
+            <option value="">Select a Year...</option>
+            <%= options_for_select(Constant.years_range) %>
+          </select>
+          <input type="text" id="filter_si_monthly" class="filter_my hidden" name="filter_si_monthly">
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">&nbsp;</label>
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">View Report</button>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+</div>  
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#filter_si_by").on("change", function(){
+      var value = $(this).val();
+      $("#sort-data-si").removeClass("hidden");
+      $("#filter_si_yearly").val("");
+      $("#filter_si_monthly").val("");
+
+      if(value == "all")
+      {
+        $("#sort-data-si").addClass("hidden");
+      } 
+      else if(value == "monthly")
+      {
+        $("#filter_si_monthly").removeClass("hidden");
+        $("#filter_si_yearly").addClass("hidden");
+      }
+      else if(value == "yearly")
+      {
+        $("#filter_si_monthly").addClass("hidden");
+        $("#filter_si_yearly").removeClass("hidden");
+      }
+    });
+
+    $("#form-list-si").on("submit", function(e){
+      var filter_by = $("#filter_si_by").val();
+      if (filter_by == "yearly")
+      {
+        if ($("#filter_si_yearly").val() == "")
+        {
+          alert("Filter Data Yearly can't empty!");
+          return false;
+        }
+      }
+      else if(filter_by == "monthly")
+      {
+        if ($("#filter_si_monthly").val() == "")
+        {
+          alert("Filter Data Monthly can't empty!");
+          return false;
+        }
+      }
+    })
+  })
+</script>

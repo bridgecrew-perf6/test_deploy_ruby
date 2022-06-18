@@ -1,0 +1,127 @@
+<% 
+message = "" 
+message = "Dear Finance Team, \n\n"
+message += "Please kindly assist to arrange payment as below:\n\n"
+message += "Request No: #{@payment.payment_no} / #{payment_date(@payment.payment_date)}"
+if @payment.carrier_bank_id == 0
+  message += " (By Cash)"
+elsif @payment.carrier_bank_id == -1
+  message += " (By Deposit)"
+else
+  message += " (#{@payment.carrier_bank_name})"
+end
+message += "\n\n"
+
+if @payment.carrier_bank_id > 0
+  message += "Beneficiary Detail:\n"
+  message += "#{@payment.carrier_bank.acc_name}\n"
+  message += "#{@payment.carrier_bank.bank_name}\n"
+  unless @payment.carrier_bank.branch.blank?
+    message += "Branch: #{@payment.carrier_bank.branch}\n"
+  end
+  message += "#{@payment.carrier_bank.bank_address}\n"
+  message += "A/C: #{@payment.carrier_bank.acc_no}\n"
+  if @payment.payment_type == "USD"
+    message += "SWIFT CODE: #{@payment.carrier_bank.swift_code}\n"
+  end
+end
+
+message += "Amount: #{money_with_currency_format(@payment.amount, @payment.currency)}\n\n"
+message += "Payment Ref:\n"
+if @payment.payment_references.any?
+  message += '<table border="0"><tr><td width="85">IBL REF</td><td width="170">MBL</td><td width="135">PAYMENT</td><td width="135">USE DEPOSIT</td><td>IBL DEPOSIT FR</td></tr>'
+
+  # deposit = {}
+  # @payment.payment_deposits.last(3).each do |value|
+  #   txt = [value.ibl_deposit.upcase, value.master_bl_no].delete_if{|e| e.squish.length == 0}.join(" - ")
+  #   if deposit[value.ibl_ref.upcase].blank?
+  #     deposit[value.ibl_ref.upcase] = [txt]
+  #   else
+  #     deposit[value.ibl_ref.upcase].push txt
+  #   end
+  # end
+
+  # @payment.payment_references.each do |ref|
+  #   ibl_deposit_fr = ""
+  #   ibl_deposit_fr += deposit[ref.ibl_ref].join("\n") unless deposit[ref.ibl_ref].blank?
+  #   message += "<tr><td>#{ref.ibl_ref}</td><td>#{ref.master_bl_no}</td><td>#{money_with_currency_format(ref.amount, @payment.currency)}</td><td>#{money_with_currency_format(ref.amount_use_deposit, @payment.currency)}</td><td>#{ibl_deposit_fr}</td><tr>"
+  # end
+
+  # message += '</table>'
+
+  # message += "IBL REF | MBL | PAYMENT | USE DEPOSIT | IBL DEPOSIT FR\n"
+
+  deposit = {}
+  @payment.payment_deposits.last(3).each do |value|
+    txt = [value.ibl_deposit.upcase, value.master_bl_no].delete_if{|e| e.squish.length == 0}.join(" - ")
+    if deposit[value.ibl_ref.upcase].blank?
+      deposit[value.ibl_ref.upcase] = [txt]
+    else
+      deposit[value.ibl_ref.upcase].push txt
+    end
+  end
+
+  tmp = []
+  @payment.payment_references.each do |ref|
+    ibl_deposit_fr = ""
+    ibl_deposit_fr += deposit[ref.ibl_ref].join(", ") unless deposit[ref.ibl_ref].blank?
+    tmp.push [ref.ibl_ref, ref.master_bl_no, money_with_currency_format(ref.amount, @payment.currency), money_with_currency_format(ref.amount_use_deposit, @payment.currency), ibl_deposit_fr]
+  end
+
+  message += "<tr>"
+  message += "<td>"
+  tmp.each do |value|
+    message += (value[0].blank? ? "" : value[0]) +"\n"
+  end
+  message += "</td>"
+  message += "<td>"
+  tmp.each do |value|
+    message += (value[1].blank? ? "" : value[1]) +"\n"
+  end
+  message += "</td>"
+  message += "<td>"
+  tmp.each do |value|
+    message += (value[2].blank? ? "" : value[2]) +"\n"
+  end
+  message += "</td>"
+  message += "<td>"
+  tmp.each do |value|
+    message += (value[3].blank? ? "" : value[3]) +"\n"
+  end
+  message += "</td>"
+  message += "<td>"
+  tmp.each do |value|
+    message += (value[4].blank? ? "" : value[4]) +"\n"
+  end
+  message += "</td>"
+  message += "</tr>"
+  message += "</table>"
+
+  message += "\n"
+end
+
+message += "Notes: #{@payment.notes}\n\n"
+
+message += "Thank you"
+
+
+if @payment.carrier_bank_id > 0
+  carrier_name = @payment.carrier_bank.carrier.name
+elsif @payment.carrier_bank_id == 0
+  carrier_name = "By Cash: " + @payment.carrier_name
+else
+  carrier_name = "By Deposit: " + @payment.carrier_name
+end
+subject = "Request No: #{@payment.payment_no} / #{payment_date(@payment.payment_date)} (#{carrier_name})"
+%>
+<a id="open-link" href="mailto:?subject=<%= CGI.escape(subject).gsub("+", "%20") %>&html-body=<%= CGI.escape(message).gsub("+", "%20") %>">Open in E-Mail Client</a>
+
+<script type="text/javascript">
+  jQuery(document).ready(function(){
+    // mail_str ="mailto:?subject=<%= CGI.escape(subject).gsub("+", "%20") %>&body=" + escape("<a href='http://yahoo.com'>click here</a>"); 
+    // mail_str ="mailto:?subject=<%= CGI.escape(subject).gsub("+", "%20") %>&html-body=<%= CGI.escape(message).gsub("+", "%20") %>"; 
+    // jQuery("#open-link")[0].href = mail_str;
+    jQuery("#open-link")[0].click();
+    window.setTimeout(function() { window.close() }, 2000);
+  })
+</script>

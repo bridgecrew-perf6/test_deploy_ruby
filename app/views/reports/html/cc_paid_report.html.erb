@@ -1,0 +1,145 @@
+<%= render 'commons/pdf' %>
+<style type="text/css">
+  table {
+    border-collapse: collapse;
+  }
+  thead th, tbody td {
+    border: 1px solid black;
+  }
+</style>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <% @results.to_a.delete_if{|x| !x.is_paid_report?}.sort_by(&:customer).group_by{|i| i.customer.squish}.each do |customer, bulk_invoices| %>
+    <% total = total_usd = total_idr = 0 %>
+    <table style="width: 100%" border="0">
+      <caption style="text-align: left; font-weight: bold;">PAID REPORT <%= customer %></caption>
+      <thead>
+        <tr>
+          <th width="115">PAYMENT DATE</th>
+          <th width="265">INVOICE NO</th>
+          <th>CUSTOMER</th>
+          <th width="125">IDR</th>
+          <th width="125">USD</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% bulk_invoices.sort_by{|x| x.invoice_inquiry.currency_2}.reverse.group_by{|x| x.invoice_inquiry.currency_2}.each do |currency, invoices| %>
+        <% invoices.sort_by(&:payment_date).each do |row| %>
+          <% reference = row.invoice_inquiry %>
+          <%
+            if reference.currency_2 == "USD"
+              total_usd += reference.amount_2.to_f
+            else
+              total_idr += reference.amount_2.to_f
+            end
+          %>
+          <tr>
+            <td><%= si_date_format reference.payment_date %></td>
+            <td><%= "#{reference.ibl_ref} - #{reference.invoice_no}" %></td>
+            <td><%= customer %></td>
+            <td style="text-align:right"><%= money_cra_format(reference.amount_2) if reference.currency_2 == "IDR" %></td>
+            <td style="text-align:right"><%= money_cra_format(reference.amount_2) if reference.currency_2 == "USD" %></td>
+          </tr>
+
+          <% row.invoice_references.each do |reference| %>
+            <%
+              if reference.currency_2 == "USD"
+                total_usd += reference.bank_charge.to_f + reference.rounding.to_f + reference.short_paid.to_f + reference.deposit.to_f + reference.pph_23.to_f + reference.other.to_f
+              else
+                total_idr += reference.bank_charge.to_f + reference.rounding.to_f + reference.short_paid.to_f + reference.deposit.to_f + reference.pph_23.to_f + reference.other.to_f
+              end
+            %>
+            
+            <% unless reference.bank_charge.to_f == 0 %>
+              <tr>
+                <td><%= si_date_format reference.payment_date %></td>
+                <td><%= "#{row.invoice_no} - BANK CHARGE" %></td>
+                <td><%= customer %></td>
+                <td style="text-align:right"><%= money_cra_format(reference.bank_charge) if reference.currency_2 == "IDR" %></td>
+                <td style="text-align:right"><%= money_cra_format(reference.bank_charge) if reference.currency_2 == "USD" %></td>
+              </tr>
+            <% end %>
+
+            <% unless reference.rounding.to_f == 0 %>
+              <tr>
+                <td><%= si_date_format reference.payment_date %></td>
+                <td><%= "#{row.invoice_no} - ROUNDING" %></td>
+                <td><%= customer %></td>
+                <td style="text-align:right"><%= money_cra_format(reference.rounding) if reference.currency_2 == "IDR" %></td>
+                <td style="text-align:right"><%= money_cra_format(reference.rounding) if reference.currency_2 == "USD" %></td>
+              </tr>
+            <% end %>
+
+            <% unless reference.short_paid.to_f == 0 %>
+              <tr>
+                <td><%= si_date_format reference.payment_date %></td>
+                <td><%= "#{row.invoice_no} - SHORT PAID" %></td>
+                <td><%= customer %></td>
+                <td style="text-align:right"><%= money_cra_format(reference.short_paid) if reference.currency_2 == "IDR" %></td>
+                <td style="text-align:right"><%= money_cra_format(reference.short_paid) if reference.currency_2 == "USD" %></td>
+              </tr>
+            <% end %>
+
+            <% unless reference.deposit.to_f == 0 %>
+              <tr>
+                <td><%= si_date_format reference.payment_date %></td>
+                <td><%= "#{row.invoice_no} - DEPOSIT" %></td>
+                <td><%= customer %></td>
+                <td style="text-align:right"><%= money_cra_format(reference.deposit) if reference.currency_2 == "IDR" %></td>
+                <td style="text-align:right"><%= money_cra_format(reference.deposit) if reference.currency_2 == "USD" %></td>
+              </tr>
+            <% end %>
+
+            <% unless reference.pph_23.to_f == 0 %>
+              <tr>
+                <td><%= si_date_format reference.payment_date %></td>
+                <td><%= "#{row.invoice_no} - PPH 23" %></td>
+                <td><%= customer %></td>
+                <td style="text-align:right"><%= money_cra_format(reference.pph_23) if reference.currency_2 == "IDR" %></td>
+                <td style="text-align:right"><%= money_cra_format(reference.pph_23) if reference.currency_2 == "USD" %></td>
+              </tr>
+            <% end %>
+
+            <% unless reference.other.to_f == 0 %>
+              <tr>
+                <td><%= si_date_format reference.payment_date %></td>
+                <td><%= "#{row.invoice_no} - #{reference.note.squish}" %></td>
+                <td><%= customer %></td>
+                <td style="text-align:right"><%= money_cra_format(reference.other) if reference.currency_2 == "IDR" %></td>
+                <td style="text-align:right"><%= money_cra_format(reference.other) if reference.currency_2 == "USD" %></td>
+              </tr>
+            <% end %>  
+          <% end %>
+
+          <% row.invoice_deposits.each do |reference| %>
+            <%
+              if reference.currency_2 == "USD"
+                total_usd += 0 - reference.amount.to_f
+              else
+                total_idr += 0 - reference.amount.to_f
+              end
+            %>
+            <% unless reference.amount.to_f == 0 %>
+              <tr>
+                <td><%= si_date_format reference.payment_date %></td>
+                <td><%= "#{row.invoice_no} - USE OP #{reference.invoice_deposit}" %></td>
+                <td><%= customer %></td>
+                <td style="text-align:right"><%= money_cra_format(-1*reference.amount.to_f) if reference.currency_2 == "IDR" %></td>
+                <td style="text-align:right"><%= money_cra_format(-1*reference.amount.to_f) if reference.currency_2 == "USD" %></td>
+              </tr>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="3" style="text-align:left">TOTAL</th>
+          <th style="text-align:right"><%= money_cra_format(total_idr) %></th>
+          <th style="text-align:right"><%= money_cra_format(total_usd) %></th>
+        </tr>
+      </tfoot>
+    </table>
+    <br>
+  <% end %>
+</div>

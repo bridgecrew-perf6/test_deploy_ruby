@@ -1,0 +1,25 @@
+o: ActiveSupport::Cache::Entry:@valueI"#    <tr>
+      <td data-no-turbolink="true">
+                <a data-confirm="Detail cost is empty. Proceed?" href="/payments/calculate_invoice?sid=36133&amp;year=2022">Input</a>
+          
+      </td>
+      <td>IBL221002</td>
+      <td>DJA0984492</td>
+      <td>IBL221002</td>
+      <td>2x20FT</td>
+      <td>SAMUDRA PANCA </td>
+      <td>PT. TUNAS BARU LAMPUNG TBK</td>
+      <td>SURABAYA, INDONESIA</td>
+      <td>LUANDA, ANGOLA</td>
+      <td></td>
+      <td></td>
+      <td>04-Apr-2022</td>
+      <td>No</td>
+      <td>On Going</td>
+      <td class="hidden disable">April 2022</td>
+      <td class="hidden disable">04/04/2022</td>
+      <td class="hidden disable row_id">36133</td>
+      <td class="hidden disable ibl_ref">IBL221002</td>
+      <td class="hidden disable row_ref_id"></td>
+    </tr>
+:ET:@created_atf1648734069.682268:@expires_in0

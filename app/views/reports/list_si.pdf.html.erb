@@ -1,0 +1,103 @@
+<style type="text/css">
+  .clearfix {
+    clear: both;
+  }
+
+  #report-title {
+    font-family: Arial;
+    font-size: 20pt; /*30pt*/
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  table > thead > tr > th, table > tbody > tr > td, ul > li {
+    font-family: Arial;
+    font-size: 7pt; /*12pt*/
+  }
+
+  table > thead > tr > th {
+    background: yellow;
+  }
+
+  table > thead > tr > th, table > tbody > tr > td {
+    padding: 5px;
+  }
+
+  .label {
+    color: #FFFFFF;
+    display: inline-block;
+    font-weight: bold;
+    line-height: 14px;
+    padding: 2px 4px;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    vertical-align: baseline;
+    white-space: nowrap;
+  }
+
+  .label-warning {
+    background-color: #F89406;
+  }
+
+  .label {
+    border-radius: 3px;
+  }
+</style>
+<div style="width: 100%">
+  <h3 id="report-title">SHIPPING INSTRUCTIONS <%= "- #{params[:filter_si]}" unless params[:filter_si].blank? %></h3>
+  <table style="width: 100%" border="1">
+    <thead>
+    <tr>
+      <th>IBL REF</th>
+      <th>Shipper Ref</th>
+      <th>Shipper</th>
+      <th>Volume</th>
+      <th>Destination</th>
+      <th style="width: 8%">ETD Vessel</th>
+      <th style="width: 8%">SI Date</th>
+      <th>Carrier</th>
+      <th style="width: 7%">POL</th>
+      <th style="width: 15%">Order Type</th>
+      <th style="width: 8%">Created by</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% cancel_si = shipment_si = total_si = add_si = 0 %>
+    <% @shipping_instructions.each do |shipping_instruction| %>
+      <%
+         add_si += 1 if shipping_instruction.is_shadow
+         unless shipping_instruction.is_shadow
+           total_si += 1
+           if shipping_instruction.is_cancel == 1
+             cancel_si += 1
+           else
+             shipment_si += 1
+           end
+         end
+      %>
+      <% cache(["report-list-si", shipping_instruction]) do %>
+        <tr>
+          <td>
+            <%= shipping_instruction.si_no %>
+            <%= '<span class="label label-warning">Cancel</span>'.html_safe if shipping_instruction.is_cancel == 1 %>
+          </td>
+          <td><%= shipping_instruction.shipper_reference %></td>
+          <td><%= shipping_instruction.shipper_company_name %></td>
+          <td><%= shipping_instruction.si_containers.map { |c| (c.container.container_type == "LCL" ? "#{number_with_precision(c.volum, precision: 3, delimiter: ',')} M3 #{c.container.container_type}" : "#{c.volum}x#{c.container.container_type}") }.join(" & ") %></td>
+          <td><%= shipping_instruction.final_destination %></td>
+          <% vessel = shipping_instruction.vessels.first %>
+          <td><%= si_date_format vessel.etd_date unless vessel.nil? %></td>
+          <td><%= si_date_format shipping_instruction.si_date %></td>
+          <td><%= shipping_instruction.carrier %></td>
+          <td><%= shipping_instruction.port_of_loading %></td>
+          <td><%= shipping_instruction.order_type_text %></td>
+          <td><%= shipping_instruction.author.username unless shipping_instruction.author.nil? %></td>
+        </tr>
+      <% end %>
+    <% end %>
+    </tbody>
+  </table>
+  <br/>
+  <strong>Total SI: <%= total_si %></strong><br/>
+  <strong>Total Shipments: <%= shipment_si %></strong><br/>
+  <strong>Cancel SI: <%= cancel_si %></strong><br/>
+</div>

@@ -1,0 +1,33 @@
+<% columns = @report.columns %>
+<%# base = [] %>
+<%# 20.times{ |i| base.push i.to_s } %>
+<% @results.sort_by(&:customer).group_by{|i| i.customer.squish}.each do |customer, invoices| %>
+  <%
+    head = []
+    head.push ""
+    head.push "IBL REF\t"
+    head.push "SHIPPER\t"
+    head.push "CUSTOMER\t"
+    head.push "INV REF\t"
+    head.push "USD\t"
+    head.push "IDR\t"
+    head.push "ETD DATE\t"
+    head.push "DUE DATE\t"
+  %>
+  <%# (base-columns).reverse_each{ |column| head.delete_at(column.to_i) } %>
+<%= head.join("").html_safe %>
+  <% invoices.each do |reference| %>
+  <% body = report_list_cc_breakdown(reference, "xls") %>
+  <%# (base-columns).reverse_each{ |column| body.delete_at(column.to_i) } unless body.blank? %>
+<%= body.join("").html_safe unless body.blank? %>
+  <% end %>
+  <%
+    foot = []
+    foot.push "Total\t"
+    (4-1).times{ foot.push "\t" }
+    foot.push "#{money_format(invoices.map{|p| p.grand_total if p.currency_code == "USD" && p.is_uncanceled?}.sum(&:to_f))}\t"
+    foot.push "#{money_format(invoices.map{|p| p.grand_total if p.currency_code == "IDR" && p.is_uncanceled?}.sum(&:to_f))}\t"
+  %>
+<%= foot.join("").html_safe %>
+
+<% end %>

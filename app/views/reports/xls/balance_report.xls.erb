@@ -1,0 +1,72 @@
+BALANCE
+  
+DATE : <%= si_date_format Date.today %>
+
+<%
+  head = []
+  head.push "\t"
+  head.push "USD\t"
+  head.push "IDR\t"
+  head.push "RATE\t"
+  head.push "TOTAL\t"
+%>
+<%= head.join("").html_safe %>
+<% total_invoice = 0 %>
+<% @balance.rows.each_with_index do |row, index| %>
+  <%
+    body = []
+    str = row[1][:description].split("-")
+    if str[0].length == 0
+      body.push "#{str[1].squish}\t"
+    else
+      body.push "#{row[1][:description]}\t"
+    end
+    body.push "#{money_cra_format row[1][:amount_usd]}\t"
+    body.push "#{money_cra_format row[1][:amount_idr]}\t"
+    body.push "#{money_cra_format row[1][:rate]}\t"
+    
+    rate = row[1][:rate].to_f == 0 ? 1 : row[1][:rate].to_f
+    total = (row[1][:amount_usd].to_f * rate.to_f) + row[1][:amount_idr].to_f
+    total_invoice += total
+
+    # body.push "#{money_cra_format total}\t"
+    body.push "#{}\t"
+  %>
+<%= body.join("").html_safe %>
+<% end %>
+<%
+  foot = []
+  foot.push "TOTAL\t"
+  3.times { foot.push "\t" }
+  # foot.push "#{money_cra_format total_invoice}\t"
+  foot.push "#{}\t"
+%>
+<%= foot.join("").html_safe %>
+
+PAYMENT PLAN
+
+<%
+  head = []
+  head.push "PAYMENT DATE\t"
+  head.push "AMOUNT\t"
+%>
+<%= head.join("").html_safe %>
+<% total = 0 %>
+<% Constant.years_range.each do |year| %> 
+<% payment_invoices = PaymentInvoice.includes(:payment_items).with_filter({year: year}) %>
+<% total += payment_invoices.map{|p| p.total_invoice if p.shipping_instruction.is_uncanceled?}.sum(&:to_f).round(2) %>
+<% payment_invoices.group_by(&:payment_date).each do |payment_date, invoices| %>
+<%
+  body = []
+  body.push "#{fu_date_format(payment_date)}\t"
+  body.push "#{money_cra_format invoices.map{|p| p.total_invoice if p.shipping_instruction.is_uncanceled?}.sum(&:to_f).round(2)}\t"
+%>
+<%= body.join("").html_safe %>
+<% end %>
+<% end %>
+<%
+  foot = []
+  foot.push "TOTAL\t"
+  foot.push "#{money_cra_format total}\t"
+%>
+<%= foot.join("").html_safe %>  

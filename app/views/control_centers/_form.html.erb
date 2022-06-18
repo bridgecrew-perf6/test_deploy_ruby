@@ -1,0 +1,63 @@
+<style type="text/css">
+  #invoice_payments tbody tr td{
+    padding: 0 !important;
+  }
+  #invoice_payments input, #invoice_payments textarea{
+    width: 100px !important;
+    height: 20px !important;
+  }
+  .money_text{
+    text-align: right;
+  }
+</style>
+<%= form_for(@invoice, url: update_payment_control_centers_path(invoice_no: @invoice.invoice_no), html: { class: "form-horizontal"}) do |f| %>
+  <table class="table table-striped table-bordered" width="100%">
+    <thead>
+      <tr>
+        <th>IBL Ref</th>
+        <th>Customer</th>
+        <th>Shipper</th>
+        <th>Invoice No</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><%= @invoice.shipping_instruction.ibl_ref %></td>
+        <td><%= @invoice.customer_ori %></td>
+        <td><%= @invoice.shipping_instruction.shipper_company_name %></td>
+        <td><%= @invoice.invoice_no %></td>
+        <td style="text-align:right"><%= @invoice.total_invoice %> <%= @invoice.currency_code %></td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <table class="table table-striped table-bordered" id="invoice_payments" width="100%">
+    <thead>
+      <tr>
+        <th>Payment Date</th>
+        <th>Amount Paid</th>
+        <th>Rounding</th>
+        <th>Bank Charge</th>
+        <th>Discount</th>
+        <th>Short Paid</th>
+        <th>Deposit</th>
+        <th>Total</th>
+        <th>Note</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= f.fields_for :invoice_payments do |builder| %>
+        <%= render 'invoice_payment_fields', :f => builder %>
+      <% end %>
+    </tbody>
+  </table>
+  <p><a onclick="add_invoice_payment_fields(); return false;" href="#" class="btn btn-small"><i class="icon-plus-sign"></i> Add Payment</a></p>
+  Status : <%= f.select :status_payment, options_for_select([["Open", "0"], ["Closed", "1"]], @invoice.status_payment) %>
+  <div class="row-fluid" style="margin-top: 20px">
+    <div class="span6">
+      <button class="btn btn-primary" type="submit">Save</button>
+      <a class="btn" href="<%= control_centers_path %>"><i class="icon-reply"></i> Back</a>
+    </div>
+  </div>
+<% end %>

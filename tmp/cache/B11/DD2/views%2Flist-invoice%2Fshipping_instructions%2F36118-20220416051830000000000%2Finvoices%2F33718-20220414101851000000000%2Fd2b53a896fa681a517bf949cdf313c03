@@ -1,0 +1,43 @@
+o: ActiveSupport::Cache::Entry:@valueI"R  <tr class="">
+    <td>
+      <a href="/invoices/33718?year=2022" title="Show Invoice"><i class="icon-eye-open icon-large"></i></a>
+        <a href="/invoices/33718/edit?year=2022" title="Edit Invoice"><i class="icon-edit-sign icon-large"></i></a>
+
+      <a href="#invModal" role="button" class="btn btn-info btn-small btn-invoice" data-toggle="modal">Tax</a>
+    </td>
+    <td>
+      IBLINV221105
+      
+    </td>
+    <td>
+      IBL220988
+      
+      
+    </td>
+    <td>IDR</td>
+    <td style="text-align:right">17,440,777</td>
+    <td>PT. MECOINDO (SHIPPER)</td>
+    <td>PT. MECOINDO</td>
+    <td>TG. PRIOK, JAKARTA, INDONESIA</td>
+    <td>Open</td>
+    <td></td>
+    <td style="text-align:right"></td>
+    <td>040.003-22.79653504</td>
+    <td style="text-align:right">193,591</td>
+    <td></td>
+    <td style="text-align:right">(351,983)</td>
+    <td>Open</td>
+    <td>April 2022</td>
+    <td></td>
+    <td class="hidden disable">April 2022</td>
+    <td class="hidden disable">04/09/2022</td>
+    <td class="hidden disable row_id">33718</td>
+    <td class="hidden disable ibl_ref">IBL220988</td>
+    <td class="hidden disable invoice_no">IBLINV221105</td>
+    <td class="hidden disable head_letter">INVOICE</td>
+    <td class="hidden disable">1</td>
+    <td class="hidden disable"></td>
+    <td class="hidden disable"></td>
+    <td>14-Apr-2022</td>
+  </tr>
+:ET:@created_atf1650813286.4141316:@expires_in0

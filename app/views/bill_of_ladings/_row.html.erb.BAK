@@ -1,0 +1,73 @@
+<% cache [row, row.shipping_instruction] do %>
+  <tr class="<%= ((row.invoices.any? || row.debit_notes.any? || row.notes.any?) ? "success" : "warning") %> <%= "error cancel" if row.is_cancel == 1 %>">
+    <td>
+      <%= link_to '<i class="icon-eye-open icon-large"></i>'.html_safe, row, title: "Show Bill of Lading" %>
+      <% if row.shipping_instruction.status != 1 %>
+        <%= link_to '<i class="icon-edit-sign icon-large"></i>'.html_safe, edit_bill_of_lading_path(row),
+                    title: "Edit Bill of Lading" if row.is_cancel != 1 %>
+        <% if row.is_cancel != 1 %>
+          <% unless row.is_shadow %>
+            <div>
+              <%= link_to 'Create Invoice', "/create-new-invoice/" + row.id.to_s %>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+      <% if row.is_shadow %>
+        <% if row.is_cancel != 1 %>
+          <div>
+            <%= link_to 'Cancel BL', cancel_bill_of_lading_path(row.id), data: {confirm: 'Are you sure?'} %>
+          </div>
+        <% else %>
+          <div>
+            <%= link_to 'Uncancel BL', cancel_bill_of_lading_path(row.id), data: {confirm: 'Are you sure?'} %>
+          </div>
+        <% end %>
+      <% end %>
+
+      <%= link_to 'Calculate', calculate_bill_of_lading_path(row.id) %>
+
+      <%= '<span class="label label-warning">Cancel SI</span>'.html_safe if row.shipping_instruction.is_cancel == 1 %>
+      <%= '<span class="label label-warning">Cancel BL</span>'.html_safe if row.is_cancel == 1 %>
+    </td>
+    <!-- <td class="hidden">&nbsp;</td> -->
+    <td>
+      <%= row.bl_number %>
+      <%= '<span class="label label-error">Closed</span>'.html_safe if row.shipping_instruction.status == 1 %>
+    </td>
+    <td><%= row.master_bl_no %></td>
+    <td>
+      <pre class="free"><%= row.shipper.company_name unless row.shipper.nil? %></pre>
+      &nbsp;</td>
+    <td>
+      <pre class="free"><%= row.consignee.company_name unless row.consignee.nil? %></pre>
+      &nbsp;</td>
+    <td><%= row.notify_party.lines.first unless row.notify_party.nil? %></td>
+    <td><%= row.final_destination %>&nbsp;</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+      <% if row.invoices.any? || row.debit_notes.any? || row.notes.any? %>
+        <ul>
+          <% row.invoices.each do |inv| %>
+            <li><%= link_to "#{inv.no_invoice} #{inv.is_cancel? ? '(Cancel)' : ''}", inv %></li>
+          <% end %>
+          <% row.debit_notes.each do |dbn| %>
+            <li><%= link_to "#{dbn.no_dbn} #{dbn.is_cancel? ? '(Cancel)' : ''}", dbn %></li>
+          <% end %>
+          <% row.notes.each do |note| %>
+            <li><%= link_to "#{note.no_note} #{note.is_cancel? ? '(Cancel)' : ''}", note %></li>
+          <% end %>
+        </ul>
+      <% else %>
+        No Invoices yet.
+      <% end %>
+    </td>
+    <td>
+      <%= row.shipping_instruction.si_containers.map { |c| (c.container.container_type == "LCL" ?
+              "#{number_with_precision(c.volum, precision: 3, delimiter: ',')} M3 #{c.container.container_type}" :
+              "#{c.volum}x#{c.container.container_type}") }.join(" & ") %>
+    </td>
+    <td><%= row.shipping_instruction.order_type_text %></td>
+    <td><%= row.port_of_loading %></td>
+  </tr>
+<% end %>

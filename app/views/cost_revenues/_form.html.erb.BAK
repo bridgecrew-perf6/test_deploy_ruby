@@ -1,0 +1,345 @@
+<style type="text/css">
+  .details > div{
+    margin-bottom: 5px
+  }
+  .details input{
+    margin-bottom: 0
+  }
+  .cost_revenue_field{
+    margin-bottom: 0!important;
+    border: none!important;
+    padding: 0!important;
+    float: left;
+    min-width: 115px;
+    max-width: 134px;
+    width: 100%;
+    text-align: right;
+  }
+  .cost_revenue_field, .cost_revenue_field:focus{
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important; 
+  }
+  .cost_revenue_description{
+    min-width: 170px;
+    max-width: 275px;
+    width: 93%;
+    text-align: left;
+  }
+</style>
+<%= link_to "Import Cost & Revenue Data", import_data_cost_revenues_path(ibl_ref: (params[:si_no] ? params[:si_no] :
+        @cost_revenue.si_no)), class: "btn btn-primary", id: "import_cnr_data" %><br/><br/>
+<%= form_for(@cost_revenue) do |f| %>
+  <% if @cost_revenue.errors.any? %>
+  <div class="alert alert-error">
+    <ul class="unstyled">
+      <% @cost_revenue.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+  <% end %>
+  <div class="details">
+    <div>
+      <strong>IBL REF / MBL NO<span class="pull-right">:</span></strong>
+      <span><%= f.hidden_field :si_no, class: "", autocomplete: "off", value: (params[:si_no] ? params[:si_no] : @cost_revenue.si_no) %>
+        <%= f.hidden_field :shipping_instruction_id %>
+        <span><%= @cost_revenue.bl_si_number %>&nbsp;</span>
+      </span>
+    </div>
+    <div>
+      <strong>SHIPPER REF <span class="pull-right">:</span></strong>
+    <span><%= @cost_revenue.shipper_reference %>&nbsp;</span>
+    </div>
+    <div>
+      <strong>SHIPPER <span class="pull-right">:</span></strong>
+    <span><%= @cost_revenue.shipper %>&nbsp;</span>
+    </div>
+    <div>
+      <strong>VESSEL <span class="pull-right">:</span></strong>
+    <span><%= @cost_revenue.vessel %>&nbsp;</span>
+    </div>
+    <div>
+      <strong>ETD <span class="pull-right">:</span></strong>
+    <span><%= @cost_revenue.etd %>&nbsp;</span>
+    </div>
+    <div>
+      <strong>POL <span class="pull-right">:</span></strong>
+    <span><%= @cost_revenue.port_of_loading %>&nbsp;</span>
+    </div>
+    <div>
+      <strong>POD <span class="pull-right">:</span></strong>
+    <span><%= @cost_revenue.destination %>&nbsp;</span>
+    </div>
+    <div>
+      <strong>VOLUME <span class="pull-right">:</span></strong>
+      <span>
+      <% unless @cost_revenue.shipping_instruction.si_containers.nil? %>
+      <%= @cost_revenue.shipping_instruction.si_containers.map {|c| (c.container.container_type == "LCL" ? "#{number_with_precision(c.volum, precision: 3, delimiter: ',')} M3 #{c.container.container_type}" : "#{c.volum}x#{c.container.container_type}") }.join(" & ")   %>
+      <% end %>
+      &nbsp;</span>
+    </div>
+    <div>
+      <strong>PAYMENT <span class="pull-right">:</span></strong>
+      <pre class="free"><%= @cost_revenue.payment_number %>&nbsp;</pre>
+    </div>
+    <div>
+      <strong>NOTES <span class="pull-right">:</span></strong>
+      <span><%= f.text_area :notes, class: "span6" %></span>
+    </div>
+  </div>
+  <div id="revenue-description" style="margin-top: 10px">
+    <table width="100%" border="1">
+      <thead>
+        <tr>
+          <th colspan="2">&nbsp;</th>
+          <th colspan="2">SELLING</th>
+          <th colspan="2">BUYING</th>
+          <th colspan="2">PROFIT</th>
+        </tr>
+        <tr>
+          <th>NO</th>
+          <th width="300">DESCRIPTION</th>
+          <th style="width:134px">USD</th>
+          <th style="width:134px">IDR</th>
+          <th style="width:134px">USD</th>
+          <th style="width:134px">IDR</th>
+          <th style="width:134px">USD</th>
+          <th style="width:134px">IDR</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% count = 1 %>
+        <%= f.fields_for :cost_revenue_items do |builder| %>
+          <%= render 'cost_revenue_item_fields', :f => builder, :count => count %>
+          <% count += 1 %>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="2">TOTAL</th>
+          <td id="total_selling_usd" class="text-right"><%= number_with_precision @cost_revenue.total_selling_usd, precision: 2, delimiter: "," %></td>
+          <td id="total_selling_idr" class="text-right"><%= number_with_precision @cost_revenue.total_selling_idr, precision: 2, delimiter: "," %></td>
+          <td id="total_buying_usd" class="text-right"><%= number_with_precision @cost_revenue.total_buying_usd, precision: 2, delimiter: "," %></td>
+          <td id="total_buying_idr" class="text-right"><%= number_with_precision @cost_revenue.total_buying_idr, precision: 2, delimiter: "," %></td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <th colspan="6">GRAND TOTAL</th>
+          <th id="total_profit_usd" class="text-right"><%= number_with_precision @cost_revenue.total_profit_usd, precision: 2, delimiter: "," %></th>
+          <th id="total_profit_idr" class="text-right"><%= number_with_precision @cost_revenue.total_profit_idr, precision: 2, delimiter: "," %></th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div class="actions" style="margin-top: 20px">
+    <button type="submit" class="btn btn-primary"><i class="icon-save"></i> Save Cost & Revenue</button>
+    <a class="btn" href="<%= cost_revenues_path %>"><i class="icon-reply"></i> Back</a>
+  </div>
+<% end %>
+
+<% if @cost_revenue.new_record? %>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#cost_revenue_si_no").typeahead({
+      minLength: 3,
+      source: function(query, process){
+        $.ajax({
+          url: "/shipping_instructions.json",
+          dataType: "json",
+          data: {query: query, status: 0},
+          success: function(data){
+            bls = [];
+            $.each(data, function(i, bl){
+              bls.push(bl.si_no);
+            });
+            return process(bls);
+          }
+        })
+      }
+    });
+
+    $("#loadSI").click(function(){
+      if($("#cost_revenue_si_no").val() != ''){
+        $(this).button('loading');
+        $.ajax({
+          url: "/load-si-data",
+          //dataType: "json",
+          data: {query: $("#cost_revenue_si_no").val(), status: 0},
+          success: function(data){
+						if(data != ''){
+              $("#cost_revenue_shipping_instruction_id").val(data.id);
+              $("#cost_revenue_bl_si_number").val([data.si_no, data.master_bl_no].join(' / '));
+              $("#cost_revenue_shipper_reference").val(data.shipper_reference);
+              $("#cost_revenue_shipper").val(data.shipper);
+              $("#cost_revenue_vessel").val(data.vessel_name);
+              $("#cost_revenue_etd").val(data.etd_date);
+              $("#cost_revenue_port_of_loading").val(data.port_of_loading);
+              $("#cost_revenue_destination").val(data.final_destination);
+              $("#cost_revenue_volume").val(data.volume);
+							$("#cost_revenue_payment_number").val(data.payment);
+              $("#ibl_ref_link").attr("href", data.link_to);
+						}
+						else{
+							alert("Shipping Instruction didn't have bill of lading or not found...");
+						}
+            $("#loadSI").button('reset'); 
+          }
+        });
+      }
+			else{
+				alert("Please enter the SI No.");
+			}
+    });
+
+    $(function(){
+      if($("#cost_revenue_si_no").val() != ''){
+        $("#loadSI").trigger( "click" );
+      }
+    });
+  })
+</script>
+<% end %>
+<script type="text/javascript">
+  $(document).ready(function(){
+    // $("#cost_revenue_payment_no").tagsInput({
+    //   'width':'100%',
+    //   'height':'auto',
+    //   'defaultText': 'Add Number',
+    //   'minChars': 12
+    // });
+
+    // $("#cost_revenue_payment_no_tag").typeahead({
+    //   source: function(query, process){
+    //     $.ajax({
+    //       url: "/payments-list.json",
+    //       dataType: "json",
+    //       data: {SI: $("#cost_revenue_si_no").val(), query: query, status: 0},
+    //       success: function(data){
+    //         bls = [];
+    //         $.each(data, function(i, bl){
+    //           bls.push(bl.payment_no);
+    //         });
+    //         return process(bls);
+    //       }
+    //     })
+    //   }
+    // });
+    $("#import_cnr_data").on("click", function(e) {
+      e.preventDefault();
+      $.getJSON($(this).attr('href'), function(data){
+        if (data == "") {
+          alert("No data to be imported");
+        } else {
+          var row_count = $("#revenue-description").find("tbody tr").length;
+          if (data.length > row_count) {
+            for (var i = 0; i < (data.length - row_count); i++)
+              add_revenue_fields();
+            add_revenue_fields();
+            $("#import_cnr_data").trigger("click");
+            return;
+          }
+
+          var key = "cost_revenue_cost_revenue_items_attributes_";
+
+          for (var index in data) {
+            var id = "#" + key + index;
+            $(id + "_description").val(data[index].description);
+            $(id + "_selling_usd").val(accounting.formatMoney(data[index].selling.usd, "", 2, ",", ".")).trigger("focusout");
+            $(id + "_selling_idr").val(accounting.formatMoney(data[index].selling.idr, "", 2, ",", ".")).trigger("focusout");
+            $(id + "_buying_usd").val(accounting.formatMoney(data[index].buying.usd, "", 2, ",", ".")).trigger("focusout");
+            $(id + "_buying_idr").val(accounting.formatMoney(data[index].buying.idr, "", 2, ",", ".")).trigger("focusout");
+          }
+
+          alert("Import done...");
+        }
+      })
+    });
+
+    $(".cost_revenue_description").livequery(function(){
+      $(this).typeahead({
+        source: [
+          <% @details.each do |c| %>
+            "<%= c.description %>",
+          <% end %>
+        ]
+      });
+    });
+
+    $(".money_text").livequery(function(){
+      $(this).focus(function(){
+        var number = $(this).val() == '' ? 0 : $(this).val();
+        $(this).val(accounting.unformat(number, ""));
+      });
+      $(this).focusout(function(){
+        var number = $(this).val() == '' ? 0 : $(this).val();
+        $(this).val(accounting.formatMoney(number, "", 2, ",", "."));
+      });
+    });
+
+    $(".selling_usd, .selling_idr, .buying_usd, .buying_idr").livequery(function(){
+      $(this).focusout(function(){
+        var total = 0;
+        var current = $(this).attr("class").split(" ")[2];
+        $("." + current).each(function(){
+          var parent = $(this).parent().parent();
+          if(!parent.hasClass("hidden")){
+            var temp = $(this).val();
+            total += accounting.unformat(temp, "");
+          }
+        });
+        $("#total_" + current).text(accounting.formatMoney(total, "", 2, ",", "."));
+      });
+    });
+
+    $(".selling_usd, .buying_usd").livequery(function(){
+      $(this).focusout(function(){
+        var tr = $(this).parent().parent();
+        var selling = tr.find("td:eq(2) input").val() == "" ? 0 : accounting.unformat(tr.find("td:eq(2) input").val());
+        var buying = tr.find("td:eq(4) input").val() == "" ? 0 : accounting.unformat(tr.find("td:eq(4) input").val());
+        var total = 0;
+        tr.find("td:eq(6) input").val(accounting.formatMoney(selling - buying, "", 2, ",", "."));
+        $(".profit_usd").each(function(){
+          var parent = $(this).parent().parent();
+          if(!parent.hasClass("hidden")){
+            var temp = $(this).val();
+            total += accounting.unformat(temp, "");
+          }
+        });
+        $("#total_profit_usd").text(accounting.formatMoney(total, "", 2, ",", "."));
+      });
+    });
+
+    $(".selling_idr, .buying_idr").livequery(function(){
+      $(this).focusout(function(){
+        var tr = $(this).parent().parent();
+        var selling = tr.find("td:eq(3) input").val() == "" ? 0 : accounting.unformat(tr.find("td:eq(3) input").val());
+        var buying = tr.find("td:eq(5) input").val() == "" ? 0 : accounting.unformat(tr.find("td:eq(5) input").val());
+        var total = 0;
+        tr.find("td:eq(7) input").val(accounting.formatMoney(selling - buying, "", 2, ",", "."));
+        $(".profit_idr").each(function(){
+          var parent = $(this).parent().parent();
+          if(!parent.hasClass("hidden")){
+            var temp = $(this).val();
+            total += accounting.unformat(temp, "");
+          }
+        });
+        $("#total_profit_idr").text(accounting.formatMoney(total, "", 2, ",", "."));
+      });
+    });
+
+    $("table tbody tr:not('.hidden'):last td:eq(1) input").livequery(function(){
+      $(this).focusout(function(){      
+        if($(this).val() != "")
+          add_revenue_fields();
+      })
+    });
+
+    $("form").submit(function(){
+      $(".selling_usd").each(function(){ $(this).val(accounting.unformat($(this).val())) });
+      $(".selling_idr").each(function(){ $(this).val(accounting.unformat($(this).val())) });
+      $(".buying_usd").each(function(){ $(this).val(accounting.unformat($(this).val())) });
+      $(".buying_idr").each(function(){ $(this).val(accounting.unformat($(this).val())) });
+    });
+  })
+</script>

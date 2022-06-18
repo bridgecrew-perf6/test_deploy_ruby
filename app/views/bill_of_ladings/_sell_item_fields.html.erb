@@ -1,0 +1,11 @@
+<% unless item.selling_volume == 0 && item.selling_usd == 0 && item.selling_idr == 0 && item.selling_total_after_tax == 0 %>
+<tr>
+	<td class="hidden"></td>
+	<td><%= item.description %></td>
+	<td class="text-right"><%= (item.description == "LCL") ? lcl_format(item.selling_volume) : money_format(item.selling_volume) %></td>
+	<td class="text-right"><%= money_format item.selling_usd %></td>
+	<td class="text-right"><%= money_format item.selling_idr %></td>
+	<td class="text-right"><%= money_format item.selling_total %></td>
+	<td class="text-right hidden"><%= money_format item.selling_total_after_tax %></td>
+</tr>
+<% end %>

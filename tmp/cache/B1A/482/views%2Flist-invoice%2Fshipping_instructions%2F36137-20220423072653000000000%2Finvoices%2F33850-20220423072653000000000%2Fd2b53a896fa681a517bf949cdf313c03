@@ -1,0 +1,42 @@
+o: ActiveSupport::Cache::Entry:@valueI"£  <tr class="">
+    <td>
+      <a href="/invoices/33850?year=2022" title="Show Invoice"><i class="icon-eye-open icon-large"></i></a>
+
+      <a href="#invModal" role="button" class="btn btn-info btn-small btn-invoice" data-toggle="modal">Tax</a>
+    </td>
+    <td>
+      IBLINV221237
+      
+    </td>
+    <td>
+      IBL221004
+      
+      
+    </td>
+    <td>USD</td>
+    <td style="text-align:right">855</td>
+    <td>TOP TEA (M) SDN. BHD. (SHIPPER)</td>
+    <td>PT. TRIJASA PRIMA INTERNATIONAL</td>
+    <td>PALEMBANG</td>
+    <td>Printed</td>
+    <td></td>
+    <td style="text-align:right"></td>
+    <td></td>
+    <td style="text-align:right"></td>
+    <td></td>
+    <td style="text-align:right"></td>
+    <td>Open</td>
+    <td></td>
+    <td></td>
+    <td class="hidden disable"></td>
+    <td class="hidden disable"></td>
+    <td class="hidden disable row_id">33850</td>
+    <td class="hidden disable ibl_ref">IBL221004</td>
+    <td class="hidden disable invoice_no">IBLINV221237</td>
+    <td class="hidden disable head_letter">INVOICE</td>
+    <td class="hidden disable">1</td>
+    <td class="hidden disable">1</td>
+    <td class="hidden disable">1</td>
+    <td>23-Apr-2022</td>
+  </tr>
+:ET:@created_atf1650813787.8938255:@expires_in0

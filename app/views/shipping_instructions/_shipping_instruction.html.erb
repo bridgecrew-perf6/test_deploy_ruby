@@ -1,0 +1,177 @@
+<%= form_for("", html: { class: "form-horizontal"}) do |f| %>
+<div id="shipping_instruction">
+  <div class="row-fluid">
+    <div class="span12">
+      <img src="<%= assets_path('ibl-si-logo_BU2.jpg') %>" alt="PT. Interbenua Logistindo LOGO replace to app/assets/images/logo.jpg" id="logo" style="width:100%;"/>
+      <!-- <img src="<%= assets_path('address.jpg') %>" style="float: right; position:relative; width: 300px; z-index: 2; margin: -10px 0 0 20px;"/> -->
+      <address>
+        PT. INTERBENUA LOGISTINDO<br/>
+        Jl. Muara Karang Blok C7 Utara No.37C - Jakarta Utara 14450<br/>
+        Phone: 021-71040027 / 021-71040028 Fax: 021-66604679<br/>
+        Email: general@interbenualog.com
+      </address>
+    </div>
+  </div>
+  <div class="row-fluid" style="margin-bottom: 40px;">&nbsp;</div>
+  <table width="100%" border="1">
+    <tr>
+      <td width="50%" colspan="2" rowspan="2">
+        <label>Shipper :</label>
+        <pre class="free" style="min-height: 90px"><%= @shipping_instruction.shipper_name %></pre>
+      </td>
+      <td width="25%" height="40">
+        <label>Country of Origin :</label>
+        <span><%= @shipping_instruction.country_of_origin %></span>
+      </td>
+      <td width="25%">
+        <label>SI No :</label>
+        <span><%= @shipping_instruction.si_no %></span>
+      </td>
+    </tr>
+    <tr>
+      <td height="40">
+        <label>Carrier :</label>
+        <span><%= @shipping_instruction.carrier %></span>
+      </td>
+      <td>
+        <label>PIC :</label>
+        <span><%= @shipping_instruction.pic %></span>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" rowspan="2" height="80">
+        <label>Consignee :</label>
+        <pre class="free" style="min-height: 90px"><%= @shipping_instruction.consignee_name %></pre>
+      </td>
+      <td colspan="2" height="40">
+        <label>Shipper's Reference :</label>
+        <span><%= @shipping_instruction.shipper_reference %></span>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" rowspan="2" id="vessel-wrapper">
+        <label>Shipping Schedule :</label>
+        <pre class="free"><%= @shipping_instruction.shipping_schedule %></pre>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" rowspan="2" height="80">
+        <label>Notify Party :</label>
+        <pre class="free" style="min-height: 90px"><%= @shipping_instruction.notify_party %></pre>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <label>Volume : </label>
+        <%= @shipping_instruction.volume %>
+      </td>
+    </tr>
+    <tr>
+      <td style="width: 25%"><label>Place of Receipt :</label></td>
+      <td style="width: 25%"><label>Port of Loading :</label></td>
+      <td style="width: 25%"><label>Feeder Vessel :</label></td>
+      <td style="width: 25%"><label>Booking No :</label></td>
+    </tr>
+    <tr>
+      <td height="35"><%= @shipping_instruction.place_of_receipt %></td>
+      <td><%= @shipping_instruction.port_of_loading %></td>
+      <td><%= @shipping_instruction.feeder_vessel %></td>
+      <td><%= @shipping_instruction.booking_no %></td>
+    </tr>
+    <tr>
+      <td style="width: 25%"><label>Port of Discharge :</label></td>
+      <td style="width: 25%"><label>Final Destination :</label></td>
+      <td style="width: 25%"><label>Connecting Vessel :</label></td>
+      <td style="width: 25%"><label>Master BL No. :</label></td>
+    </tr>
+    <tr>
+      <td height="35"><%= @shipping_instruction.port_of_discharge %></td>
+      <td><%= @shipping_instruction.final_destination %></td>
+      <td><%= @shipping_instruction.connection_vessel %></td>
+      <td><%= @shipping_instruction.master_bl_no %></td>
+    </tr>
+    <tr>
+      <td>
+        <div style="min-height: 575px">
+          <label>Marks & No. :</label><br/>
+          <pre class="free"><%= @shipping_instruction.marks_no %></pre>
+        </div>
+        <div>
+          <pre class="free"><%= @shipping_instruction.freight %> &nbsp;</pre>
+        </div>
+      </td>
+      <td colspan="2">
+        <label>Description of Goods & Packages :</label><br/>
+        <pre class="free"><%= @shipping_instruction.description_packages %></pre>
+      </td>
+      <td>
+        <label>GW & Measurement</label><br/>
+        <div class="">
+          <label>GW :</label>
+          <span><%= @shipping_instruction.gw unless @shipping_instruction.gw.blank? || @shipping_instruction.gw == "0.00 KGS" %>&nbsp;</span>
+        </div>
+        <div class="">
+          <label>NW :</label>
+          <span><%= @shipping_instruction.nw unless @shipping_instruction.nw.blank? || @shipping_instruction.nw == "0.00 KGS" %>&nbsp;</span>
+        </div>
+        <div class="">
+          <label>Measurement :</label>
+          <span><%= @shipping_instruction.measurement unless @shipping_instruction.measurement.blank? || @shipping_instruction.measurement == "0.000 M3" %>&nbsp;</span>
+        </div>
+        <div class="">
+          <label>Dimension :</label>
+          <pre class="free"><%= @shipping_instruction.dimension %>&nbsp;</pre>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" height="30">
+        <label>Freight details, charges etc :</label>
+        <span><%= @shipping_instruction.freight_details %></span>
+      </td>
+      <td colspan="2">
+        <label>SI Date :</label>
+        <%= si_date_format @shipping_instruction.si_date %>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="4">
+        <div style="min-height: 40px;">
+          <label>Special Instructions :</label>
+          <pre class="free"><%= @shipping_instruction.special_instructions %></pre>
+        </div>
+        <hr/>
+        <div>
+          <div style="float: left; width: 700px; margin-right: 10px; height: 130px;">
+            <label>Container No. :</label>
+            <pre class="free" style="width: 49%; margin-right: 10px; float:left"><%= @shipping_instruction.container_no %></pre>
+            <pre class="free" style="width: 49%; float:left"><%= @shipping_instruction.container_no_2 %></pre>
+          </div>
+          <div style="float: left; width: 300px;">
+            <div class="si_field">
+              <label>PEB No. </label><span class="pull-left">:</span>
+              <span class="field"><%= @shipping_instruction.peb_no %>&nbsp;</span>
+              <div class="clearfix"></div>
+            </div>
+            <div class="si_field">
+              <label>Date </label><span class="pull-left">:</span>
+              <span class="field"><%= si_date_format @shipping_instruction.inst_date %>&nbsp;</span>
+              <div class="clearfix"></div>
+            </div>
+            <div class="si_field">
+              <label>KPBC </label><span class="pull-left">:</span>
+              <span class="field" style="word-wrap: break-word; display: block;"><%= @shipping_instruction.kpbc %>&nbsp;</span>
+              <div class="clearfix"></div>
+            </div>
+            <div class="si_field">
+              <label>HS Code </label><span class="pull-left">:</span>
+              <pre class="field free"><%= @shipping_instruction.hs_code %>&nbsp;</pre>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+<% end %>

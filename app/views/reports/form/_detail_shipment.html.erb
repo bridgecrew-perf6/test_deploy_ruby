@@ -1,0 +1,55 @@
+<div class="row-fluid">
+  <%= form_for(@detail_shipment_report, url: detail_shipment_reports_path, html: { class: "form-horizontal span6", id: "form-detail-shipment", target: "_blank"}) do |f| %>
+    <fieldset>
+      <legend>Report Detail Shipment</legend>
+      <div class="control-group hidden">
+        <label for="" class="control-label">Format</label>
+
+        <div class="controls">
+          <%= f.select :format, options_for_select(Constant::FORMAT), :class => 'format', value: 'pdf' %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">IBL NO</label>
+        <div class="controls">
+          <%= f.text_field :ibl_ref %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">&nbsp;</label>
+
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">View Report</button>
+        </div>
+      </div>
+    </fieldset>
+  <% end %>
+</div>
+<script type="text/javascript">
+  jQuery(document).ready(function () {
+    jQuery("#form-detail-shipment").on("submit", function () {
+      var submit = false;
+      var ibl_no = jQuery("#detail_shipment_report_ibl_ref").val();
+      var form = jQuery(this);
+      if (ibl_no != '') {
+        jQuery.ajax({
+          url: '<%= check_si_exists_reports_path %>',
+          type: "GET",
+          dataType: "json",
+          data: {ibl_no: jQuery("#detail_shipment_report_ibl_ref").val()}
+        })
+        .done(function (data) {
+          if (data.success) {
+            form.off("submit");
+            form.submit();
+          }
+          else {
+            jQuery("#detail_shipment_report_ibl_ref").val('').focus();
+            alert("IBL No. tidak terdaftar");
+          }
+        })
+      }
+      return submit;
+    })
+  })
+</script>

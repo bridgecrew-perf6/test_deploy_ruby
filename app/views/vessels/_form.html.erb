@@ -1,0 +1,49 @@
+<%= form_for(@vessel) do |f| %>
+  <% if @vessel.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@vessel.errors.count, "error") %> prohibited this vessel from being saved:</h2>
+
+      <ul>
+      <% @vessel.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :shipping_instruction_id %><br>
+    <%= f.number_field :shipping_instruction_id %>
+  </div>
+  <div class="field">
+    <%= f.label :vessel_name %><br>
+    <%= f.text_field :vessel_name %>
+  </div>
+  <div class="field">
+    <%= f.label :etd_no %><br>
+    <%= f.number_field :etd_no %>
+  </div>
+  <div class="field">
+    <%= f.label :etd_city %><br>
+    <%= f.text_field :etd_city %>
+  </div>
+  <div class="field">
+    <%= f.label :etd_date %><br>
+    <%= f.date_select :etd_date %>
+  </div>
+  <div class="field">
+    <%= f.label :eta_no %><br>
+    <%= f.number_field :eta_no %>
+  </div>
+  <div class="field">
+    <%= f.label :eta_city %><br>
+    <%= f.text_field :eta_city %>
+  </div>
+  <div class="field">
+    <%= f.label :eta_date %><br>
+    <%= f.date_select :eta_date %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,19 @@
+"IBL REF"<%= "\t" %>"Shipper"<%= "\t" %>"Customer"<%= "\t" %>"Invoice No"<%= "\t" %>"USD"<%= "\t" %>"IDR"<%= "\t" %>"ETD Vessel"<%= "\t" %>"Due Date"<%= "\t" %>"Date of Payment"<%= "\t" %>"Status"<%= "\t" %>"Notes"
+<% 
+repeat_number = false 
+last_bl = 0
+%>
+<% @invoices.each do |inv| %>
+<%
+if last_bl != 0 && last_bl == inv.bill_of_lading_id
+	repeat_number = true
+else
+	repeat_number = false
+	last_bl = inv.bill_of_lading_id
+end
+vessel = inv.bill_of_lading.shipping_instruction.vessels.first
+%>
+<% cache(["report-control-center-xls", inv]) do %>
+<%= inv.bill_of_lading.shipping_instruction.si_no %><%= "\t" %><%= inv.to_shipper %><%= "\t" %><%= inv.customer_ori %><%= "\t" %><%= inv.try(:no_invoice) || inv.try(:no_dbn) || inv.try(:no_note) %><% if inv.currency_code == "USD" %><%= "\t" %><%= number_with_precision(inv.total_invoice, precision: 2, delimiter: ",") %><%= "\t" %>""<% elsif inv.currency_code == "IDR" %><%= "\t" %>""<%= "\t" %><%= number_with_precision(inv.total_invoice, precision: 2, delimiter: ",") %><% end %><%= "\t" %><%= si_date_format vessel.etd_date unless vessel.nil? %><%= "\t" %><%= si_date_format inv.due_date %><%= "\t" %><%= si_date_format inv.date_of_payment %><%= "\t" %><% if inv.status_payment == 0 %>Open<% else %>Closed<% end %><%= "\t" %><%= inv.notes_payment %>
+<% end %><% end %><% if @shipping_instructions.any? %><% @shipping_instructions.each do |shipping_instruction| %>
+<%= shipping_instruction.si_no %><%= "\t" %><%= shipping_instruction.shipper_company_name %><%= "\t" %>""<%= "\t" %>""<%= "\t" %>""<%= "\t" %>""<%= "\t" %><% vessel = shipping_instruction.vessels.first %><%= si_date_format vessel.etd_date unless vessel.nil? %><%= "\t" %>""<%= "\t" %>""<%= "\t" %>""<%= "\t" %>""<% end %><% end %>

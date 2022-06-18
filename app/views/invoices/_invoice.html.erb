@@ -1,0 +1,225 @@
+<style type="text/css">
+  #size-a4-print * {font-family: "Comic Sans MS", "cursive"!important;}
+  table.with-border td, table.with-border th{
+    border: solid 2px #000;
+    padding: 2px;
+    font-family: "cursive";
+    font-weight: 700;
+  }
+</style>
+<%= form_for(@invoice, html: { class: "form-horizontal"}) do |f| %>
+<div id="invoice">
+  <% if request.format != "application/pdf" %>
+    <div class="row-fluid" style="position: relative; top:0">
+      <div class="span12" style="position: absolute">
+        <img src="<%= assets_path('logo.jpg') %>" alt="PT. Interbenua Logistindo LOGO replace to app/assets/images/logo.jpg" id="logo" width="100%"/>
+      </div>
+    </div>
+  <% end %>
+  <div class="row-fluid">
+      <span class="8point" style="position: relative; margin-top: 160px; display: block; margin-left: 65%; margin-bottom: 30px; line-height: 1.2">
+        <!-- PT. INTERBENUA LOGISTINDO<br/>
+        Jl. Muara Karang Blok C7 Utara No. 37C<br/>
+        Jakarta Utara 14450<br/>
+        Phone. 021-50651001 / 021-50661001<br/>
+        Fax. 021-66604679<br/>
+        www.interbenualog.com -->
+        <!-- Revisi 17 February 2016 -->
+        <!-- PT. INTERBENUA LOGISTINDO<br/>
+        Ruko Harmoni Mas Blok C-30<br/>
+        JL. Jembatan Dua Raya No. 18<br/>
+        Jakarta Utara 14450<br/>
+        Phone. 021-66604805 / 021-50651001 / 021-50661001<br/>
+        www.interbenualog.com<br/> -->
+        <!-- Revisi 4 April 2016 -->
+        <!--
+        PT. INTERBENUA LOGISTINDO<br/>
+        Ruko Harmoni Mas Blok C-30<br/>
+        JL. Jembatan Dua Raya No. 18<br/>
+        Jakarta Utara 14450<br/>
+        Phone. 021-66678914/921/924<br/>
+        Fax. 021-66604805<br/>
+        www.interbenualog.com<br/>
+        -->
+        <!--Revisi 18 JAN 2022 -->
+        PT. INTERBENUA LOGISTINDO<br/>
+        Galeri Niaga Mediterania I<br/>
+        Blok X-3, No.B-8M<br/>
+        Kapuk Muara, Penjaringan<br/>
+        Jakarta Utara 14460<br/>
+        Phone/Fax. 021-5883377<br/>
+        www.interbenualog.com<br/>
+      </span>
+  </div>
+<!--   <table width="100%" style="margin-bottom: 20px">
+  	<tr>
+  		<td width="60%">
+  		</td>
+  		<td width="40%">
+
+  		</td>
+  	</tr>
+  </table> -->
+  <table width="100%" class="with-border">
+    <tr>
+      <td colspan="4">
+        <div style="float: left; width: 59%; border-right: solid 2px; margin: -5px 5px -5px 0; padding: 5px 0;">
+          <div class="inline-group">
+            <label style="width: 180px">TO <span class="pull-right">:</span></label>
+            <div style="margin-left: 200px; font-weight: normal"><%= @invoice.customer %></div>
+          </div>
+          <div class="inline-group">
+            <label for="" style="width: 180px">SHIPPER REF <span class="pull-right">:</span></label>
+            <div style="margin-left: 200px; font-weight: normal"><%= @invoice.shipper_ref %></div>
+          </div>
+          <div class="inline-group">
+            <label for="" style="width: 180px">BL NO <span class="pull-right">:</span></label>
+            <div style="margin-left: 200px; font-weight: normal"><%= @invoice.bl_no %></div>
+          </div>
+          <div class="inline-group">
+            <label for="" style="width: 180px">VOLUME <span class="pull-right">:</span></label>
+            <div style="margin-left: 200px; font-weight: normal">
+              <%#
+                @invoice.bill_of_lading.shipping_instruction.si_containers.map {|c| (c.container.container_type == "LCL" ? "#{number_with_precision(c.volum, precision: 3, delimiter: ',')} M3 #{c.container.container_type}" : "#{c.volum.to_i}x#{c.container.container_type}") }.join(" & ")
+              %>
+              <!-- # Revisi 1 Dec 2015 -->
+              <%= @invoice.volume %>
+            </div>
+          </div>
+          <div class="inline-group">
+            <label for="" style="width: 180px">VESSEL <span class="pull-right">:</span></label>
+            <div style="margin-left: 200px; font-weight: normal"><%= @invoice.vessel %></div>
+          </div>
+          <div class="inline-group">
+            <label for="" style="width: 180px">POL <span class="pull-right">:</span></label>
+            <div style="margin-left: 200px; font-weight: normal"><%= @invoice.port_of_loading %></div>
+          </div>
+          <div class="inline-group">
+            <label for="" style="width: 180px">DESTINATION <span class="pull-right">:</span></label>
+            <div style="margin-left: 200px; font-weight: normal"><%= @invoice.destination %></div>
+          </div>
+          <div class="inline-group">
+            <label for="" style="width: 180px">ETD <span class="pull-right">:</span></label>
+            <div style="margin-left: 200px; font-weight: normal"><%= normal_date_format(@invoice.etd).upcase %></div>
+          </div>
+          <!-- <div class="inline-group">
+            <label for="" style="width: 180px">ETA <span class="pull-right">:</span></label>
+            <div style="margin-left: 200px; font-weight: normal"><%= normal_date_format(@invoice.eta).upcase %></div>
+          </div> -->
+        </div>
+        <div style="float: left; width: 40%">
+          <% if request.format != "application/pdf" %>
+            <h3 style="text-align: right; height: 60px; margin: 10px 10px 10px 60px; width: 230px;"><%= @invoice.head_letter %></h3>
+          <% else %>
+            <h3 style="text-align: right; margin: 20px 20px 40px 60px; width: 360px; height: 60px; font-size: 22pt; font-family: 'cursive'"><%= @invoice.head_letter %></h3>
+          <% end %>
+          <div class="inline-group">
+            <label for="" style="width: 130px">NO <span class="pull-right">:</span></label>
+            <div style="margin-left: 150px; font-weight: normal"><%= @invoice.invoice_no %></div>
+          </div>
+          <div class="inline-group">
+            <label for="" style="width: 130px">DATE <span class="pull-right">:</span></label>
+            <div style="margin-left: 150px; font-weight: normal"><%= normal_date_format(@invoice.invoice_date).upcase %></div>
+          </div>
+          <div class="inline-group">
+            <label for="" style="width: 130px">IBL REF <span class="pull-right">:</span></label>
+            <div style="margin-left: 150px; font-weight: normal"><%= @invoice.ibl_no %></div>
+          </div>
+          <div class="inline-group">
+            <label for="" style="width: 130px">DUE DATE <span class="pull-right">:</span></label>
+            <div style="margin-left: 150px; font-weight: normal"><%= normal_date_format(@invoice.due_date).upcase %></div>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+      </td>
+    </tr>
+  	<tr>
+  		<th style="padding: 10px 5px" width="35%">DESCRIPTION</th>
+      <th style="padding: 10px 5px" width="15%">QTY</th>
+      <th style="padding: 10px 5px" width="25%">UNIT PRICE</th>
+      <th style="padding: 10px 5px" width="25%">AMOUNT</th>
+  	</tr>
+  	<tr>
+  		<td>
+  			<div style="height: 445px">
+  			  <% @invoice.invoice_details.each do |detail| %>
+			      <%= detail.description %> <br/>
+        	<% end %>
+        </div>
+  		</td>
+      <td align="right">
+        <% @invoice.invoice_details.each do |detail| %>
+          <%= (detail.description == "LCL") ? lcl_format(detail.volume) : money_format(detail.volume) %><br/>
+        <% end %>
+      </td>
+      <td align="right">
+        <% @invoice.invoice_details.each do |detail| %>
+          <%= money_with_currency_format(detail.amount, @invoice.currency_code) %><br/>
+        <% end %>
+      </td>
+      <td align="right">
+        <% @invoice.invoice_details.each do |detail| %>
+          <%= money_with_currency_format(detail.subtotal, @invoice.currency_code) %><br/>
+        <% end %>
+      </td>
+  	</tr>
+    <%
+      column1 = []
+      column1.push "VAT" unless @invoice.vat_10.to_f == 0
+      column1.push "VAT" unless @invoice.vat_1.to_f == 0
+      column1.push "PPH 23" unless @invoice.pph_23.to_f == 0
+
+      column2 = []
+      column2.push "#{money_with_currency_format(@invoice.vat_10, @invoice.currency_code)}" unless @invoice.vat_10.to_f == 0
+      column2.push "#{money_with_currency_format(@invoice.vat_1, @invoice.currency_code)}" unless @invoice.vat_1.to_f == 0
+      column2.push "#{money_with_currency_format(@invoice.pph_23, @invoice.currency_code)}" unless @invoice.pph_23.to_f == 0
+    %>
+    <% unless column1.blank? || column2.blank? %>
+    <tr>
+      <td style="padding: 10px 5px; border-bottom-color: white;" colspan="3"><%= column1.join("<br/>").html_safe %></td>
+      <td style="padding: 10px 5px" align="right"><%= column2.join("<br/>").html_safe %></td>
+    </tr>
+    <% end %>
+    <tr>
+      <td style="padding: 10px 5px; border-top-color: white;" colspan="3">
+        <strong>TOTAL</strong>
+      </td>
+      <td style="padding: 10px 5px" align="right">
+        <%= "#{money_with_currency_format(@invoice.grand_total, @invoice.currency_code)}".html_safe %>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="4" style="padding: 10px 5px">
+        <% if @invoice.add_rate %>
+          <div>
+            <strong>RATE: </strong>
+            <%= money_format(@invoice.rate) %>
+          </div>
+        <% end %>
+        <div>
+          <div class="inline-block" style="height: 100px; word-wrap:break-word; overflow:hidden">
+            <label><strong>NOTES: </strong></label>
+            <div><%= nl2br(@invoice.notes).html_safe %></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </table>
+  <div style="line-height: normal;">
+    <div style="float:left; width: 70%">
+    	<div style="padding: 10px 5px 5px"><strong>REMITTANCE TO:</strong></div>
+    	<% Bank.all.each do |bank| %>
+        <div style="float:left; width: 45%; line-height: 1.1; padding: 0 5px; font-size: 8pt">
+    		  <%= render "banks/bank", :bank => bank %>
+        </div>
+    	<% end %>
+    </div>
+    <div style="float:left; width: 30%">
+      <div style="padding: 10px 5px 5px">&nbsp;</div>
+      <br/><br/><br/><br/><br/><br/><br/><br/>
+      <strong style="text-align: center; display: block; border-top: 2px solid rgb(0, 0, 0); padding-top: 5px;">AUTHORIZED SIGNATURE</strong>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+</div>
+<% end %>

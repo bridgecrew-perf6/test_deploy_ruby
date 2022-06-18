@@ -1,0 +1,170 @@
+<div id="sellComparisonModal" class="modal container hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3>Sell Comparison</h3>
+  </div>
+  <div class="modal-body">
+    <table width="100%" border="1">
+        <thead>
+          <!-- <tr>
+            <th>SELL</th>
+            <th>INVOICE</th>
+          </tr> -->
+        </thead>
+        <tbody>
+          <tr id="ibl_ref">
+            <td class="shipment">
+              <table width="100%" border="1">
+                <thead>
+                  <tr>
+                    <th colspan="7">SELL</th>
+                  </tr>
+                  <tr style="height:43px;">
+                    <td class="hidden"></td>
+                    <th>DESCRIPTION</th>
+                    <th>QTY</th>
+                    <th>AMOUNT USD</th>
+                    <th>AMOUNT IDR</th>
+                    <th>TOTAL</th>
+                    <th>TOTAL AFTER TAX</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% unless @cost_revenue.blank? %>
+                    <% @cost_revenue.volume_items.each do |item| %>
+                      <%= render 'sell_item_fields', item: item %>
+                    <% end %>
+                    <% @cost_revenue.shipper_items.each do |item| %>
+                      <%= render 'sell_item_fields', item: item %>
+                    <% end %>
+                    <% @cost_revenue.carrier_items.each do |item| %>
+                      <%= render 'sell_item_fields', item: item %>
+                    <% end %>
+                    <% @cost_revenue.active_items.each do |item| %>
+                      <%= render 'sell_item_fields', item: item %>
+                    <% end %>
+                  <% else %>
+                    <tr>
+                      <td colspan="7">Data Not Found</td>
+                    </tr>
+                  <% end %>
+                </tbody>
+                <tfoot>
+                  <% unless @cost_revenue.blank? %>
+                    <tr>
+                      <td colspan="4" class="text-left">OTHER</td>
+                      <td class="text-right"><%= number_format @cost_revenue.selling_other %></td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td colspan="4" class="text-left">RATE</td>
+                      <td class="text-right"><%= number_format @cost_revenue.selling_rate %></td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td colspan="4" class="text-left">VAT 10%</td>
+                      <td class="text-right"><%= number_format @cost_revenue.selling_vat_10 %></td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td colspan="4" class="text-left">VAT 1%</td>
+                      <td class="text-right"><%= number_format @cost_revenue.selling_vat_1 %></td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td colspan="4" class="text-left">PPH 23</td>
+                      <td class="text-right"><%= number_format @cost_revenue.selling_pph_23 %></td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td colspan="4" class="text-left">TOTAL INVOICE</td>
+                      <td class="text-right"><%= number_format @cost_revenue.selling_total %></td>
+                      <td>&nbsp;</td>
+                    </tr>
+                  <% end %>
+                </tfoot>
+              </table>
+            </td>
+            <td class="update_shipment">
+              <table width="100%" border="1">
+                <thead>
+                  <tr>
+                    <th colspan="7">SELL</th>
+                  </tr>
+                  <tr style="height:43px;">
+                    <td class="hidden"></td>
+                    <th>DESCRIPTION</th>
+                    <th>QTY</th>
+                    <th>AMOUNT USD</th>
+                    <th>AMOUNT IDR</th>
+                    <th>TOTAL</th>
+                    <th>TOTAL AFTER TAX</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% unless @cost_revenue.blank? %>
+                    <% @cost_revenue.volume_items.each do |item| %>
+                      <%= render 'sell_item_fields', item: item %>
+                    <% end %>
+                    <% @cost_revenue.shipper_items.each do |item| %>
+                      <%= render 'sell_item_fields', item: item %>
+                    <% end %>
+                    <% @cost_revenue.carrier_items.each do |item| %>
+                      <%= render 'sell_item_fields', item: item %>
+                    <% end %>
+                    <% @cost_revenue.active_items.each do |item| %>
+                      <%= render 'sell_item_fields', item: item %>
+                    <% end %>
+                  <% else %>
+                    <tr>
+                      <td colspan="7">Data Not Found</td>
+                    </tr>
+                  <% end %>
+                </tbody>
+                <tfoot>
+                  <% unless @cost_revenue.blank? %>
+                    <tr>
+                      <td colspan="4" class="text-left">OTHER</td>
+                      <td class="text-right"><%= number_format @cost_revenue.selling_other %></td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td colspan="4" class="text-left">RATE</td>
+                      <td class="text-right"><%= number_format @cost_revenue.selling_rate %></td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td colspan="4" class="text-left">VAT 10%</td>
+                      <td class="text-right"><%= number_format @cost_revenue.selling_vat_10 %></td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td colspan="4" class="text-left">VAT 1%</td>
+                      <td class="text-right"><%= number_format @cost_revenue.selling_vat_1 %></td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td colspan="4" class="text-left">PPH 23</td>
+                      <td class="text-right"><%= number_format @cost_revenue.selling_pph_23 %></td>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td colspan="4" class="text-left">TOTAL INVOICE</td>
+                      <td class="text-right"><%= number_format @cost_revenue.selling_total %></td>
+                      <td>&nbsp;</td>
+                    </tr>
+                  <% end %>
+                </tfoot>
+              </table>
+            </td>
+          </tr>
+          </tbody>
+        <tfoot>
+        </tfoot>
+      </table>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <button class="btn btn-primary" id="update_shipment_comparison" data-dismiss="modal" aria-hidden="true">Update</button>
+  </div>
+</div>

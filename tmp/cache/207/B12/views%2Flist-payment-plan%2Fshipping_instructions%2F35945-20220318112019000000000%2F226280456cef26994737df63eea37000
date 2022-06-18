@@ -1,0 +1,25 @@
+o: ActiveSupport::Cache::Entry:@valueI"!    <tr>
+      <td data-no-turbolink="true">
+                <a data-confirm="Detail cost is empty. Proceed?" href="/payments/calculate_invoice?sid=35945&amp;year=2022">Input</a>
+          
+      </td>
+      <td>IBL220849</td>
+      <td>GOSUJKT8082277</td>
+      <td></td>
+      <td>1x40HQ DRY</td>
+      <td>GOLD STAR LINE LTD</td>
+      <td>PT. INTRADITA PROSIMPEX</td>
+      <td>JAKARTA, INDONESIA</td>
+      <td>NINGBO, CHINA</td>
+      <td></td>
+      <td></td>
+      <td>30-Mar-2022</td>
+      <td>No</td>
+      <td>On Going</td>
+      <td class="hidden disable">March 2022</td>
+      <td class="hidden disable">03/30/2022</td>
+      <td class="hidden disable row_id">35945</td>
+      <td class="hidden disable ibl_ref">IBL220849</td>
+      <td class="hidden disable row_ref_id"></td>
+    </tr>
+:ET:@created_atf1648209446.7129312:@expires_in0

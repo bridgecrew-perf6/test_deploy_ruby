@@ -1,0 +1,45 @@
+<% columns = @report.columns %>
+<% base = [] %>
+<% 16.times{ |i| base.push i.to_s } %>
+<%
+  head = []
+  head.push ""
+  head.push "IBL REF\t"
+  head.push "Shipper REF\t"
+  head.push "Shipper\t"
+  head.push "Volume\t"
+  head.push "Destination\t"
+  head.push "ETD Vessel\t"
+  head.push "SI Date\t"
+  head.push "Carrier\t"
+  head.push "Consignee\t"
+  head.push "Notify Party\t"
+  head.push "POL\t"
+  head.push "Booking No\t"
+  head.push "MBL No\t"
+  head.push "Order Type\t"
+  head.push "Handle by\t"
+%>
+<% (base-columns).reverse_each{ |column| head.delete_at(column.to_i) } %>
+<%= head.join("").html_safe %>
+<% cancel_si = shipment_si = total_si = add_si = 0 %>
+<% @results.each do |row| %>
+  <% 
+    add_si += 1 if row.is_shadow
+    unless row.is_shadow
+      total_si += 1
+      if row.is_canceled?
+        cancel_si += 1
+      else
+        shipment_si += 1
+      end
+    end
+  %>
+  <% body = report_list_si(row, "xls") %>
+  <% (base-columns).reverse_each{ |column| body.delete_at(column.to_i) } unless body.blank? %>
+<%= body.join("").html_safe unless body.blank? %>
+<% end %>
+
+<%= "Total SI\t#{total_si}" %>
+<%= "Total Shipments\t#{shipment_si}" %>
+<%= "Cancel SI\t#{cancel_si}" %>

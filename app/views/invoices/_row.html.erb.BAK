@@ -1,0 +1,52 @@
+<tr class="<%= "error cancel" if invoice.is_cancel == 1 %>">
+  <%
+     if invoice.kind_of? Invoice
+       show_link, show_text = invoice_path(invoice), "Show Invoice"
+       edit_link, edit_text = edit_invoice_path(invoice), "Edit Invoice"
+       cancel_link, uncancel_link = cancel_invoice_path(invoice), uncancel_invoice_path(invoice)
+     elsif invoice.kind_of? Note
+       show_link, show_text = note_path(invoice), "Show Note"
+       edit_link, edit_text = edit_note_path(invoice), "Edit Note"
+       cancel_link, uncancel_link = cancel_note_path(invoice), uncancel_note_path(invoice)
+     else
+       show_link, show_text = debit_note_path(invoice), "Show Debit Note"
+       edit_link, edit_text = edit_debit_note_path(invoice), "Edit Debit Note"
+       cancel_link, uncancel_link = cancel_debit_note_path(invoice), uncancel_debit_note_path(invoice)
+     end
+  %>
+  <td>
+    <%= link_to '<i class="icon-eye-open icon-large"></i>'.html_safe, show_link,
+                title: show_text %>
+    <%= link_to '<i class="icon-edit-sign icon-large"></i>'.html_safe, edit_link,
+                title: edit_text if (invoice.is_cancel != 1 && invoice.status != 3) %>
+    <div>
+      <% if invoice.is_cancel == 0 && invoice.status != 3 %>
+        <%= link_to 'Cancel Invoice', cancel_link, data: {confirm: 'Are you sure?'} %>
+      <% elsif invoice.status != 3 %>
+        <%= link_to 'Uncancel Invoice', uncancel_link, data: {confirm: 'Are you sure?'} %>
+      <% end %>
+    </div>
+    <%= '<span class="label label-warning">Cancel SI</span>'.html_safe if invoice.bill_of_lading.shipping_instruction.is_cancel == 1 %>
+  </td>
+  <td>
+    <%= invoice.try(:no_invoice) || invoice.try(:no_note) || invoice.try(:no_dbn) %>
+    <%= '<span class="label label-warning">Cancel Inv</span>'.html_safe if invoice.is_cancel == 1 %>
+  </td>
+  <td>
+    <%= invoice.bill_of_lading.shipping_instruction.si_no %>
+    <%= '<span class="label label-error">Closed</span>'.html_safe if invoice.bill_of_lading.shipping_instruction.status == 1 %>
+  </td>
+  <td><%= invoice.currency_code %></td>
+  <td><%= invoice.customer_ori %></td>
+  <td><%= invoice.to_shipper %></td>
+  <td><%= invoice.destination %></td>
+  <td>
+    <%=
+        invoice.bill_of_lading.shipping_instruction.si_containers.map { |c| (c.container.container_type == "LCL" ?
+                "#{number_with_precision(c.volum, precision: 3, delimiter: ',')} M3 #{c.container.container_type}" :
+                "#{c.volum}x#{c.container.container_type}") }.join(" & ")
+    %>
+  </td>
+  <td><%= invoice.bill_of_lading.shipping_instruction.order_type_text %></td>
+  <td><%= invoice.status_text(invoice.status) %></td>
+</tr>

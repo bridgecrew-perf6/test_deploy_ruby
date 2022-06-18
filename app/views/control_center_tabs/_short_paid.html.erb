@@ -1,0 +1,189 @@
+<%= form_for(@report, url: report_control_center_short_paids_path, html: { class: "form-inline", target: "_blank"}) do |f| %>
+  <div id="report_params"></div>
+  <div>
+    <button type="submit" class="btn btn-primary">View Report</button>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exFilterExternallyTriggered(controlCenterShortPaidTable);">Filter</button>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exResetAllFilters(controlCenterShortPaidTable);">Reset Filter</button>
+    <button type="button" class="btn btn-primary" onclick="controlCenterShortPaidTable.state.clear();window.location.reload();" style="float: right;">Refresh</button>
+  </div>
+<% end %>
+
+<div class="clearfix"></div>
+
+<% columns = { 
+              monthly: "Payment Date",
+              date_range: "&nbsp;",
+              customer: "Customer",
+              status: "Status"
+            } 
+  
+  filter = "<table><tr style='vertical-align: top;'><td>Advance Filter :</td>"
+  columns.each_with_index do |(key, value), index|
+    filter+="<td style='vertical-align: top;'><span>#{value}</span><span id=#{key}></span></td>"
+  end
+  filter+="</tr></table>"
+%>
+
+<div>
+  <div class="span3" style="margin-left: 0;">Format :
+    <select name="format" id="format">
+      <option value="pdf">PDF</option>
+      <option value="xls">XLS</option>
+    </select>
+  </div>
+<!--   
+  <div class="span3">Filter By :
+    <span id="monthly"></span>
+  </div>
+
+  <div class="span3">&nbsp;
+    <span id="date_range"></span>
+  </div>
+ -->
+  <div class="clearfix"></div>
+  <br/>
+
+  <%= filter.html_safe %>
+
+  <div class="clearfix"></div>
+  <br/>
+</div>
+
+<div class="clearfix"></div>
+
+<table class="table table-striped table-bordered" id="control_center_short_paid_table" width="100%">
+  <thead>
+  <tr>
+    <th width="10%" class="disable">Actions</th>
+    <th>Payment Date</th>
+    <th>Customer</th>
+    <th>IBL Ref</th>
+    <th>Invoice No</th>
+    <th>IDR Balance</th>
+    <th>USD Balance</th>
+    <th>Status</th>
+    <th>Closing Date</th>
+    <th>Note</th>
+    <th class="hidden disable">Filter Monthly</th>
+    <th class="hidden disable">Filter Date</th>
+    <th class="hidden disable">Row Id</th>
+    <th class="hidden disable">IBL Ref</th>
+  </tr>
+  </thead>
+  <tfoot>
+    <tr>
+      <th colspan="5" style="text-align:left">Total :</th>
+      <th style="text-align:right"></th>
+      <th style="text-align:right"></th>
+      <th colspan="3"></th>
+    </tr>
+  </tfoot>
+  <tbody>
+    <%= render partial: 'control_center_short_paids/row', :collection => @invoices, :as => :row %>
+  </tbody>
+</table>
+<% if current_user.administrator? %>
+<div id="shortPaidModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="shortPaidModalTitle">Short Paid</h3>
+    </div>
+    <div class="modal-body">
+      <form action="/control_center_short_paids/update_short_paid" id="short-paid-form" class="form-horizontal">
+        <div class="control-group">
+          <label for="" class="control-label">Closing Date : </label>
+
+          <div class="controls">
+            <input id="closing_date" type="text" name="short_paid_closing_date" class="tax_issued_with_date"/>
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">Note : </label>
+
+          <div class="controls">
+            <textarea id="note" name="short_paid_note"/></textarea>
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">Status : </label>
+
+          <div class="controls">
+            <%= select_tag 'short_paid_status', options_for_select(["Open", "Close"]), id: "status" %>
+          </div>
+        </div>
+        <div class="control-group">
+          <input type="hidden" name="id" value="" id="id">
+
+          <div class="controls">
+            <button type="button" class="btn-submit btn btn-primary">Update</button>
+          </div>
+        </div>
+      </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    var row, row_id, closing_date, note, status;
+
+    $('#control_center_short_paid_table tbody').on( 'click', 'tr', function () {
+      row = controlCenterShortPaidTable.row( this );
+    });
+
+    function short_paid_data(rowIdx){
+      row_id = controlCenterShortPaidTable.cell( rowIdx, 12 ).data();
+      status = controlCenterShortPaidTable.cell( rowIdx, 7 ).data();
+      closing_date = controlCenterShortPaidTable.cell( rowIdx, 8 ).data();
+      // note = $(controlCenterShortPaidTable.cell( rowIdx, 9 ).data().replace(/<a>(.*)<\/a>/g, "")).text();
+      note = $(controlCenterShortPaidTable.cell( rowIdx, 9 ).data().replace(/<a(.*)<\/a>/g, "")).text();
+    }
+
+    function modal_data(name){
+      $('#'+name+'-form #id').val(row_id);
+      $('#'+name+'-form #status').val(status);
+      $('#'+name+'-form #closing_date').val(closing_date);
+      $('#'+name+'-form #note').val(note);
+    }
+    $(".btn-short-paid").livequery(function () {
+      $(this).click(function () {
+        short_paid_data(controlCenterShortPaidTable.cell( $(this).parent("td") ).index().row);
+        // $("#shortPaidModalTitle").text("Tax: " + carrier);
+        modal_data("short-paid");
+      });
+    });
+    $(".btn-submit").on("click", function (e) {
+      e.preventDefault();
+      $.ajax({
+        url: $("#short-paid-form").attr("action"),
+        type: "POST",
+        data: $("#short-paid-form").serialize(),
+        success: function (data) {
+          if (data.success) {
+            controlCenterShortPaidTable.cell(row, 7).data(data.status).draw();
+            controlCenterShortPaidTable.cell(row, 8).data($.datepicker.formatDate("dd-M-yy", new Date(data.closing_date))).draw();
+            // controlCenterShortPaidTable.cell(row, 9).data(data.note).draw();
+            if(data.note != ""){
+              note_column = '<div class="wrap collapsed">' + data.note.replace(/\n/g, "<br>") + '</div><a class="adjust" href="#">+ More</a>'
+              controlCenterShortPaidTable.cell(row, 9).data(note_column).draw();
+            }
+            
+            $(".close").click();
+            alert(data.message);
+          } else {
+            alert(data.message);
+          }
+        }
+      });
+      return false;
+    });
+  });
+</script>
+<% else %>
+<script type="text/javascript">
+$(".btn-short-paid").css("display", "none");
+</script>
+<% end %>
+<script type="text/javascript">
+  $(document).on('ready page:change', ready);
+  $(document).on('page:fetch', function() { controlCenterShortPaidTable.destroy(); });
+</script>

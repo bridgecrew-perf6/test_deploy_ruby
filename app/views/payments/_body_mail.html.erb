@@ -1,0 +1,69 @@
+<%
+message = "" 
+# message = "Dear Sir, \n\n"
+message += "Please kindly assist to arrange payment as below:\n\n"
+message += "Request No: #{@payment.payment_no} / #{payment_date(@payment.payment_date)}"
+if @payment.carrier_bank_id == 0
+	message += " (By Cash)"
+elsif @payment.carrier_bank_id == -1
+	message += " (By Deposit)"
+else
+	message += " (#{@payment.carrier_bank_name})"
+end
+message += "\n"
+
+# if @payment.carrier_bank_id > 0
+# 	message += "\nBeneficiary Detail:\n"
+# 	message += "#{@payment.carrier_bank.acc_name}\n"
+# 	message += "#{@payment.carrier_bank.bank_name}\n"
+# 	unless @payment.carrier_bank.branch.blank?
+# 		message += "Branch: #{@payment.carrier_bank.branch}\n"
+# 	end
+# 	message += "#{@payment.carrier_bank.bank_address}\n"
+# 	message += "A/C: #{@payment.carrier_bank.acc_no}\n"
+# 	if @payment.payment_type == "USD"
+# 		message += "SWIFT CODE: #{@payment.carrier_bank.swift_code}\n"
+# 	end
+# end
+
+message += "\nAmount: "
+message += "#{number_with_delimiter(@payment.amount)} #{@payment.payment_type}\n\n"
+message += "Payment Ref:\n"
+if @payment.payment_references.any?
+	message += '<table style="width: 655px !important">
+      <thead>
+        <tr>
+          <th style="width: 100px;">IBL REF</th>
+          <th style="width: 150px;">MBL</th>
+          <th style="width: 100px;">PAYMENT</th>
+          <th style="width: 100px;">USE DEPOSIT</th>
+          <th style="width: 100px;">IBL DEPOSIT FR</th>
+        </tr>
+      </thead>
+      <tbody>'
+	deposit = {}
+  @payment.payment_deposits.each do |value|
+    txt = [value.ibl_deposit.upcase, value.master_bl_no].delete_if{|e| e.squish.length == 0}.join(" - ")
+    if deposit[value.ibl_ref.upcase].blank?
+      deposit[value.ibl_ref.upcase] = [txt]
+    else
+      deposit[value.ibl_ref.upcase].push txt
+    end
+  end
+  @payment.payment_references.each do |ref|
+		message += "<tr>
+          <td>#{ref.ibl_ref}</td>
+          <td>#{ref.master_bl_no}</td>
+          <td style='text-align: right;'>#{money_with_currency_format(ref.amount, @payment.currency)}</td>
+          <td style='text-align: right;'>#{money_with_currency_format(ref.amount_use_deposit, @payment.currency)}</td>
+          <td>#{deposit[ref.ibl_ref].join("\n") unless deposit[ref.ibl_ref].blank?}</td>
+        <tr>"
+	end
+  message += '</tbody></table>'
+end
+
+message += "\nNotes: #{@payment.notes}\n\n"
+
+message += "Thank you"
+%>
+<%= CGI.escape(message).gsub("+", "%20") %>

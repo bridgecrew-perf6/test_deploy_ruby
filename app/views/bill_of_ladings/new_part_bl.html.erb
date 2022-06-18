@@ -1,0 +1,47 @@
+<div class="page-header">
+  <h3>New Part of BL</h3>
+</div>
+<style type="text/css">
+	#attachment-wrapper{
+		display: none;
+	}
+</style>
+<input type="text" id="hbl_no" placeholder="HBL Number"/> <button id="load_part_bl" type="button" class="btn" style="margin-bottom: 10px;">Load Data</button>
+
+<% unless @bill_of_lading.nil? %>
+	<%= form_for @bill_of_lading, url: create_part_bl_bill_of_ladings_path, html: { class: "form-horizontal"} do |f| %>
+		<input type="hidden" name="id_bl" value="<%= params[:id] %>"/>
+		<%= render 'form' %>
+	<% end %>
+<% end %>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#load_part_bl").click(function(){
+			if($("#hbl_no").val() != '')
+			{
+				$.ajax({
+					url: "<%= load_part_bl_bill_of_ladings_path %>",
+					data: { hbl_no: $("#hbl_no").val() }
+				})
+				.done(function(data){
+					if(data.trim() != '')
+					{
+						window.location = "?id=" + data;
+					}
+					else
+					{
+						alert("BL Not Found");
+					}
+				})
+				.fail(function(){
+					alert("an error");
+				})		
+			}
+			else
+			{
+				alert("BL Number Empty");
+			}
+		})
+	})
+</script>

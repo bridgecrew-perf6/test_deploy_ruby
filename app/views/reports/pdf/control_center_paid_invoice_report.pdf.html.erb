@@ -1,0 +1,100 @@
+<%= render 'commons/pdf' %>
+<% columns = @report.columns %>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title("Paid Invoice") %></h3>
+
+  <% @invoices.sort_by(&:customer).group_by(&:customer).each do |customer, invoices| %>
+    <table style="width: 100%" border="1">
+      <caption>PAID INVOICE <%= customer %></caption>
+      <thead>
+        <tr>
+          <th width="10%">Payment Date</th>
+          <th width="10%">Invoice No</th>
+          <th width="10%">Customer</th>
+          <th width="10%">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%
+          total_usd = 0
+          total_idr = 0
+        %>
+        <% invoices.sort_by(&:invoice_date).each do |row| %>
+          <% row.invoice_payments.order(payment_date: :asc).each do |reference| %>
+            <%
+              total_usd += reference.amount_paid.to_f + reference.rounding.to_f + reference.bank_charge.to_f + reference.discount.to_f + reference.short_paid.to_f + reference.deposit.to_f if row.currency_code == "USD"
+              total_idr += reference.amount_paid.to_f + reference.rounding.to_f + reference.bank_charge.to_f + reference.discount.to_f + reference.short_paid.to_f + reference.deposit.to_f if row.currency_code == "IDR"
+            %>
+            <tr>
+              <td><%= si_date_format reference.payment_date %></td>
+              <td><%= "#{row.shipping_instruction.ibl_ref} - #{row.invoice_no}" %></td>
+              <td><%= customer %></td>
+              <td style="text-align:right"><%= "#{number_with_precision(reference.amount_paid, precision: 2, delimiter: ',')} #{row.currency_code}" %></td>
+            </tr>
+
+            <% unless reference.rounding.to_f == 0 %>
+              <tr>
+                <td><%= si_date_format reference.payment_date %></td>
+                <td><%= "#{row.shipping_instruction.ibl_ref} - ROUNDING" %></td>
+                <td><%= customer %></td>
+                <td style="text-align:right"><%= "#{number_with_precision(reference.rounding, precision: 2, delimiter: ',')} #{row.currency_code}" %></td>
+              </tr>
+            <% end %>
+
+            <% unless reference.bank_charge.to_f == 0 %>
+              <tr>
+                <td><%= si_date_format reference.payment_date %></td>
+                <td><%= "#{row.shipping_instruction.ibl_ref} - BANK CHARGE" %></td>
+                <td><%= customer %></td>
+                <td style="text-align:right"><%= "#{number_with_precision(reference.bank_charge, precision: 2, delimiter: ',')} #{row.currency_code}" %></td>
+              </tr>
+            <% end %>
+
+            <% unless reference.discount.to_f == 0 %>
+              <tr>
+                <td><%= si_date_format reference.payment_date %></td>
+                <td><%= "#{row.shipping_instruction.ibl_ref} - DISCOUNT" %></td>
+                <td><%= customer %></td>
+                <td style="text-align:right"><%= "#{number_with_precision(reference.discount, precision: 2, delimiter: ',')} #{row.currency_code}" %></td>
+              </tr>
+            <% end %>
+
+            <% unless reference.short_paid.to_f == 0 %>
+              <tr>
+                <td><%= si_date_format reference.payment_date %></td>
+                <td><%= "#{row.shipping_instruction.ibl_ref} - SHORT PAID" %></td>
+                <td><%= customer %></td>
+                <td style="text-align:right"><%= "#{number_with_precision(reference.short_paid, precision: 2, delimiter: ',')} #{row.currency_code}" %></td>
+              </tr>
+            <% end %>
+
+            <% unless reference.deposit.to_f == 0 %>
+              <tr>
+                <td><%= si_date_format reference.payment_date %></td>
+                <td><%= "#{row.shipping_instruction.ibl_ref} - DEPOSIT" %></td>
+                <td><%= customer %></td>
+                <td style="text-align:right"><%= "#{number_with_precision(reference.deposit, precision: 2, delimiter: ',')} #{row.currency_code}" %></td>
+              </tr>
+            <% end %>
+          <% end %>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <% unless total_usd == 0 && total_idr == 0 %>
+        <tr>
+          <th colspan="3">Total :</th>
+          <th style="text-align:right">
+            <%
+              str = []
+              str.push "#{number_with_precision(total_usd, precision: 2, delimiter: ',')} USD" if total_usd != 0
+              str.push "#{number_with_precision(total_idr, precision: 2, delimiter: ',')} IDR" if total_idr != 0
+            %>
+            <%= str.join("<br>").html_safe %>
+          </th>
+        </tr>
+        <% end %>
+      </tfoot>
+    </table>
+    <br>
+  <% end %>
+</div>

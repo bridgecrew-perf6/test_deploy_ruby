@@ -1,0 +1,22 @@
+<%
+  head = []
+  head.push "Company\t"
+  head.push "Address\t"
+  head.push "Phone\t"
+  head.push "Fax\t"
+  head.push "Email\t"
+  head.push "PIC\t"
+%>
+<%= head.join("").html_safe %>
+<% @results.each do |shipper| %>
+  <%
+    body = []
+    body.push "#{shipper.company_name}\t"
+    body.push "#{shipper.full_address.squish}\t"
+    body.push "#{shipper.custom_attribute('phone')}\t"
+    body.push "#{shipper.custom_attribute('fax')}\t"
+    body.push "#{shipper.custom_attribute('email')}\t"
+    body.push "#{shipper.custom_attribute('pic')}\t"
+  %>
+<%= body.join("").html_safe %>
+<% end %>

@@ -1,0 +1,33 @@
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+</head>
+<body>
+  <div>
+  <input type="text" id="tracking_number"/>
+  <button id="tracking_button">Go!</button>
+  </div>
+  <script type="text/javascript">
+    jQuery(document).ready(function(){
+      var WEBSERVICE_API_URL = "http://localhost:8080/api/trackings/shipment?number=";
+      jQuery("#tracking_button").on("click", function(){
+        var number = $("#tracking_number").val();
+        jQuery.getJSON(WEBSERVICE_API_URL + number, function(data){
+          if (data.success)
+          {
+            var width = 1000;
+            var height = 500
+            var left = (screen.width/2)-(width/2);
+            var top = (screen.height/2)-(height/2);
+            window.open(data.content, "", 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no,copyhistory=no,width='+width+',height='+height+',top='+top+',left='+left);
+          }
+          else
+          {
+            alert(data.content);
+          }
+        })
+      })
+    })
+  </script>
+</body>
+</html>

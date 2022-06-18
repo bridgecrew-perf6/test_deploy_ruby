@@ -1,0 +1,24 @@
+<div class="vessel-group">
+	<div class="control-group">
+	  <label for="" class="control-label">Vessel Name :</label>
+	  <div class="controls">
+	  	<%= f.text_field :vessel_name, class: "span11 vessel_name" %>
+		<%= f.hidden_field :_destroy, class: "span12" %>
+		<% unless f.index == 0 %>
+	  	<a onclick="remove_vessel_fields(this); return false;" href="#" title="Remove"><i class="icon-remove-sign"></i></a>
+	  	<% end %>
+	  </div>
+	</div>
+	<div class="control-group">
+	  <label for="" class="control-label">ETD :</label>
+	  <div class="controls">
+	  	<%= f.text_field :etd_no, class: "span5 etd_no" %> <%= f.text_field :etd_date, class: "span6 datepicker etd_date" %>
+	  </div>
+	</div>
+	<div class="control-group">
+	  <label for="" class="control-label">ETA :</label>
+	  <div class="controls">
+	  	<%= f.text_field :eta_no, class: "span5 eta_no" %> <%= f.text_field :eta_date, class: "span6 datepicker eta_date" %>
+	  </div>
+	</div>
+</div>

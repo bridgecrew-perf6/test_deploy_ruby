@@ -1,0 +1,45 @@
+o: ActiveSupport::Cache::Entry:@valueI"¬  <tr class="">
+    <td>
+      <a href="/shipping_instructions/36075?year=2022" title="Show Shipping Instruction"><i class="icon-eye-open icon-large"></i></a>
+
+      <a href="/shipping_instructions/36075/edit?year=2022" title="Edit Shipping Instruction"><i class="icon-edit-sign icon-large"></i></a>
+
+      <a href="/shipping_instructions/36075/email?year=2022" target="_blank" title="Email"><i class="icon icon-envelope"></i></a>
+
+          <div>
+              <a data-confirm="Already update SI data?" href="/createBL/36075">Create BL</a>
+          </div>
+          <div>
+            <a data-confirm="Are you sure?" href="/shipping_instructions/36075/cancel?year=2022">Cancel SI</a>
+          </div>
+    </td>
+    <td>
+      IBL220954
+      
+      
+    </td>
+    <td></td>
+    <td>PT. CITRA NUTRINDO LANGGENG</td>
+    <td>1x20FT</td>
+    <td>HAMAD</td>
+    <td>07-Apr-2022</td>
+    <td>28-Mar-2022</td>
+    <td>HYUNDAI MERCHANT MARINE</td>
+    <td>TBA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>TG. PRIOK, JAKARTA, INDONESIA</td>
+    <td>SUBA85817300 </td>
+    <td></td>
+    <td>EXPORT (OCEAN FREIGHT)</td>
+    <td>Dewi</td>
+    <td class="hidden disable">April 2022</td>
+    <td class="hidden disable">04/07/2022</td>
+    <td class="hidden disable row_id">36075</td>
+    <td class="hidden disable ibl_ref">IBL220954</td>
+    <td class="hidden disable status">
+      
+      
+    </td>
+    <td class="hidden disable additional_si">false</td>
+  </tr>
+:ET:@created_atf1648566411.1360247:@expires_in0

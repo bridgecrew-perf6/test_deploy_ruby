@@ -1,0 +1,22 @@
+<%
+  head = []
+  head.push "Owner\t"
+  head.push "Address\t"
+  head.push "Phone\t"
+  head.push "Fax\t"
+  head.push "Email\t"
+  head.push "Reference\t"
+%>
+<%= head.join("").html_safe %>
+<% @results.each do |owner| %>
+  <%
+    body = []
+    body.push "#{owner.name}\t"
+    body.push "#{owner.custom_attribute('address').squish}\t"
+    body.push "#{owner.custom_attribute('phone')}\t"
+    body.push "#{owner.custom_attribute('fax')}\t"
+    body.push "#{owner.custom_attribute('email')}\t"
+    body.push "#{owner.reference}\t"
+  %>
+<%= body.join("").html_safe %>
+<% end %>

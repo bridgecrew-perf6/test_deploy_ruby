@@ -1,0 +1,54 @@
+<div class="page-header">
+  <h3>List Debit Notes</h3>
+</div>
+
+<% if !notice.nil? %>
+<p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<table class="table table-striped table-bordered" id="debit-notes">
+  <thead>
+    <tr>
+      <th colspan="3" width="10%">Actions</th>
+      <th rowspan="2">IBL REF</th>
+      <th rowspan="2">BL No</th>
+      <th rowspan="2">No Debit Note</th>
+      <th rowspan="2">Debit Note Date</th>
+      <th rowspan="2">Due Date</th>
+      <th rowspan="2">Currency</th>
+      <th rowspan="2">Status</th>
+    </tr>
+    <tr>
+      <th class="hidden">Show</th>
+      <th class="hidden">Edit</th>
+      <th class="hidden">Delete</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @debit_notes.each do |debit_note| %>
+      <tr class="<%= "error cancel" if debit_note.is_cancel == 1 %>">
+        <td>
+          <%= link_to '<i class="icon-eye-open icon-large"></i>'.html_safe, debit_note, title: "Show Debit Note" %>
+          <%= link_to '<i class="icon-edit-sign icon-large"></i>'.html_safe, edit_debit_note_path(debit_note), title: "Edit Debit Note" %>
+          <!--<%= link_to '<i class="icon-remove icon-large"></i>'.html_safe, debit_note, method: :delete, data: { confirm: 'Are you sure?' }, title: "Delete Invoice" %>-->
+          <% if debit_note.is_cancel == 1 %>
+            <%= link_to 'Uncancel Invoice', uncancel_debit_note_path( debit_note), data: { confirm: "Are you sure?" }, title: "Cancel DBN", style: "display: block; line-height: 1;" %>
+          <% else %>
+            <%= link_to 'Cancel Invoice', cancel_debit_note_path(debit_note), data: { confirm: "Are you sure?" }, title: "Cancel DBN", style: "display: block; line-height: 1;" %>
+          <% end %>
+        </td>
+        <td>
+          <%= debit_note.ibl_no %>
+          <%= '<span class="label label-warning">Cancel</span>'.html_safe if debit_note.is_cancel == 1 %>
+        </td>
+        <td><%= debit_note.bl_no %></td>
+        <td><%= debit_note.no_dbn %></td>
+        <td><%= debit_note.dbn_date %></td>
+        <td><%= debit_note.due_date %></td>
+        <td><%= debit_note.currency_code %></td>
+        <td><%= debit_note.status_info %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

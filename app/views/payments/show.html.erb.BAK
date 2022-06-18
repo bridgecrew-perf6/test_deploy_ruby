@@ -1,0 +1,91 @@
+<div class="page-header">
+  <h3>Payment # <%= @payment.payment_no %></h3>
+</div>
+<% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+<% if @payment.carrier_bank_id > 0 %>
+  <% carrier_name = @payment.carrier_bank.carrier.name %>
+<% elsif @payment.carrier_bank_id == 0 %>
+  <% carrier_name = "By Cash: " + @payment.cash_carrier_name %>
+<% else %>
+  <% carrier_name = "By Deposit: " + @payment.cash_carrier_name %>
+<% end %>
+<div class="btn-group ">
+  <% if @payment.status == 0 && @payment.is_cancel == 0 %>
+    <a href="<%= edit_payment_path(@payment) %>" class="btn btn-small" title="Edit: <%= @payment.payment_no %>"><i class="icon-edit-sign"></i>
+      Edit</a>
+    <a href="mailto:?subject=<%= CGI.escape("Request No: #{@payment.payment_no} / #{payment_date(@payment.payment_date)} (#{carrier_name})").gsub("+", "%20") %>&body=<%= render 'body_mail', :f => @payment %>" class="btn btn-small" title="View on Mail Client"><i class="icon-envelope"></i>
+      E-Mail</a>
+  <% end %>
+  <a href="<%= payments_path %>" class="btn btn-small" title="Back to Lists"><i class="icon-reply"></i> Back</a>
+</div>
+<div class="clearfix"></div>
+<div class="details" style="margin-top: 20px;">
+  <div>
+    <strong>Status</strong>
+    <span>
+      <%= form_for @payment, url: update_status_payment_path(@payment.id) do |f| %>
+        <%= select_tag "status", options_for_select([["Open", "0"], ["Sent", "1"]], @payment.status.to_s), style: "margin-bottom: 0; width: 100px" %>
+        <%= f.submit "Update Status", class: "btn btn-info" %>
+      <% end %>
+    </span>
+  </div>
+  <div>
+    <strong>Payment Type</strong>
+    <span><%= @payment.payment_type %></span>
+  </div>
+  <div>
+    <strong>Payment No</strong>
+    <span><%= @payment.payment_no %></span>
+  </div>
+  <div>
+    <strong>Payment Date</strong>
+    <span><%= si_date_format @payment.payment_date %></span>
+  </div>
+  <div>
+    <strong>Beneficiary Name</strong>
+    <span>
+      <% if @payment.carrier_bank_id > 0 %>
+      <pre class="free"><%= @payment.carrier_bank.acc_name %>
+        <%= @payment.carrier_bank.bank_name %>
+        <%= @payment.carrier_bank.branch %>
+        <%= @payment.carrier_bank.bank_address %>
+        A/C : <%= @payment.carrier_bank.acc_no %>
+        <% if @payment.payment_type == "USD" %>
+Swift Code : <%= @payment.carrier_bank.swift_code %>
+<% end %>
+</pre>
+      <% elsif @payment.carrier_bank_id == 0 %>
+        <%= "Cash by: " + @payment.cash_carrier_name %>
+      <% elsif @payment.carrier_bank_id == -1 %>
+        <%= "Deposit by: " + @payment.cash_carrier_name %>
+      <% end %>
+    </span>
+  </div>
+  <div>
+    <strong>Amount</strong>
+    <span>
+      <%= number_with_delimiter @payment.amount %> <%= @payment.payment_type %>
+    </span>
+  </div>
+  <div>
+    <strong>Notes</strong>
+    <span><pre class="free"><%= @payment.notes %></pre></span>
+  </div>
+  <div class="clearfix"></div>
+  <% if @payment.payment_references.any? %>
+    <h5>SI References</h5>
+    <table class="table table-condensed table-bordered" style="width: 500px">
+      <% @payment.payment_references.each do |ref| %>
+        <tr>
+          <td><%= ref.ibl_ref %></td>
+          <td><%= ref.booking_no %></td>
+          <td><%= number_with_delimiter ref.amount %> <%= @payment.payment_type %></td>
+        <tr>
+      <% end %>
+    </table>
+  <% end %>
+</div>
+
+

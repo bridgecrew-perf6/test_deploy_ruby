@@ -1,0 +1,258 @@
+<%= render 'commons/pdf' %>
+<style type="text/css">
+  table > thead > tr > th, table > tbody > tr > td, table > tfoot > tr > th, table > tfoot > tr > td, ul > li, pre, p, dl, dt, dd, strong {
+    font-family: Arial;
+    font-size: 1pt;
+    /*font-size: 6pt;*/
+  }
+
+  table > thead > tr > th, table > tbody > tr > td, table > tfoot > tr > th {
+    padding: 1px;
+    vertical-align: top;
+  }
+
+  table#summary_report {
+    border-collapse: collapse;
+  }
+</style>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <%# cache(["report-cost-revenues-table", @cost_revenues.size]) do %>
+  <!-- <div style="overflow-x: scroll;">
+    <table style="width: 100%" border="1" style="page-break-before: always;"> -->
+  <table style="width: 100%" border="1">
+    <thead>
+      <tr>
+        <th>Status</th>
+        <th>MBL No</th>
+        <th>IBL Ref</th>
+        <th>Shipper Ref</th>
+        <th>Shipper</th>
+        <th>Consignee</th>
+        <th>Carrier</th>
+        <th>Trade</th>
+        <th>POL</th>
+        <th>POD</th>
+        <th>Destination</th>
+        <th>ETD</th>
+        <th>LCL</th>
+        <th>20 FT</th>
+        <th>40 FT</th>
+        <th>40 HQ</th>
+        <th>TYPE</th>
+        <th>Sell Description</th>
+        <th>Rate</th>
+        <th>Other</th>
+        <th>VAT 10%</th>
+        <th>VAT 1%</th>
+        <th>PPH 23</th>
+        <th>Total Sell</th>
+        <th>Cost Description</th>
+        <th>Rate</th>
+        <th>Other</th>
+        <th>VAT 10%</th>
+        <th>VAT 1%</th>
+        <th>PPH 23</th>
+        <th>Total Cost</th>
+        <th>GPT</th>
+        <th>ADDA</th>
+        <th>ADDB</th>
+        <th>ADDC</th>
+        <th>ADDT</th>
+        <th>NPT</th>
+        <th>Owner</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @results.reverse.each do |row| %>
+        <%# cache ["report-cost-revenue-analysis-pdf", row, row.cost_revenue] do %>
+          <% cost_revenue = row.cost_revenue %>
+          <% unless cost_revenue.blank? %>
+          <tr>
+            <td><%= row.status_cra_text %></td>
+            <td><%= cost_revenue.master_bl_no %></td>
+            <td><%= cost_revenue.ibl_ref %></td>
+            <td><%= cost_revenue.shipper_reference %></td>
+            <td><%= cost_revenue.shipper_company_name %></td>
+            <td><%= cost_revenue.consignee_company_name %></td>
+            <td><%= cost_revenue.carrier_name %></td>
+            <td><%= cost_revenue.trade %></td>
+            <td><%= cost_revenue.port_of_loading %></td>
+            <td><%= cost_revenue.port_of_discharge %></td>
+            <td><%= cost_revenue.final_destination %></td>
+            <td><%= si_date_format cost_revenue.etd_date %></td>
+            <td style="text-align:right"><%= lcl_format cost_revenue.volume_lcl %></td>
+            <td style="text-align:right"><%= money_format cost_revenue.volume_20ft %></td>
+            <td style="text-align:right"><%= money_format cost_revenue.volume_40ft %></td>
+            <td style="text-align:right"><%= money_format cost_revenue.volume_40hq %></td>
+            <td><%= cost_revenue.volume_type %></td>
+            <td><%= sell_description(row) %></td>
+            <td style="text-align:right"><%= money_cra_format cost_revenue.selling_rate %></td>
+            <td style="text-align:right"><%= money_cra_format cost_revenue.selling_other %></td>
+            <td style="text-align:right"><%= money_cra_format cost_revenue.selling_vat_10 %></td>
+            <td style="text-align:right"><%= money_cra_format cost_revenue.is_completed? ? cost_revenue.selling_vat_1 : cost_revenue.default_selling_vat_1 %></td>
+            <td style="text-align:right"><%= money_cra_format cost_revenue.is_completed? ? cost_revenue.selling_pph_23 : cost_revenue.default_selling_pph_23 %></td>
+            <td style="text-align:right"><%= money_cra_format(cost_revenue.is_completed? ? cost_revenue.selling_total_invoice : cost_revenue.default_selling_total_invoice).presence || 0 %></td>
+            <td><%= cost_description(row) %></td>
+            <td style="text-align:right"><%= money_cra_format cost_revenue.buying_rate %></td>
+            <td style="text-align:right"><%= money_cra_format cost_revenue.buying_other %></td>
+            <td style="text-align:right"><%= money_cra_format cost_revenue.buying_vat_10 %></td>
+            <td style="text-align:right"><%= money_cra_format cost_revenue.buying_vat_1 %></td>
+            <td style="text-align:right"><%= money_cra_format cost_revenue.buying_pph_23 %></td>
+            <td style="text-align:right"><%= money_cra_format(cost_revenue.is_completed? ? cost_revenue.buying_total_invoice : cost_revenue.default_buying_total_invoice).presence || 0 %></td>
+            <td style="text-align:right"><%= money_cra_format cost_revenue.gpt %></td>
+            <td style="text-align:right"><%= money_cra_format cost_revenue.adda %></td>
+            <td style="text-align:right"><%= money_cra_format cost_revenue.addb %></td>
+            <td style="text-align:right"><%= money_cra_format cost_revenue.addc %></td>
+            <td style="text-align:right"><%= money_cra_format cost_revenue.addt %></td>
+            <td style="text-align:right"><%= money_cra_format(cost_revenue.is_completed? ? cost_revenue.npt : cost_revenue.default_npt).presence || 0 %></td>
+            <td><%= cost_revenue.owner_name %></td>
+            <td><%= cost_revenue.notes %></td>
+          </tr>
+          <% else %>
+          <tr>
+            <td><%= row.status_cra_text %></td>
+            <td><%= row.master_bl_no %></td>
+            <td><%= row.ibl_ref %></td>
+            <td><%= row.shipper_reference %></td>
+            <td><%= row.shipper_company_name %></td>
+            <td><%= row.consignee_company_name %></td>
+            <td><%= row.carrier %></td>
+            <td><%= row.trade %></td>
+            <td><%= row.port_of_loading %></td>
+            <td><%= row.port_of_discharge %></td>
+            <td><%= row.final_destination %></td>
+            <td><%= si_date_format row.first_etd_date %></td>
+            <td style="text-align:right"><%= lcl_format row.volume_lcl %></td>
+            <td style="text-align:right"><%= money_format row.volume_20ft %></td>
+            <td style="text-align:right"><%= money_format row.volume_40ft %></td>
+            <td style="text-align:right"><%= money_format row.volume_40hq %></td>
+            <td><%= row.volume_type %></td>
+            <td><%=  %></td>
+            <td style="text-align:right"><%=  %></td>
+            <td style="text-align:right"><%=  %></td>
+            <td style="text-align:right"><%=  %></td>
+            <td style="text-align:right"><%=  %></td>
+            <td style="text-align:right"><%=  %></td>
+            <td style="text-align:right"><%= "0" %></td>
+            <td><%=  %></td>
+            <td style="text-align:right"><%=  %></td>
+            <td style="text-align:right"><%=  %></td>
+            <td style="text-align:right"><%=  %></td>
+            <td style="text-align:right"><%=  %></td>
+            <td style="text-align:right"><%=  %></td>
+            <td style="text-align:right"><%= "0" %></td>
+            <td style="text-align:right"><%=  %></td>
+            <td style="text-align:right"><%=  %></td>
+            <td style="text-align:right"><%=  %></td>
+            <td style="text-align:right"><%=  %></td>
+            <td style="text-align:right"><%=  %></td>
+            <td style="text-align:right"><%= "0" %></td>
+            <td><%=  %></td>
+            <td><%=  %></td>
+          </tr>
+          <% end %>
+        <%# end %>
+      <% end %>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th colspan="12">TOTAL</th>
+        <th colspan="5"></th>
+        <th></th>
+        <th></th>
+        <th style="text-align:right"><%= money_cra_format(@results.map{|p| p.cost_revenue.try(:selling_other)}.sum(&:to_f)).presence || 0 %></th>
+        <th style="text-align:right"><%= money_cra_format(@results.map{|p| p.cost_revenue.try(:selling_vat_10)}.sum(&:to_f)).presence || 0 %></th>
+        <th style="text-align:right"><%= money_cra_format(@results.map{|p| p.is_cr_completed? ? p.cost_revenue.try(:selling_vat_1) : p.cost_revenue.try(:default_selling_vat_1)}.sum(&:to_f)).presence || 0 %></th>
+        <th style="text-align:right"><%= money_cra_format(@results.map{|p| p.is_cr_completed? ? p.cost_revenue.try(:selling_pph_23) : p.cost_revenue.try(:default_selling_pph_23)}.sum(&:to_f)).presence || 0 %></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th style="text-align:right"><%= money_cra_format(@results.map{|p| p.cost_revenue.try(:buying_other)}.sum(&:to_f)).presence || 0 %></th>
+        <th style="text-align:right"><%= money_cra_format(@results.map{|p| p.cost_revenue.try(:buying_vat_10)}.sum(&:to_f)).presence || 0 %></th>
+        <th style="text-align:right"><%= money_cra_format(@results.map{|p| p.cost_revenue.try(:buying_vat_1)}.sum(&:to_f)).presence || 0 %></th>
+        <th style="text-align:right"><%= money_cra_format(@results.map{|p| p.cost_revenue.try(:buying_pph_23)}.sum(&:to_f)).presence || 0 %></th>
+        <th></th>
+        <th style="text-align:right"><%= money_cra_format(@results.map{|p| p.cost_revenue.try(:gpt)}.sum(&:to_f)).presence || 0 %></th>
+        <th style="text-align:right"><%= money_cra_format(@results.map{|p| p.cost_revenue.try(:adda)}.sum(&:to_f)).presence || 0 %></th>
+        <th style="text-align:right"><%= money_cra_format(@results.map{|p| p.cost_revenue.try(:addb)}.sum(&:to_f)).presence || 0 %></th>
+        <th style="text-align:right"><%= money_cra_format(@results.map{|p| p.cost_revenue.try(:addc)}.sum(&:to_f)).presence || 0 %></th>
+        <th style="text-align:right"><%= money_cra_format(@results.map{|p| p.cost_revenue.try(:addt)}.sum(&:to_f)).presence || 0 %></th>
+        <th style="text-align:right"><%= money_cra_format(@results.map{|p| p.is_cr_completed? ? p.cost_revenue.try(:npt) : p.cost_revenue.try(:default_npt)}.sum(&:to_f)).presence || 0 %></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </tfoot>
+  </table>
+  
+  <%
+    volum1 = 0
+    volum2 = 0
+    volum3 = 0
+    volum4 = 0
+    @results.each do |si|
+      if si.is_uncanceled?
+        cr = si.cost_revenue
+        unless cr.blank?
+          volum1 += cr.volume_lcl.to_f
+          volum2 += cr.volume_20ft.to_f
+          volum3 += cr.volume_40ft.to_f
+          volum4 += cr.volume_40hq.to_f
+        else
+          volum1 += si.volume_lcl.to_f
+          volum2 += si.volume_20ft.to_f
+          volum3 += si.volume_40ft.to_f
+          volum4 += si.volume_40hq.to_f
+        end
+      end
+    end
+  %>
+  <table id="summary_report">
+    <tbody>
+      <tr>
+        <td>Total SI</td>
+        <td> : </td>
+        <td style="text-align: right;"><%= @results.count %></td>
+      </tr>
+      <tr>
+        <td>Cancel SI</td>
+        <td> : </td>
+        <td style="text-align: right;"><%= @results.map{|p| p.is_canceled? ? 1 : 0}.sum(&:to_i) %></td>
+      </tr>
+      <tr>
+        <td>Total Shipment</td>
+        <td> : </td>
+        <td style="text-align: right;"><%= @results.map{|p| p.is_canceled? ? 0 : 1}.sum(&:to_i) %></td>
+      </tr>
+      <tr>
+        <td>Completed SI</td>
+        <td> : </td>
+        <td style="text-align: right;"><%= @results.map{|p| (p.is_cr_completed?) ? 1 : 0}.sum(&:to_i) %></td>
+      </tr>
+      <tr>
+        <td colspan="2"><strong>QUANTITY</strong></td>
+      </tr>
+      <tr>
+        <td>LCL</td>
+        <td> : </td>
+        <td style="text-align: right;"><%= lcl_format(volum1).presence || 0 %></td>
+      </tr>
+      <tr>
+        <td>20 FT</td>
+        <td> : </td>
+        <td style="text-align: right;"><%= money_format(volum2).presence || 0 %></td>
+      </tr>
+      <tr>
+        <td>40 FT</td>
+        <td> : </td>
+        <td style="text-align: right;"><%= money_format(volum3).presence || 0 %></td>
+      </tr>
+      <tr>
+        <td>40 HQ</td>
+        <td> : </td>
+        <td style="text-align: right;"><%= money_format(volum4).presence || 0 %></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

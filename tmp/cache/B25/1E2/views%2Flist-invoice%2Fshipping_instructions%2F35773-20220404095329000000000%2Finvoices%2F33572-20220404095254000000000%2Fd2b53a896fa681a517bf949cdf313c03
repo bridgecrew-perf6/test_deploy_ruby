@@ -1,0 +1,43 @@
+o: ActiveSupport::Cache::Entry:@valueI"^  <tr class="">
+    <td>
+      <a href="/invoices/33572?year=2022" title="Show Invoice"><i class="icon-eye-open icon-large"></i></a>
+        <a href="/invoices/33572/edit?year=2022" title="Edit Invoice"><i class="icon-edit-sign icon-large"></i></a>
+
+      <a href="#invModal" role="button" class="btn btn-info btn-small btn-invoice" data-toggle="modal">Tax</a>
+    </td>
+    <td>
+      IBLINV220959
+      
+    </td>
+    <td>
+      IBL220704
+      
+      
+    </td>
+    <td>IDR</td>
+    <td style="text-align:right">2,644,979</td>
+    <td>PT. HAGIHARA WESTJAVA INDUSTRIES (SHIPPER)</td>
+    <td>PT. HAGIHARA WESTJAVA INDUSTRIES</td>
+    <td>TANJUNG PRIOK, JAKARTA, INDONESIA</td>
+    <td>Open</td>
+    <td></td>
+    <td style="text-align:right"></td>
+    <td></td>
+    <td style="text-align:right">29,359</td>
+    <td></td>
+    <td style="text-align:right">(53,380)</td>
+    <td>Open</td>
+    <td></td>
+    <td></td>
+    <td class="hidden disable">March 2022</td>
+    <td class="hidden disable">03/21/2022</td>
+    <td class="hidden disable row_id">33572</td>
+    <td class="hidden disable ibl_ref">IBL220704</td>
+    <td class="hidden disable invoice_no">IBLINV220959</td>
+    <td class="hidden disable head_letter">INVOICE</td>
+    <td class="hidden disable">1</td>
+    <td class="hidden disable"></td>
+    <td class="hidden disable"></td>
+    <td>04-Apr-2022</td>
+  </tr>
+:ET:@created_atf1649075819.2811706:@expires_in0

@@ -1,0 +1,37 @@
+o: ActiveSupport::Cache::Entry:@valueI"h  <tr>
+    <td data-no-turbolink="true">
+      <a href="/payments/21411?year=2022" title="Show Payment"><i class="icon-eye-open icon-large"></i></a>
+    </td>
+    <td data-order="009">
+      009/IDR/2022
+      
+    </td>
+    <td>IBL220067</td>
+    <td>ONEYJKTBM8376400 </td>
+    <td>PT. INDOTAMA FERRO ALLOYS </td>
+    <td>TG.PRIOK, JAKARTA, INDONESIA</td>
+    <td>SIHANOUKVILLE, CAMBODIA</td>
+    <td>6x20FT</td>
+    <td>TRUCKING SUNDORO</td>
+    <td style="text-align: right;">8,243,800 IDR</td>
+    <td><div class='wrap collapsed'><p>IBL220067 DEPOSIT 6,800,000 IDR TGL 05 JAN 2022
+<br />IBL220026 DEPOSIT 6,000,000 IDR TGL 11 JAN 2022
+<br />IBL220141 DEPOSIT 4,300,000 IDR TGL 12 JAN 2022
+<br />TOTAL DEPOSIT : 17,100,000 IDR
+<br />KURANG BAYAR : 4,070,489 IDR</p></div><a class='adjust' href='#'>+ More</a></td>
+    <td>10-Jan-2022</td>
+    <td>14-Jan-2022</td>
+    <td>Sent</td>
+    <td class="hidden disable">January 2022</td>
+    <td class="hidden disable">01/10/2022</td>
+    <td class="hidden disable row_id">21411</td>
+    <td class="hidden disable ibl_ref">IBL220067</td>
+    <td class="hidden disable currency">IDR</td>
+    <td class="hidden disable row_ref_id">45246</td>
+    <td class="hidden disable">January 2022</td>
+    <td class="hidden disable">01/14/2022</td>
+    <td class="hidden disable">BANK TRANSACTION</td>
+    <td></td>
+    <td>8,243,800 IDR</td>
+  </tr>
+:ET:@created_atf1648209476.8894951:@expires_in0

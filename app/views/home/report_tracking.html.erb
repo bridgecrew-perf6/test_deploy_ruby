@@ -1,0 +1,51 @@
+<div class="page-header">
+	<h3>Shipments Tracking</h3>
+</div>
+<style type="text/css">
+.dataTables_filter input{
+	width: 196px !important;
+}
+</style>
+<div class="row-fluid">
+<div class="span4">
+<table class="table table-striped table-bordered"<%= ' id=report-tracking' if @bl.size > 0 %>>
+	<thead>
+		<tr>
+			<th>Bill of Lading #</th>
+			<th>Shipping Instruction #</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @bl.each do |c| %>
+		<tr>
+			<td>
+				<a id="<%= c.id %>" class="getListTracking" href="#" data-href="/list-tracking/<%= c.id %>"><%= c.master_bl_no.blank? ? c.bl_number : c.master_bl_no %></a>
+			</td>
+			<td>
+				<%= c.bl_number %>
+			</td>
+		</tr>
+		<% end %>
+	</tbody>
+</table>
+</div>
+<div class="span8 result-tracking" id="0">
+
+</div>
+</div>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$(".getListTracking").on("click", function(e){
+			if(this.id != $(".result-tracking").attr("id")){
+				$(".result-tracking").attr("id", this.id);
+				$.ajax({
+					url: $(this).attr("data-href"),
+					success: function(data){
+						$(".result-tracking").html(data);
+					}
+				})
+			}
+			e.preventDefault();
+		});
+	})
+</script>

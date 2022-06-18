@@ -1,0 +1,47 @@
+<div class="page-header">
+  <h3>Duplicate SI</h3>
+</div>
+<style type="text/css">
+	#attachment-wrapper{
+		display: none;
+	}
+</style>
+<input type="text" id="ibl_ref" placeholder="IBL Ref"/> <button id="load_duplicate_si" type="button" class="btn" style="margin-bottom: 10px;">Load Data</button>
+
+<% unless @cost_revenue.nil? %>
+	<%= form_for @cost_revenue, url: create_duplicate_si_cost_revenues_path, html: { class: "form-horizontal"} do |f| %>
+		<input type="hidden" name="id_cr" value="<%= params[:id] %>"/>
+		<%= render 'form' %>
+	<% end %>
+<% end %>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#load_duplicate_si").click(function(){
+			if($("#ibl_ref").val() != '')
+			{
+				$.ajax({
+					url: "<%= load_duplicate_si_cost_revenues_path %>",
+					data: { ibl_ref: $("#ibl_ref").val() }
+				})
+				.done(function(data){
+					if(data.trim() != '')
+					{
+						window.location = "?id=" + data;
+					}
+					else
+					{
+						alert("IBL Ref Not Found");
+					}
+				})
+				.fail(function(){
+					alert("an error");
+				})		
+			}
+			else
+			{
+				alert("IBL Ref Empty");
+			}
+		})
+	})
+</script>

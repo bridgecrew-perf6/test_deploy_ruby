@@ -1,0 +1,45 @@
+o: ActiveSupport::Cache::Entry:@valueI"  <tr class="">
+    <td>
+      <a href="/shipping_instructions/36490?year=2022" title="Show Shipping Instruction"><i class="icon-eye-open icon-large"></i></a>
+
+      <a href="/shipping_instructions/36490/edit?year=2022" title="Edit Shipping Instruction"><i class="icon-edit-sign icon-large"></i></a>
+
+      <a href="/shipping_instructions/36490/email?year=2022" target="_blank" title="Email"><i class="icon icon-envelope"></i></a>
+
+          <div>
+              <a data-confirm="Already update SI data?" href="/createBL/36490">Create BL</a>
+          </div>
+          <div>
+            <a data-confirm="Are you sure?" href="/shipping_instructions/36490/cancel?year=2022">Cancel SI</a>
+          </div>
+    </td>
+    <td>
+      IBL221275
+      
+      
+    </td>
+    <td>DRES220416SU WELLGARLIC</td>
+    <td>ZHENGZHOU DEREK IMPORT AND EXPORT TRADING COMPANY LIMITED</td>
+    <td>4x40HQ REEFER</td>
+    <td>SURABAYA, INDONESIA</td>
+    <td>03-May-2022</td>
+    <td>23-Apr-2022</td>
+    <td>CNC</td>
+    <td>PT BOGA AGRO INDONESIA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>LIANYUNGANG, CHINA</td>
+    <td>XAZH010234 DRES220416SU</td>
+    <td>XAZH010234 DRES220416SU</td>
+    <td>IMPORT (OCEAN FREIGHT, TRUCKING)</td>
+    <td>Alim</td>
+    <td class="hidden disable">May 2022</td>
+    <td class="hidden disable">05/03/2022</td>
+    <td class="hidden disable row_id">36490</td>
+    <td class="hidden disable ibl_ref">IBL221275</td>
+    <td class="hidden disable status">
+      
+      
+    </td>
+    <td class="hidden disable additional_si">false</td>
+  </tr>
+:ET:@created_atf1651329346.9987454:@expires_in0

@@ -1,0 +1,26 @@
+<% 
+message = '<style type="text/css"> body {font-family: "Comic Sans MS" !important; font-size: 10pt;} </style>'
+message += "</body>"
+message += "Dear All,\n\n"
+message += "Good day,\n\n"
+message += "Below update status Free Time approval fyr:\n"
+message += "SI NO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: #{@shipment.shipping_instruction.shipper_reference}\n"
+message += "BL NO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: #{@shipment.shipping_instruction.master_bl_no}\n"
+message += "Destination : #{@shipment.shipping_instruction.final_destination}\n\n"
+message += "FT Approval : #{@shipment.free_approval}\n\n"
+message += "Thank you"
+message += "</body>"
+
+subject = "Free Time Approval #{@shipment.shipping_instruction.si_no}"
+subject += ' | ' + "#{@shipment.shipping_instruction.shipper_reference}" 
+subject += ' | ' + "#{@shipment.shipping_instruction.master_bl_no}"
+%>
+
+<a id="open-link" href="mailto:?subject=<%= CGI.escape(subject).gsub("+", "%20") %>&html-body=<%= CGI.escape(message).gsub("+", "%20") %>">Open in E-Mail Client</a>
+
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		jQuery("#open-link")[0].click();
+		window.setTimeout(function() { window.close() }, 2000);
+	})
+</script>

@@ -1,0 +1,38 @@
+<div class="page-header">
+  <h3>New Cost & Revenue Analysis</h3>
+</div>
+
+<!-- Duplicate SI : <input type="text" id="ibl_ref" placeholder="IBL Ref"/> <button id="load_duplicate_si" type="button" class="btn" style="margin-bottom: 10px;">GO</button>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#load_duplicate_si").click(function(){
+      if($("#ibl_ref").val() != '')
+      {
+        $.ajax({
+          url: "<%# load_duplicate_si_cost_revenues_path %>",
+          data: { ibl_ref: $("#ibl_ref").val() }
+        })
+        .done(function(data){
+          if(data.trim() != '')
+          {
+            window.location = "?si_no=" + $("#ibl_ref").val();
+          }
+          else
+          {
+            alert("IBL Ref Not Found");
+          }
+        })
+        .fail(function(){
+          alert("an error");
+        })    
+      }
+      else
+      {
+        alert("IBL Ref Empty");
+      }
+    })
+  })
+</script>
+ --><%# unless @cost_revenue.si_no.blank? %>
+<%= render 'form' %>
+<%# end %>

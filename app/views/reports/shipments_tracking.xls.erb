@@ -1,0 +1,15 @@
+"IBL REF"<%= "\t" %>"Shipper"<%= "\t" %>"Feeder"<%= "\t" %>""<%= "\t" %>"Connecting"<%= "\t" %>""<%= "\t" %>"Destination"<%= "\t" %>""<%= "\t" %>"Notes"<%= "\t" %>"Free Time Approval"
+""<%= "\t" %>""<%= "\t" %>"ETD"<%= "\t" %>"ATD"<%= "\t" %>"ETD"<%= "\t" %>"ATD"<%= "\t" %>"ETA"<%= "\t" %>"ATA"<%= "\t" %>""<%= "\t" %>""<%= "\t" %>
+<% @shipments.each do |shipment| %>
+<% cache(["report-shipments-tracking-xls", shipment]) do %>
+<% 
+feeder = shipment.shipping_instruction.vessels.first
+destination = shipment.shipping_instruction.vessels.last
+connecting = nil
+if shipment.shipping_instruction.vessels.size >= 2
+	connecting = shipment.shipping_instruction.vessels.last
+end
+%>
+<%= shipment.shipping_instruction.si_no %><%= "\t" %><%= shipment.shipping_instruction.shipper_company_name %><%= "\t" %><%= si_date_format feeder.etd_date unless feeder.nil? %><%= "\t" %><% unless feeder.nil? %><%= si_date_format feeder.actual_vessel.actual_etd_date unless feeder.actual_vessel.nil? %><% end %><%= "\t" %><%= si_date_format connecting.etd_date unless connecting.nil? %><%= "\t" %><% unless connecting.nil? %><%= si_date_format connecting.actual_vessel.actual_etd_date unless connecting.actual_vessel.nil? %><% end %><%= "\t" %><%= si_date_format destination.eta_date unless destination.nil? %><%= "\t" %><% unless destination.nil? %><%= si_date_format destination.actual_vessel.actual_eta_date unless destination.actual_vessel.nil? %><% end %><%= "\t" %>"<%= shipment.notes %>"<%= "\t" %>"<%= shipment.free_approval %>"<%= "\t" %>
+<% end %>
+<% end %>

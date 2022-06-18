@@ -1,0 +1,45 @@
+<style type="text/css">
+  .padding {
+    padding: 5px 0;
+  }
+  .form-horizontal .control-group {
+    margin-bottom: 0;
+  }
+  .form-horizontal .control-group label {
+    text-align: left;
+    font-weight: 700;
+  }
+</style>
+<div class="page-header">
+  <h3>Cost & Revenue Analysis: <%= @cost_revenue.shipping_instruction.si_no %></h3>
+</div>
+<% if !notice.nil? %>
+<p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<div class="btn-group" style="margin-bottom: 20px">
+	<% if @cost_revenue.is_open? %>
+  <a href="<%= edit_cost_revenue_path(@cost_revenue) %>" class="btn btn-small" data-no-turbolink="true" title="Edit: <%= @cost_revenue.shipping_instruction.si_no %>"><i class="icon-edit-sign"></i> Input</a>
+  <% end %>
+  <!-- <a target="_blank" class="btn btn-small" href="<%= cost_revenue_path(@cost_revenue, format: "pdf", cover: "true") %>"><i class="icon-print"></i> Print Cover</a> -->
+  <!-- <a target="_blank" class="btn btn-small" href="<%= cost_revenue_path(@cost_revenue, format: "pdf") %>"><i class="icon-print"></i> Print IFA</a> -->
+  <!-- <a target="_blank" class="btn btn-small" href="<%= print_cost_revenues_path(ibl_ref: @cost_revenue.ibl_ref) %>"><i class="icon-print"></i> Print C/R</a> -->
+  <a href="<%= cost_revenues_path %>" class="btn btn-small" title="Back to Lists"><i class="icon-reply"></i> Back</a>
+</div>
+
+<div class="clearfix"></div>
+
+<%= form_for @cost_revenue, url: update_status_cost_revenue_path(@cost_revenue.id), html: { class: "form-horizontal"} do |f| %>
+  <div class="row-fluid">
+    <div class="span6">
+      <div class="control-group">
+        <label for="" class="control-label">Status</label>
+        <div class="controls">:
+          <%= select_tag "status", options_for_select([["Open", "0"], ["Complete", "1"]], @cost_revenue.status.to_s), style: "margin-bottom: 0; width: 100px" %>
+          <%= f.submit "Update Status", class: "btn btn-info" %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+<%= render "cost_revenue" %>

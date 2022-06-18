@@ -1,0 +1,70 @@
+<div class="row-fluid">
+  <div class="span6">
+  <%= form_for(@carrier_bank, html: {class: "form-horizontal"}) do |f| %>
+      <% if @carrier_bank.errors.any? %>
+      <div class="alert alert-error">
+          <ul class="unstyled">
+          <% @carrier_bank.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+          </ul>
+      </div>
+      <% end %>
+      <div class="control-group">
+        <label for="" class="control-label">Carrier</label>
+        <div class="controls">
+          <%= f.select :carrier_id, options_for_select(@carriers.collect {|p| [ p.name, p.id ]}.insert(0, ["Select a Carrier", ""]), @carrier_bank.carrier_id), :class => 'span12' %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Bank Name</label>
+        <div class="controls"><%= f.text_field :bank_name, class: "span12" %></div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Branch</label>
+        <div class="controls"><%= f.text_field :branch, class: "span12" %></div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Bank Address</label>
+        <div class="controls"><%= f.text_area :bank_address, class: "span12" %></div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Account Name</label>
+        <div class="controls"><%= f.text_field :acc_name, class: "span12" %></div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Account No.</label>
+        <div class="controls"><%= f.text_field :acc_no, class: "span12" %></div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Swift Code</label>
+        <div class="controls"><%= f.text_field :swift_code, class: "span12" %></div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Currency</label>
+        <div class="controls">
+          <label class="inline radio">
+              <%= radio_button "carrier_bank", "currency", "USD" %> USD
+            </label>
+            <label class="inline radio">
+              <%= radio_button "carrier_bank", "currency", "IDR" %> IDR
+            </label>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">&nbsp;</label>
+        <div class="controls">
+            <button class="btn btn-primary" type="submit">Save Bank</button>
+            <a href="<%= carrier_banks_path %>" class="btn"><i class="icon-reply"></i> Back</a>
+        </div>
+      </div>
+  <% end %>
+  </div>
+</div>
+<script type="text/javascript">
+  // $(document).ready(function(){
+    $(".container-fluid input[type=text], .container-fluid textarea").on("change", function(){
+      $(this).val($(this).val().toUpperCase())
+    });
+  // })
+</script>

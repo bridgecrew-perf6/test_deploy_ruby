@@ -1,0 +1,8 @@
+<tr>
+	<td><%= f.text_field :ibl_ref, class: "span12 tax_ibl_ref", autocomplete: "off" %></td>
+	<td><%= f.text_field :amount, class: "span12 tax_amount money_text", autocomplete: "off", style: "text-align: right" %></td>
+	<td>
+		<%= f.hidden_field :_destroy, class: "span12" %>
+		<a onclick="remove_tax_fields(this); return false;" tabindex="-1" href="#" title="Remove"><i class="icon-remove-sign"></i></a>
+	</td>
+</tr>

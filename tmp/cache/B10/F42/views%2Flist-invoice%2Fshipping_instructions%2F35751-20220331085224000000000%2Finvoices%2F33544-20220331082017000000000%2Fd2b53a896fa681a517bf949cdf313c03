@@ -1,0 +1,42 @@
+o: ActiveSupport::Cache::Entry:@valueI"Ý  <tr class="">
+    <td>
+      <a href="/invoices/33544?year=2022" title="Show Invoice"><i class="icon-eye-open icon-large"></i></a>
+
+      <a href="#invModal" role="button" class="btn btn-info btn-small btn-invoice" data-toggle="modal">Tax</a>
+    </td>
+    <td>
+      IBLINV220931
+      
+    </td>
+    <td>
+      IBL220689
+      
+      
+    </td>
+    <td>IDR</td>
+    <td style="text-align:right">1,435,500</td>
+    <td>PT. INDESSO AROMA (SHIPPER)</td>
+    <td>PT. INDESSO AROMA</td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>Printed</td>
+    <td></td>
+    <td style="text-align:right"></td>
+    <td>040.003-22.79653349</td>
+    <td style="text-align:right">14,500</td>
+    <td></td>
+    <td style="text-align:right">(29,000)</td>
+    <td>Open</td>
+    <td>March 2022</td>
+    <td></td>
+    <td class="hidden disable">March 2022</td>
+    <td class="hidden disable">03/15/2022</td>
+    <td class="hidden disable row_id">33544</td>
+    <td class="hidden disable ibl_ref">IBL220689</td>
+    <td class="hidden disable invoice_no">IBLINV220931</td>
+    <td class="hidden disable head_letter">INVOICE</td>
+    <td class="hidden disable">1</td>
+    <td class="hidden disable"></td>
+    <td class="hidden disable"></td>
+    <td>31-Mar-2022</td>
+  </tr>
+:ET:@created_atf1648819889.7475762:@expires_in0

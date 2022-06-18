@@ -1,0 +1,50 @@
+<div class="page-header">
+  <h3>Container: <%= @container.container_type %></h3>
+</div>
+<% if !notice.nil? %>
+<p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+<div class="details">
+  <div>
+    <strong>Container Type:</strong>
+    <%= @container.container_type %>
+  </div>
+
+  <div>
+    <strong>Length (mm):</strong>
+    <%= @container.length %>
+  </div>
+
+  <div>
+    <strong>Width (mm):</strong>
+    <%= @container.width %>
+  </div>
+
+  <div>
+    <strong>Height (mm):</strong>
+    <%= @container.height %>
+  </div>
+
+  <div>
+    <strong>Capacity (cbm):</strong>
+    <%= @container.capacity %>
+  </div>
+
+  <div>
+    <strong>Load (kg):</strong>
+    <%= @container.load %>
+  </div>
+
+  <div>
+    <strong>Container Weight (kg):</strong>
+    <%= @container.container_weight %>
+  </div>
+
+  <div>
+    <strong>Max Gross Weight (kg):</strong>
+    <%= @container.max_gross_weight %>
+  </div>
+</div>
+<div class="clearfix"></div>
+<%= link_to 'Edit', edit_container_path(@container) %> |
+<%= link_to 'Back', containers_path %>

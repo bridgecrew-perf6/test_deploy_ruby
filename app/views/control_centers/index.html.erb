@@ -1,0 +1,34 @@
+<%
+  title = "Control Center"
+  if current_page?(control_centers_path)
+    title = "Control Center"
+  elsif current_page?(control_center_short_paids_path)
+    title = "Control Center Short Paid"
+  elsif current_page?(control_center_deposits_path)
+    title = "Control Center Deposit"
+  end
+%>
+<div class="page-header">
+  <h3><%= title %></h3>
+</div>
+<% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<ul class="nav nav-tabs" id="myTab">
+  <li<%= ' class=active' if current_page?(control_centers_path) %>><a href="<%= control_centers_path %>">CONTROL CENTER</a></li>
+  <li<%= ' class=active' if current_page?(control_center_short_paids_path) %>><a href="<%= control_center_short_paids_path %>">SHORT PAID</a></li>
+  <li<%= ' class=active' if current_page?(control_center_deposits_path) %>><a href="<%= control_center_deposits_path %>">DEPOSIT</a></li>
+</ul>
+ 
+<div class="tab-content">
+  <div class="tab-pane<%= ' active' if current_page?(control_centers_path) %>" id="control_center">
+    <%= render 'control_center_tabs/control_center' if current_page?(control_centers_path) %>
+  </div>
+  <div class="tab-pane<%= ' active' if current_page?(control_center_short_paids_path) %>" id="short_paid">
+    <%= render 'control_center_tabs/short_paid' if current_page?(control_center_short_paids_path) %>
+  </div>
+  <div class="tab-pane<%= ' active' if current_page?(control_center_deposits_path) %>" id="deposit">
+    <%= render 'control_center_tabs/deposit' if current_page?(control_center_deposits_path) %>
+  </div>
+</div>

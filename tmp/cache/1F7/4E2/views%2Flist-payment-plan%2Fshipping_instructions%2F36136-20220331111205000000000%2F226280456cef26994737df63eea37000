@@ -1,0 +1,25 @@
+o: ActiveSupport::Cache::Entry:@valueI"&    <tr>
+      <td data-no-turbolink="true">
+                <a data-confirm="Detail cost is empty. Proceed?" href="/payments/calculate_invoice?sid=36136&amp;year=2022">Input</a>
+          
+      </td>
+      <td>IBL221003</td>
+      <td></td>
+      <td></td>
+      <td>10.000 M3 LCL</td>
+      <td>PT. MENTARI FREIGHT SERVICES</td>
+      <td>PT. INTERBENUA LOGISTINDO</td>
+      <td>JAKARTA, INDONESIA</td>
+      <td>SYDNEY, AUSTRALIA</td>
+      <td></td>
+      <td></td>
+      <td>11-Apr-2022</td>
+      <td>No</td>
+      <td>On Going</td>
+      <td class="hidden disable">April 2022</td>
+      <td class="hidden disable">04/11/2022</td>
+      <td class="hidden disable row_id">36136</td>
+      <td class="hidden disable ibl_ref">IBL221003</td>
+      <td class="hidden disable row_ref_id"></td>
+    </tr>
+:ET:@created_atf1648734069.6491785:@expires_in0

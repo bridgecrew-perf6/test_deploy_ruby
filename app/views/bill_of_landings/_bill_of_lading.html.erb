@@ -1,0 +1,147 @@
+<%= form_for(@bill_of_landing, html: { class: "form-horizontal"}) do |f| %>
+	<table width="100%" border="1">
+		<tr>
+			<td colspan="2" rowspan="2" style="width:50%">
+				<label>Shipper :</label>
+				<pre class="free"><%= @bill_of_landing.shipper_name %></pre>
+			</td>
+			<td style="width:25%" height="75">
+				<label>Export's Reference :</label>
+				<span><%= @bill_of_landing.shipping_instruction.shipper_reference %></span>
+			</td>
+			<td style="width: 25%">
+				<label>Bill of Landing No. :</label>
+				<span><%= @bill_of_landing.bl_number %></span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" height="75">
+				<label>Country of Origin :</label>
+				<span><%= @bill_of_landing.country_of_origin %></span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" height="150">
+				<label>Consignee :</label>
+				<pre class="free"><%= @bill_of_landing.consignee_name %></pre>
+			</td>
+			<td colspan="2" width="50%">
+				<label>Also Notify Party :</label>
+				<pre class="free"><%= @bill_of_landing.also_notify_party %></pre>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="3">
+				<label>Notify Party :</label>
+				<pre class="free"><%= @bill_of_landing.notify_party %></pre>
+			</td>
+			<td height="50">
+				<label>Place of Receipt :</label>
+				<%= @bill_of_landing.place_of_receipt %>
+			</td>
+			<td>
+				<label>Port of Discharge :</label>
+				<%= @bill_of_landing.port_of_discharge %>
+			</td>
+		</tr>
+		<tr>
+			<td height="50">
+				<label>Port of Loading :</label>
+				<%= @bill_of_landing.port_of_loading %>
+			</td>
+			<td>
+				<label>Final Destination :</label>
+				<%= @bill_of_landing.final_destination %>
+			</td>
+		</tr>
+		<tr>
+			<td height="50">
+				<label>Ocean Vessel :</label>
+				<%= @bill_of_landing.feeder_vessel %>
+			</td>
+			<td>
+				<label>Pre-carriage by :</label>
+				<%= @bill_of_landing.connection_vessel %>
+			</td>
+		</tr>
+		<tr align="center">
+			<td colspan="4" class="text-center"><h2 style="margin: 5px 0; font-size: 11pt"><label>PARTICULAR FURNISHED BY SHIPPER</label></h2></td>
+		</tr>
+		<tr>
+			<td colspan="1" style="width: 25%">
+				<div style="min-height: 150px;">
+					<label>Marks & No. :</label><br/>
+					<pre class="free"><%= @bill_of_landing.marks_no %></pre>
+				</div>
+				<div style="min-height: 50px;">
+					<label>Freight Prepaid Jakarta :</label>
+					<span><%= @bill_of_landing.freight %></span>
+				</div>
+			</td>
+			<td colspan="3" height="200" style="width: 75%">
+				<div style="float:left; width:67%">
+					<label>Kind of Packages & Description of Goods :</label><br/>
+					<pre class="free"><%= @bill_of_landing.description_packages %></pre>
+				</div>
+				<div style="float:left; width:33%">
+					<table border="1" style="width:100%;margin: -2px 0px 0px 2px;">
+						<tr>
+							<td width="50%" height="30"><strong>GW (KGS)</strong></td>
+							<td width="50%" height="30"><strong>MEAS (CBM)</strong></td>
+						</tr>
+						<tr>
+							<td height="30"><%= @bill_of_landing.gw %>&nbsp;</td>
+							<td height="30"><%= @bill_of_landing.measurement %>&nbsp;</td>
+						</tr>
+					</table>
+					<div style="margin-top:10px">
+						<label>Container / Seal No. :</label>
+						<pre class="free"><%= @bill_of_landing.container_no %></pre>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="3" style="width: 50%">
+				<div style="margin-bottom: 20px; min-height: 180px;">
+					<label>Special Clause</label>
+					<%= @bill_of_landing.special_clause %>
+				</div>
+				<div>
+					<label>Shipped on Board:</label>
+					<pre class="free"><%= @bill_of_landing.shipped_on_board %>&nbsp;</pre>
+				</div>
+			</td>
+			<td colspan="2" height="50" style="width: 50%">
+				<div class="inline-group">
+					<label>Freight details, charges etc <span class="pull-right">:</span></label>
+					<div>
+						<span><%= @bill_of_landing.freight_details %>&nbsp;</span>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" height="50">
+				<div class="inline-group">
+					<label>No. of Original BL <span class="pull-right">:</span></label>
+					<div>
+						<%= @bill_of_landing.no_of_obl %>&nbsp;
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" height="150">
+				<div class="inline-group">
+					<label>Place and date of issue<br/>Signed and Stamp</label>
+					<div>
+						<h4 style="margin:0"><%= @bill_of_landing.place_of_issue %>, <%= @bill_of_landing.date_of_issue.to_time.strftime('%d %B %Y') unless @bill_of_landing.date_of_issue.nil? %></h4>
+					</div>
+				</div>
+				<br/><br/><br/><br/><br/><br/>
+				<h4 align="center">PT. INTERBENUA LOGISTINDO</h4>
+			</td>
+		</tr>
+	</table>
+<% end %>

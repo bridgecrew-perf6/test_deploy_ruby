@@ -1,0 +1,19 @@
+<%# cache ["list-cc-short-paid", row.shipping_instruction, reference] do %>
+  <tr class="<%= "error" if row.is_canceled? %>">
+    <td><a href="#shortPaidModal" class="btn-short-paid" data-toggle="modal">input</a></td>
+    <td><%= si_date_format reference.payment_date %></td>
+    <td><%= reference.close_payment.customer %></td>
+    <td><%= row.ibl_ref %></td>
+    <td><%= row.invoice_no %>
+        <%= '<span class="label label-warning">Cancel</span>'.html_safe if row.is_canceled? %></td>
+    <td style="text-align:right"><%= "#{money_format(reference.short_paid)}" if reference.currency_2 == "IDR" %></td>
+    <td style="text-align:right"><%= "#{money_format(reference.short_paid)}" if reference.currency_2 == "USD" %></td>
+    <td><%= reference.short_paid_status_text %></td>
+    <td><%= si_date_format reference.short_paid_closing_date %></td>
+    <td><%= collapse_note(reference.short_paid_note) %></td>
+    <td class="hidden disable"><%= monthly_format reference.payment_date %></td>
+    <td class="hidden disable"><%= datepicker_format reference.payment_date %></td>
+    <td class="hidden disable row_id"><%= reference.id %></td>
+    <td class="hidden disable ibl_ref"><%= reference.ibl_ref %></td>
+  </tr>
+<%# end %>

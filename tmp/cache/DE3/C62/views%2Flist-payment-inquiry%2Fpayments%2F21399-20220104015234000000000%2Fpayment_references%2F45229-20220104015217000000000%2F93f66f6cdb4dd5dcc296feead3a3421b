@@ -1,0 +1,33 @@
+o: ActiveSupport::Cache::Entry:@valueI"1  <tr>
+    <td data-no-turbolink="true">
+      <a href="/payments/21399?year=2022" title="Show Payment"><i class="icon-eye-open icon-large"></i></a>
+    </td>
+    <td data-order="003">
+      003/IDR/2022
+      
+    </td>
+    <td>IBL220013</td>
+    <td>KMTCSUB1936794</td>
+    <td>PT KARYAINDAH ALAM SEJAHTERA</td>
+    <td>SURABAYA PORT, INDONESIA</td>
+    <td>TIANJIN, XINGANG, CHINA</td>
+    <td>5x20FT</td>
+    <td>KMTC SURABAYA</td>
+    <td style="text-align: right;">59,848,750 IDR</td>
+    <td></td>
+    <td>04-Jan-2022</td>
+    <td>04-Jan-2022</td>
+    <td>Sent</td>
+    <td class="hidden disable">January 2022</td>
+    <td class="hidden disable">01/04/2022</td>
+    <td class="hidden disable row_id">21399</td>
+    <td class="hidden disable ibl_ref">IBL220013</td>
+    <td class="hidden disable currency">IDR</td>
+    <td class="hidden disable row_ref_id">45229</td>
+    <td class="hidden disable">January 2022</td>
+    <td class="hidden disable">01/04/2022</td>
+    <td class="hidden disable">BANK TRANSACTION</td>
+    <td></td>
+    <td>59,848,750 IDR</td>
+  </tr>
+:ET:@created_atf1648209478.2930427:@expires_in0

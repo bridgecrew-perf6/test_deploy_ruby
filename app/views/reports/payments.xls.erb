@@ -1,0 +1,8 @@
+"Payment No"<%= "\t" %>"IBL Ref"<%= "\t" %>"Shipper"<%= "\t" %>"Destination"<%= "\t" %>"Carrier"<%= "\t" %>"Amount"<%= "\t" %>"ETD Vessel"<%= "\t" %>"Payment Date"<%= "\t" %>"Status"
+<% @payments.each do |payment| %>
+<% cache_if((payment.is_cancel == 1 || payment.status == 1), ["report-payments-xls", payment]) do %>
+<% payment.payment_references.each do |reference| %>
+<%= payment.payment_no %><%= "\t" %><%= reference.ibl_ref %><% unless reference.shipping_instruction.nil? %><%= "\t" %><%= reference.shipping_instruction.shipper_company_name %><%= "\t" %><%= reference.shipping_instruction.final_destination %><%= "\t" %><%= reference.shipping_instruction.carrier %><%= "\t" %><%= number_with_precision reference.amount, precision: 2, delimiter: ", " %> <%= payment.payment_type %><%= "\t" %><% if reference.shipping_instruction.vessels.any? %><%= si_date_format reference.shipping_instruction.vessels.first.etd_date %><% end %><% else %><%= "\t" %>""<%= "\t" %>""<%= "\t" %>""<%= "\t" %><%= number_with_precision reference.amount, precision: 2, delimiter: "," %> <%= payment.payment_type %><%= "\t" %>""<% end %><%= "\t" %><%= si_date_format payment.payment_date %><%= "\t" %><% if payment.is_cancel == 1 %>Cancel<% else %><%= payment.status_text %><% end %>
+<% end %>
+<% end %>
+<% end %>

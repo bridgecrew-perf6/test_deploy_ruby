@@ -1,0 +1,60 @@
+o: ActiveSupport::Cache::Entry:@valueI"^  <tr class="success ">
+    <td>
+      <a href="/bill_of_ladings/24629?year=2021" title="Show Bill of Lading"><i class="icon-eye-open icon-large"></i></a>
+      &nbsp;
+
+      
+      &nbsp;
+
+          <a href="/bill_of_ladings/view_calculate_invoice?sid=35047&amp;year=2021" title="Calculate Invoice"><i class="icon-file icon-large"></i></a>
+        &nbsp;
+
+
+      
+      <a href="/cost_revenues/35047/print_cover?year=2021" target="_blank" title="Print"><i class="icon-print icon-large"></i></a>
+      &nbsp;
+      
+    </td>
+    <td>
+      IBL214731
+      
+      
+      <span class="label label-error">Closed CR</span>
+        
+    </td>
+    <td>-</td>
+    <td>PT. INDOLOGISTIK SAKTI TEGUH</td>
+    <td>PT BANYUMAS AGRO INDONESIA</td>
+    <td>TBA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>PURWOKERTO</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+        <ul>
+            <li><a href="/invoices/32568?year=2021">IBLINV215115</a></li>
+        </ul>
+    </td>
+    <td>1x40FT RENT REEFER</td>
+    <td>OTHER (TRUCKING)</td>
+    <td>
+        <ul>
+            <li><a href="/payments/21438?year=2021">3567/IDR/2021</a></li>
+        </ul>
+    </td>
+    <td>JAKARTA</td>
+    <td>24-Dec-2021</td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="24629">
+        <option selected="selected" value="Not Yet">Not Yet</option>
+<option value="Done">Done</option>
+      </select>
+    </td>
+    <td class="hidden disable">December 2021</td>
+    <td class="hidden disable">12/24/2021</td>
+    <td class="hidden disable reference_id">24629</td>
+    <td class="hidden disable ibl_ref">IBL214731</td>
+    <td class="hidden disable invoice">IBLINV215115</td>
+    <td class="hidden disable payment">3567/IDR/2021</td>
+    <td class="hidden disable delivery_doc">Not Yet</td>
+  </tr>
+:ET:@created_atf1649082884.3479457:@expires_in0

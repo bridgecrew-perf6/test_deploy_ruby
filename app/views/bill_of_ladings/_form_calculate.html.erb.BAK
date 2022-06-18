@@ -1,0 +1,609 @@
+<style type="text/css">
+  .details > div{
+    margin-bottom: 5px
+  }
+  .details input{
+    margin-bottom: 0
+  }
+  .invoice_field{
+    margin-bottom: 0!important;
+    border: none!important;
+    padding: 0!important;
+    float: left;
+    /*min-width: 115px;*/
+    /*min-width: 80px;*/
+    /*max-width: 86px;*/
+    /*width: 100%;*/
+    text-align: right;
+  }
+  .invoice_field, .invoice_field:focus{
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important; 
+  }
+  .invoice_description{
+    /*min-width: 170px;*/
+    max-width: 200px;
+    width: 93%;
+    text-align: left;
+  }
+  .remove_invoice_description {
+    float: right;
+    margin-top: -20px;
+  }
+  .invoice_volume{
+    margin-bottom: 0!important;
+    border: none!important;
+    padding: 0!important;
+    float: left;
+    /*min-width: 30px;*/
+    /*max-width: 134px;*/
+    max-width: 30px;
+    /*width: 100%;*/
+    text-align: right;
+  }
+  .invoice_static{
+    min-width: 80px;
+    max-width: 134px;
+    text-align: right;
+  }
+  .invoice_checkbox{
+    margin-top: 0 !important;
+  }
+  tfoot td{
+    font-weight: bold;
+    text-align: center;
+  }
+  .amount_usd, .amount_idr, .total, .total_after_tax{
+    float: right;
+    max-width: 85px;
+  }
+</style>
+<%# link_to "Import Cost & Revenue Data", import_data_invoices_path(ibl_ref: (params[:si_no] ? params[:si_no] :
+        @shipping_instruction.si_no)), class: "btn btn-primary", id: "import_cnr_data" %><!-- <br/><br/> -->
+<%# form_for(@invoice, url: update_calculate_invoice_bill_of_lading_path(@shipping_instruction)) do |f| %>
+<%= form_for(@shipping_instruction, url: update_calculate_invoice_bill_of_ladings_path(sid: @shipping_instruction)) do |f| %>
+  <% if @shipping_instruction.errors.any? %>
+  <div class="alert alert-error">
+    <ul class="unstyled">
+      <% @shipping_instruction.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+  <% end %>
+<div class="row-fluid">
+  <div class="span6" style="margin-left: 0;">
+  <div class="details">
+    <div>
+      <strong>IBL REF <span class="pull-right">:</span></strong>
+      <span><%= @shipping_instruction.si_no %></span>
+    </div>
+    <div>
+      <strong>SHIPPER <span class="pull-right">:</span></strong>
+      <span><%= @shipping_instruction.shipper_name %></span>
+    </div>
+    <div>
+      <strong>SHIPPER REF <span class="pull-right">:</span></strong>
+      <span><%= @shipping_instruction.shipper_reference %></span>
+    </div>
+    <div>
+      <strong>BL NO <span class="pull-right">:</span></strong>
+      <span><%= @shipping_instruction.master_bl_no %></span>
+    </div>
+    <div>
+      <strong>VOLUME <span class="pull-right">:</span></strong>
+      <span><%= @shipping_instruction.volume %></span>
+    </div>
+  </div>
+  </div>
+  
+  <div class="span6" style="margin-left: 0;">
+  <div class="details">
+    <div>
+      <strong>VESSEL <span class="pull-right">:</span></strong>
+      <span><%= @shipping_instruction.feeder_vessel %></span>
+    </div>
+    <div>
+      <strong>POL - DESTINATION <span class="pull-right">:</span></strong>
+      <span><%= @shipping_instruction.port_of_loading %> - <%= @shipping_instruction.final_destination %></span>
+    </div>
+    <div>
+      <strong>ETD <span class="pull-right">:</span></strong>
+      <span><%= normal_date_format @shipping_instruction.first_etd_date %></span>
+    </div>
+    <div>
+      <strong>ETA <span class="pull-right">:</span></strong>
+      <span><%= normal_date_format @shipping_instruction.last_eta_date %></span>
+    </div>
+  </div>
+  </div>
+</div>
+  
+<div class="row-fluid">
+  <div class="span6" style="margin-left: 0;">
+    <div class="details" style="height: 20px;"></div>
+    <div style="margin-top: 10px;">
+    <table width="100%" border="1">
+      <thead>
+        <tr>
+          <th colspan="7">SELL</th>
+        </tr>
+        <tr style="height:43px;">
+          <td class="hidden"></td>
+          <th>DESCRIPTION</th>
+          <th>QTY</th>
+          <th>AMOUNT USD</th>
+          <th>AMOUNT IDR</th>
+          <th>TOTAL</th>
+          <th>TOTAL AFTER TAX</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% unless @cost_revenue.blank? %>
+          <% @cost_revenue.volume_items.each do |item| %>
+            <%= render 'sell_item_fields', item: item %>
+          <% end %>
+          <% @cost_revenue.shipper_items.each do |item| %>
+            <%= render 'sell_item_fields', item: item %>
+          <% end %>
+          <% @cost_revenue.carrier_items.each do |item| %>
+            <%= render 'sell_item_fields', item: item %>
+          <% end %>
+          <% @cost_revenue.active_items.each do |item| %>
+            <%= render 'sell_item_fields', item: item %>
+          <% end %>
+        <% else %>
+          <tr>
+            <td colspan="7">Data Not Found</td>
+          </tr>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <% unless @cost_revenue.blank? %>
+          <tr>
+            <td colspan="4" class="text-left">OTHER</td>
+            <td class="text-right"><%= number_format @cost_revenue.selling_other %></td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td colspan="4" class="text-left">RATE</td>
+            <td class="text-right"><%= number_format @cost_revenue.selling_rate %></td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td colspan="4" class="text-left">VAT 10%</td>
+            <td class="text-right"><%= number_format @cost_revenue.selling_vat_10 %></td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td colspan="4" class="text-left">VAT 1%</td>
+            <td class="text-right"><%= number_format @cost_revenue.selling_vat_1 %></td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td colspan="4" class="text-left">PPH 23</td>
+            <td class="text-right"><%= number_format @cost_revenue.selling_pph_23 %></td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td colspan="4" class="text-left">TOTAL INVOICE</td>
+            <td class="text-right"><%= number_format @cost_revenue.selling_total %></td>
+            <td>&nbsp;</td>
+          </tr>
+        <% end %>
+      </tfoot>
+    </table>
+    </div>
+    </div>
+
+  <div class="span6" style="margin-left: 0;">
+<%= f.fields_for :bill_of_lading_invoice do |invoice| %>
+
+  <div class="details">
+    <div>
+      <span>
+        <%= invoice.check_box :is_tick_all %> Tick All &nbsp;&nbsp;
+        <%= invoice.check_box :is_al %> AL &nbsp;&nbsp;
+        <%= invoice.check_box :is_gl %> GL &nbsp;&nbsp;
+      </span>
+    </div>
+  </div>
+  <div style="margin-top: 10px;">
+    <table width="100%" border="1" class="invoice-table">
+      <thead>
+        <tr>
+          <th colspan="10">INVOICE</th>
+        </tr>
+        <tr style="height:43px;">
+          <th class="hidden"></th>
+          <th>DESCRIPTION</th>
+          <th>QTY</th>
+          <th>AMOUNT USD</th>
+          <th>AMOUNT IDR</th>
+          <th>TOTAL</th>
+          <th>TOTAL AFTER TAX</th>
+          <th>VAT 10%</th>
+          <th>VAT 1%</th>
+          <th>PPH 23</th>          
+        </tr>
+      </thead>
+      <tbody>
+        <% count = 1 %>
+        <%# invoice.fields_for :bill_of_lading_items do |builder| %>
+          <%# render 'invoice_item_fields', :f => builder, :count => count %>
+          <%# count += 1 %>
+        <%# end %>
+        <%= invoice.fields_for :volume_items do |builder| %>
+          <%= render 'invoice_item_fields', :f => builder, :count => count %>
+          <% count += 1 %>
+        <% end %>
+
+        <tr class="volume_group hidden"></tr>
+        <%= invoice.fields_for :shipper_items do |builder| %>
+          <%= render 'invoice_item_fields', :f => builder, :count => count %>
+          <% count += 1 %>
+        <% end %>
+
+        <tr class="shipper_group hidden"></tr>
+        <%= invoice.fields_for :carrier_items do |builder| %>
+          <%= render 'invoice_item_fields', :f => builder, :count => count %>
+          <% count += 1 %>
+        <% end %>
+
+        <tr class="carrier_group hidden"></tr>
+        <%= invoice.fields_for :active_items do |builder| %>
+          <%= render 'invoice_item_fields', :f => builder, :count => count %>
+          <% count += 1 %>
+        <% end %>
+
+        <tr class="active_group hidden"></tr>
+      </tbody>
+      <tfoot>
+        <%= invoice.fields_for :fixed_items do |builder| %>
+          <%= render 'fixed_item_fields', :f => builder, :count => count %>
+          <% count += 1 %>
+        <% end %>
+        <tr>
+          <td class="hidden"></td>
+          <td colspan="4" class="text-left">OTHER</td>
+          <td class="text-right">
+            <%= invoice.text_field :other, class: "invoice_field money_text amount_idr", autocomplete: "off" %>
+          </td>
+          <td colspan="4">&nbsp;</td>
+        </tr>
+        <tr>
+          <td class="hidden"></td>
+          <td colspan="4" class="text-left">RATE</td>
+          <td class="text-right">
+            <%= invoice.text_field :rate, class: "invoice_field money_text amount_idr", autocomplete: "off" %>
+          </td>
+          <td colspan="4">&nbsp;</td>
+        </tr>
+        <tr>
+          <td class="hidden"></td>
+          <td colspan="4" class="text-left">VAT 10%</td>
+          <td class="text-right">
+            <%= invoice.text_field :vat_10, class: "invoice_field money_text amount_idr", autocomplete: "off", disabled: "disabled" %>
+          </td>
+          <td colspan="4">&nbsp;</td>
+        </tr>
+        <tr>
+          <td class="hidden"></td>
+          <td colspan="4" class="text-left">VAT 1%</td>
+          <td class="text-right">
+            <%= invoice.text_field :vat_1, class: "invoice_field money_text amount_idr", autocomplete: "off", disabled: "disabled" %>
+          </td>
+          <td colspan="4">&nbsp;</td>
+        </tr>
+        <tr>
+          <td class="hidden"></td>
+          <td colspan="4" class="text-left">PPH 23</td>
+          <td class="text-right">
+            <%= invoice.text_field :pph_23, class: "invoice_field money_text amount_idr", autocomplete: "off", disabled: "disabled" %>
+          </td>
+          <td colspan="4">&nbsp;</td>
+        </tr>
+        <tr>
+          <td class="hidden"></td>
+          <td colspan="4" class="text-left">TOTAL INVOICE EXCLUDE PPH 23</td>
+          <td class="text-right"><%= invoice.text_field :total_invoice_exclude_pph_23, class: "invoice_field money_text amount_idr", autocomplete: "off", disabled: "disabled", disabled: "disabled" %></td>
+          <td colspan="4">&nbsp;</td>
+        </tr>
+        <tr>
+          <td class="hidden"></td>
+          <td colspan="4" class="text-left">TOTAL INVOICE</td>
+          <td class="text-right"><%= invoice.text_field :total_invoice, class: "invoice_field money_text amount_idr", autocomplete: "off", disabled: "disabled" %></td>
+          <td colspan="4">&nbsp;</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div class="text-right">
+  </div>
+  <br/><br/>
+<% end %>
+  </div>
+</div>
+
+
+
+  <!-- <div id="invoice-description" style="margin-top: 10px;">
+    <table width="100%" border="1">
+      <thead>
+        <tr>
+          <th colspan="6">SELL</th>
+          <th colspan="9">INVOICE</th>
+        </tr>
+        <tr>
+          <th>DESCRIPTION</th>
+          <th>QTY</th>
+          <th>AMOUNT USD</th>
+          <th>AMOUNT IDR</th>
+          <th>TOTAL</th>
+          <th>TOTAL AFTER TAX</th>
+          <th>DESCRIPTION</th>
+          <th>QTY</th>
+          <th>AMOUNT USD</th>
+          <th>AMOUNT IDR</th>
+          <th>TOTAL</th>
+          <th>TOTAL AFTER TAX</th>
+          <th>VAT 10%</th>
+          <th>VAT 1%</th>
+          <th>PPH 23</th>          
+        </tr>
+      </thead>
+      <tbody>
+        <%# count = 1 %>
+        <%# f.fields_for :bill_of_lading_items do |builder| %>
+          <%# render 'invoice_item_fields', :f => builder, :count => count %>
+          <%# count += 1 %>
+        <%# end %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4"></td>
+          <td class="text-right"></td>
+          <td>&nbsp;</td>
+          <td colspan="4" class="text-right">TOTAL INVOICE EXCLUDE PPH 23</td>
+          <td class="text-right"></td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="4">TOTAL INVOICE</td>
+          <td class="text-right"></td>
+          <td>&nbsp;</td>
+          <td colspan="4" class="text-right">TOTAL INVOICE</td>
+          <td class="text-right"></td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div> -->
+  <div class="actions" style="margin-top: 20px">
+    <button type="submit" class="btn btn-primary"><i class="icon-save"></i> Save Invoice</button>
+    <a class="btn" href="<%= bill_of_ladings_path %>"><i class="icon-reply"></i> Back</a>
+    <a class="btn" href="<%= edit_shipping_instruction_path(@shipping_instruction) %>" target="_blank"><i class="icon-edit-sign"></i> Update SI</a>
+  </div>
+<% end %>
+
+<% if @shipping_instruction.new_record? %>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#invoice_si_no").typeahead({
+      minLength: 3,
+      source: function(query, process){
+        $.ajax({
+          url: "/shipping_instructions.json",
+          dataType: "json",
+          data: {query: query, status: 0},
+          success: function(data){
+            bls = [];
+            $.each(data, function(i, bl){
+              bls.push(bl.si_no);
+            });
+            return process(bls);
+          }
+        })
+      }
+    });
+
+    $("#loadSI").click(function(){
+      if($("#invoice_si_no").val() != ''){
+        $(this).button('loading');
+        $.ajax({
+          url: "/load-si-data",
+          //dataType: "json",
+          data: {query: $("#invoice_si_no").val(), status: 0},
+          success: function(data){
+            if(data != ''){
+              $("#invoice_shipping_instruction_id").val(data.id);
+              $("#invoice_bl_si_number").val([data.si_no, data.master_bl_no].join(' / '));
+              $("#invoice_shipper_reference").val(data.shipper_reference);
+              $("#invoice_shipper").val(data.shipper);
+              $("#invoice_vessel").val(data.vessel_name);
+              $("#invoice_etd").val(data.etd_date);
+              $("#invoice_port_of_loading").val(data.port_of_loading);
+              $("#invoice_destination").val(data.final_destination);
+              $("#invoice_volume").val(data.volume);
+              $("#invoice_payment_number").val(data.payment);
+              $("#ibl_ref_link").attr("href", data.link_to);
+            }
+            else{
+              alert("Shipping Instruction didn't have bill of lading or not found...");
+            }
+            $("#loadSI").button('reset'); 
+          }
+        });
+      }
+      else{
+        alert("Please enter the SI No.");
+      }
+    });
+
+    $(function(){
+      if($("#invoice_si_no").val() != ''){
+        $("#loadSI").trigger( "click" );
+      }
+    });
+  })
+</script>
+<% end %>
+<script type="text/javascript">
+  $(document).ready(function(){
+    // $("#invoice_payment_no").tagsInput({
+    //   'width':'100%',
+    //   'height':'auto',
+    //   'defaultText': 'Add Number',
+    //   'minChars': 12
+    // });
+
+    // $("#invoice_payment_no_tag").typeahead({
+    //   source: function(query, process){
+    //     $.ajax({
+    //       url: "/payments-list.json",
+    //       dataType: "json",
+    //       data: {SI: $("#invoice_si_no").val(), query: query, status: 0},
+    //       success: function(data){
+    //         bls = [];
+    //         $.each(data, function(i, bl){
+    //           bls.push(bl.payment_no);
+    //         });
+    //         return process(bls);
+    //       }
+    //     })
+    //   }
+    // });
+    $("#import_cnr_data").on("click", function(e) {
+      e.preventDefault();
+      $.getJSON($(this).attr('href'), function(data){
+        if (data == "") {
+          alert("No data to be imported");
+        } else {
+          var row_count = $("#revenue-description").find("tbody tr").length;
+          if (data.length > row_count) {
+            for (var i = 0; i < (data.length - row_count); i++)
+              add_revenue_fields();
+            add_revenue_fields();
+            $("#import_cnr_data").trigger("click");
+            return;
+          }
+
+          var key = "invoice_invoice_items_attributes_";
+
+          for (var index in data) {
+            var id = "#" + key + index;
+            $(id + "_description").val(data[index].description);
+            $(id + "_selling_usd").val(accounting.formatMoney(data[index].selling.usd, "", 2, ",", ".")).trigger("focusout");
+            $(id + "_selling_idr").val(accounting.formatMoney(data[index].selling.idr, "", 2, ",", ".")).trigger("focusout");
+            $(id + "_buying_usd").val(accounting.formatMoney(data[index].buying.usd, "", 2, ",", ".")).trigger("focusout");
+            $(id + "_buying_idr").val(accounting.formatMoney(data[index].buying.idr, "", 2, ",", ".")).trigger("focusout");
+          }
+
+          alert("Import done...");
+        }
+      })
+    });
+
+    $(".invoice_description").livequery(function(){
+      $(this).typeahead({
+        source: [
+          <% @details.each do |c| %>
+            "<%= c.description %>",
+          <% end %>
+        ]
+      });
+    });
+
+    $(".money_text").livequery(function(){
+      $(this).focus(function(){
+        var number = $(this).val() == '' ? 0 : $(this).val();
+        $(this).val(accounting.unformat(number, ""));
+      });
+      $(this).focusout(function(){
+        var number = $(this).val() == '' ? 0 : $(this).val();
+        $(this).val(accounting.formatMoney(number, "", 2, ",", "."));
+      });
+    });
+
+    $(".selling_usd, .selling_idr, .buying_usd, .buying_idr").livequery(function(){
+      $(this).focusout(function(){
+        var total = 0;
+        var current = $(this).attr("class").split(" ")[2];
+        $("." + current).each(function(){
+          var parent = $(this).parent().parent();
+          if(!parent.hasClass("hidden")){
+            var temp = $(this).val();
+            total += accounting.unformat(temp, "");
+          }
+        });
+        $("#total_" + current).text(accounting.formatMoney(total, "", 2, ",", "."));
+      });
+    });
+
+    $(".selling_usd, .buying_usd").livequery(function(){
+      $(this).focusout(function(){
+        var tr = $(this).parent().parent();
+        var selling = tr.find("td:eq(2) input").val() == "" ? 0 : accounting.unformat(tr.find("td:eq(2) input").val());
+        var buying = tr.find("td:eq(4) input").val() == "" ? 0 : accounting.unformat(tr.find("td:eq(4) input").val());
+        var total = 0;
+        tr.find("td:eq(6) input").val(accounting.formatMoney(selling - buying, "", 2, ",", "."));
+        $(".profit_usd").each(function(){
+          var parent = $(this).parent().parent();
+          if(!parent.hasClass("hidden")){
+            var temp = $(this).val();
+            total += accounting.unformat(temp, "");
+          }
+        });
+        $("#total_profit_usd").text(accounting.formatMoney(total, "", 2, ",", "."));
+      });
+    });
+
+    $(".selling_idr, .buying_idr").livequery(function(){
+      $(this).focusout(function(){
+        var tr = $(this).parent().parent();
+        var selling = tr.find("td:eq(3) input").val() == "" ? 0 : accounting.unformat(tr.find("td:eq(3) input").val());
+        var buying = tr.find("td:eq(5) input").val() == "" ? 0 : accounting.unformat(tr.find("td:eq(5) input").val());
+        var total = 0;
+        tr.find("td:eq(7) input").val(accounting.formatMoney(selling - buying, "", 2, ",", "."));
+        $(".profit_idr").each(function(){
+          var parent = $(this).parent().parent();
+          if(!parent.hasClass("hidden")){
+            var temp = $(this).val();
+            total += accounting.unformat(temp, "");
+          }
+        });
+        $("#total_profit_idr").text(accounting.formatMoney(total, "", 2, ",", "."));
+      });
+    });
+
+    // $("#invoice-description table tbody tr:not('.hidden'):last td:eq(1) input").livequery(function(){
+    //   $(this).focusout(function(e){
+    //     e.preventDefault();
+    //     // alert($(this).val());
+    //     if($(this).val() != "")
+    //       add_sell_cost_invoice_fields('bill_of_lading');
+    //   })
+    // });
+
+    // $(".invoice-table tbody tr:not('.hidden'):last td:eq(1) input").livequery(function(){
+    $(".invoice_description").livequery(function(){
+      $(this).focusout(function(e){
+        e.preventDefault();
+        // if($(this).val() != "")
+          add_cost_invoice_fields('bill_of_lading');
+          // alert($(this).val());
+      })
+    });
+
+    $("form").submit(function(){
+      $(".amount_usd").each(function(){ $(this).val(accounting.unformat($(this).val())) });
+      $(".amount_idr").each(function(){ $(this).val(accounting.unformat($(this).val())) });
+    });
+  });
+</script>

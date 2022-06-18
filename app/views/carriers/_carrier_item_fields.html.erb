@@ -1,0 +1,10 @@
+<tr>
+  <td align="center"><%= count %></td>
+  <td>
+    <%= f.text_field :description, class: "carrier_description carrier_field", autocomplete: "off" %>
+    <%= f.hidden_field :_destroy, class: "span12" %>
+    <a onclick="remove_carrier_fields(this); return false;" tabindex="-1" href="#" title="Remove"><i class="icon-remove-sign"></i></a>
+  </td>
+  <td><%= f.text_field :amount_usd, class: "carrier_field money_text amount_usd", autocomplete: "off" %></td>
+  <td><%= f.text_field :amount_idr, class: "carrier_field money_text amount_idr", autocomplete: "off" %></td>
+</tr>

@@ -1,0 +1,75 @@
+<%= render 'commons/pdf' %>
+<style type="text/css">
+  table {
+    border-collapse: collapse;
+  }
+  thead th, tbody td {
+    border: 1px solid black;
+  }
+</style>
+<% columns = @report.columns %>
+<% base = [] %>
+<% 9.times{ |i| base.push i.to_s } %>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <table style="width: 100%" border="0">
+    <thead>
+    <tr>
+      <%
+        head = []
+        head.push ""
+        head.push "<th width=\"100\">Payment Date</th>"
+        head.push "<th width=\"200\">Customer</th>"
+        head.push "<th width=\"70\">IBL Ref</th>"
+        head.push "<th width=\"95\">Invoice No</th>"
+        head.push "<th width=\"125\">IDR Balance</th>"
+        head.push "<th width=\"125\">USD Balance</th>"
+        head.push "<th width=\"45\">Status</th>"
+        head.push "<th width=\"95\">Closing Date</th>"
+        head.push "<th>Note</th>"
+      %>
+      <% (base-columns).reverse_each{ |column| head.delete_at(column.to_i) } %>
+      <%= head.join("").html_safe %>
+    </tr>
+    </thead>
+    <tbody>
+      <%
+        total_usd = 0
+        total_idr = 0
+      %>
+      <% @results.each do |reference| %>
+        <%
+          # total_usd += reference.short_paid.to_f if reference.close_payment.currency == "USD"
+          # total_idr += reference.short_paid.to_f if reference.close_payment.currency == "IDR"
+          # total_idr += reference.short_paid.to_f
+          total_idr += reference.short_paid.to_f if reference.currency_2 == "IDR" && reference.is_short_paid_open?
+          total_usd += reference.short_paid.to_f if reference.currency_2 == "USD" && reference.is_short_paid_open?
+        %>
+        <tr>
+          <% body = report_list_cc_short_paid(reference, "pdf") %>
+          <% (base-columns).reverse_each{ |column| body.delete_at(column.to_i) } unless body.blank? %>
+          <%= body.join("").html_safe unless body.blank? %>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+      <%
+        total = []
+        total.push "#{money_with_currency_format(total_idr, 'IDR')}" if total_idr != 0
+        total.push "#{money_with_currency_format(total_usd, 'USD')}" if total_usd != 0
+        index = columns.index("5").presence || columns.index("6").presence
+      %>
+      <% unless index.blank? %>
+      <tr>
+        <th<%= (index-1) > 1 ? " colspan=#{(index)}" : "" %> style="text-align:left">Total :</th>
+        <% if columns.index("5") %>
+        <th style="text-align:right"><%= money_with_currency_format(total_idr, 'IDR') %></th>
+        <% end %>
+        <% if columns.index("6") %>
+        <th style="text-align:right"><%= money_with_currency_format(total_usd, 'USD') %></th>
+        <% end %>
+      </tr>
+      <% end %>
+    </tfoot>
+  </table>
+</div>

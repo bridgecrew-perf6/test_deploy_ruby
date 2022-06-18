@@ -1,0 +1,43 @@
+<% cache ["list-payment-inquiry", row, reference] do %>
+  <tr>
+    <td data-no-turbolink="true">
+      <%= link_to '<i class="icon-eye-open icon-large"></i>'.html_safe, row, title: "Show Payment" %>
+      <% if row.is_open? && row.is_uncanceled? %>
+        <%= link_to '<i class="icon-edit-sign icon-large"></i>'.html_safe, edit_payment_path(row), title: "Edit Payment" %>
+      <% end %>
+      <% if row.is_uncanceled? && row.is_open? %>
+        <%= link_to 'Cancel', cancel_payment_path(row), data: {confirm: "Are you sure?"} %>
+      <% end %>
+      <% if row.is_canceled? %>
+        <%= link_to 'Uncancel', uncancel_payment_path(row), data: {confirm: "Are you sure?"} %>
+      <% end %>
+    </td>
+    <td data-order="<%= row.no %>">
+      <%= row.payment_no %>
+      <%= '<span class="label label-warning">Cancel</span>'.html_safe if row.is_canceled? %>
+    </td>
+    <td><%= reference.ibl_ref %></td>
+    <td><%= reference.master_bl_no %></td>
+    <td><%= reference.shipper_company_name %></td>
+    <td><%= reference.port_of_loading %></td>
+    <td><%= reference.final_destination %></td>
+    <td><%= reference.volume %></td>
+    <td><%= row.carrier_name %></td>
+    <td style="text-align: right;"><%= money_with_currency_format(reference.amount, row.currency) %></td>
+    <td><%= collapse_note(row.notes) %></td>
+    <td><%= si_date_format reference.first_etd_date %></td>
+    <td><%= si_date_format row.payment_date %></td>
+    <td><%= row.status_info %></td>
+    <td class="hidden disable"><%= monthly_format reference.first_etd_date %></td>
+    <td class="hidden disable"><%= datepicker_format reference.first_etd_date %></td>
+    <td class="hidden disable row_id"><%= row.id %></td>
+    <td class="hidden disable ibl_ref"><%= reference.ibl_ref %></td>
+    <td class="hidden disable currency"><%= row.payment_type %></td>
+    <td class="hidden disable row_ref_id"><%= reference.id %></td>
+    <td class="hidden disable"><%= monthly_format row.payment_date %></td>
+    <td class="hidden disable"><%= datepicker_format row.payment_date %></td>
+    <td class="hidden disable"><%= row.payment_method %></td>
+    <td><%= money_with_currency_format(PaymentReference.find_by(payment_id: row.id, ibl_ref: reference.ibl_ref).amount_misc, row.currency) %></td>
+    <td><%= money_with_currency_format(PaymentReference.find_by(payment_id: row.id, ibl_ref: reference.ibl_ref).amount_invoice, row.currency) %></td>
+  </tr>
+<% end %>

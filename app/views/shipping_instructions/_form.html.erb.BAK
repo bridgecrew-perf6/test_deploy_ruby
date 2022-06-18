@@ -1,0 +1,550 @@
+<style type="text/css">
+  #details_order label.span6{
+    line-height: normal;
+    min-height: 10px
+  }
+  #details_order label.span6 input{
+    margin-top: 0;
+  }
+</style>
+<div id="size-a4">
+  <%= form_for(@shipping_instruction, html: { class: "form-horizontal"}) do |f| %>
+  <% if @shipping_instruction.errors.any? %>
+  <div class="alert alert-error">
+    <ul class="unstyled">
+      <% @shipping_instruction.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+  <% end %>
+
+  <div class="row-fluid">
+    <div class="span4">
+      <div class="span4">
+      Order Type :
+      </diV>
+      <div class="span6">
+      <select name="shipping_instruction[order_type]">
+        <%= options_for_select [["Select Order Type", ""], ["EXPORT", "EXPORT"], ["IMPORT", "IMPORT"], ["LOCAL", "LOCAL"], ["OTHER", "OTHER"]], @shipping_instruction.order_type %>
+    <!--     <option value="">Select Order Type...</option>
+        <option value="Ocean Freight Only" <%= "selected" if @shipping_instruction.order_type == "Ocean Freight Only" %>>Ocean Freight Only</option>
+        <option value="Ocean Freight + Trucking" <%= "selected" if @shipping_instruction.order_type == "Ocean Freight + Trucking" %>>Ocean Freight + Trucking</option>
+        <option value="Trucking Only" <%= "selected" if @shipping_instruction.order_type == "Trucking Only" %>>Trucking Only</option> -->
+      </select>
+      </div>
+      <!-- # Revisi 1 Dec 2015 -->
+      <div class="clearfix"></div>
+      <div class="span4">
+      Trade :
+      </div>
+      <div class="span6">
+      <%= f.text_field :trade, id:"trade", autocomplete: "off" %>
+      </div>
+      <div class="clearfix"></div>
+      <div class="span4">
+      Handle by :
+      </diV>
+      <div class="span6">
+      <%= f.collection_select :handle_by, User.order(:username), :id, :username, { include_blank: "Select User" }  %>
+      </div>  
+      <div class="clearfix"></div>
+      <% unless @shipping_instruction.new_record? %>
+      <div class="span4">
+      Duplicate SI :
+      </diV>
+      <div class="span6">
+      <a href="<%= duplicate_si_path(no_si: @shipping_instruction.si_no) %>" class="btn"><i class="icon-copy"></i> Go</a>
+      </div>
+      <% end %>
+    </div>
+    <div class="span6" id="details_order">
+      <h5 style="margin-top:0">Order Details</h5><hr style="margin-top: 0; margin-bottom: 10px;"/>
+      <div class="row-fluid">
+      <% details_order = ["OCEAN FREIGHT", "COO", "TRUCKING", "FUMIGATION", "FIAT PEB", "HANDLING FEE", "PEB", "DOOR SERVICE", "KITE/LHP"] %>
+
+      <% details_order.each do |detail| %>
+      <label class="span6"><input name="shipping_instruction[order_type_details][]" type="checkbox" value="<%= detail %>" <%= 'checked="checked"'.html_safe if @shipping_instruction.order_details.include?(detail) %>/> <%= detail %></label>
+      <% end %>
+
+      <%
+      other_value = "" 
+      other_text = ""
+      unless @shipping_instruction.new_record?
+        if @shipping_instruction.order_type_details.any?
+          if @shipping_instruction.order_type_details.last.include?("OTHER")
+            other_value = @shipping_instruction.order_type_details.last
+            other_text = @shipping_instruction.order_type_details.last.split("=")[1]
+          end
+        end
+      end
+      %>
+
+      <label class="span6" for="other_detail"><input type="checkbox" name="shipping_instruction[order_type_details][]" value="<%= other_value %>" <%= 'checked="checked"'.html_safe unless other_value.empty? %>/> Other <input type="text" id="other_detail" style="width: 120px" value="<%= other_text %>"/></label>
+      </div>
+    </div>
+  </div>
+  <div class="clearfix" style="margin-bottom: 20px"></div>
+  <div class="row-fluid">
+    <div class="span6">
+      <div class="border border-left">
+        <label>Shipper : <a id="find_shipper" data-toggle="modal" href="#shippersModal" data-no-turbolink="true" class="btn btn-small">Find Shipper</a></label>
+        <%= f.text_area :shipper_name, class: "span12", style: "height:143px" %>
+        <%= f.hidden_field :shipper_id %>
+      </div>
+      <div class="border border-left">
+        <label>Consignee : <a id="find_consignee" data-toggle="modal" href="#consigneesModal" data-no-turbolink="true" class="btn btn-small">Find Consignee</a></label>
+        <%= f.text_area :consignee_name, class: "span12", style: "height:143px" %>
+        <%= f.hidden_field :consignee_id %>
+      </div>
+      <div class="border border-left">
+        <label>Notify Party :</label>
+        <%= f.text_area :notify_party, class: "span12", style: "height:143px" %>
+      </div>
+    </div>
+    <div class="span6">
+      <div class="row-fluid">
+        <div class="span6">
+          <div class="border border-right">
+            <label>Country of Origin :</label>
+            <%= f.text_field :country_of_origin, class: "span12", id:"country_of_origin", autocomplete: "off" %>
+          </div>
+          <div class="border border-right">
+            <label>Carrier :</label>
+            <%= f.text_field :carrier, class: "span12", autocomplete: "off" %>
+          </div>
+        </div>
+        <div class="span6">
+          <div class="border border-right">
+            <label>SI No :</label>
+            <%= f.text_field :si_no, class: "span12", disabled: "disabled" %>
+            <%= f.hidden_field :si_no %>
+          </div>
+          <div class="border border-right">
+            <label>PIC :</label>
+            <%= f.text_field :pic, class: "span12" %>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="border border-right">
+          <label>Shipper's Reference : </label>
+          <%= f.text_field :shipper_reference, class: "span12" %>
+        </div>
+        <div data-no-turbolinks="true" class="border border-right" id="shipping-schedule-wrapper">
+          <label>Shipping Schedule : 
+          <button class="btn btn-small" type="button" onclick="add_vessel_fields(); return false;"><i class="icon-plus-sign"></i> Add Vessel</button></label>
+          <div id="shipping_schedule">
+            <%= f.fields_for :vessels do |builder| %>
+              <%= render 'vessel_fields', :f => builder %>
+            <% end %>
+          </div>
+        </div>
+        <div class="border border-right" id="volume">
+          <label>Volume :</label>
+          <% if @shipping_instruction.new_record? %>
+            <% count = 0 %>
+            <% Container.all.each do |c| %>
+              <% count += 1 %>
+                <% if count < 5 %>
+                  <input type="text" value="0" name="shipping_instruction[si_containers_attributes][<%= count %>][volum]" id="shipping_instruction_si_containers_attributes_<%= count %>_volum" class="span2" style="margin-bottom: 10px">
+                <% else %>
+                  <input type="text" value="0" name="shipping_instruction[si_containers_attributes][<%= count %>][volum]" id="shipping_instruction_si_containers_attributes_<%= count %>_volum" class="span4">
+                <% end %>
+                &nbsp;<%= c.container_type %>&nbsp;
+                <input type="hidden" value="<%= c.id %>" name="shipping_instruction[si_containers_attributes][<%= count %>][container_id]" id="shipping_instruction_si_containers_attributes_<%= count %>_container_id" class="span2">
+            <% end %>
+          <% else %>
+            <% count = 0 %>
+            <% Container.all.each do |c| %>
+              <% count += 1 %>
+              <% si_container = SiContainer.where(:container_id => c.id, :shipping_instruction_id => @shipping_instruction.id) %>
+              <% if si_container.any? %>
+                <% 
+                volume = si_container.map { |e| e.volum } 
+                sic_id = si_container.map { |e| e.id }
+                %>
+              <% else %>
+                <% 
+                volume = [0]
+                sic_id = []
+                %>
+              <% end %>
+                <% if count < 5 %>
+                <input type="text" value="<%= volume[0] %>" name="shipping_instruction[si_containers_attributes][<%= count %>][volum]" id="shipping_instruction_si_containers_attributes_<%= count %>_volum" class="span2" style="margin-bottom: 10px">
+                <% else %>
+                <input type="text" value="<%= volume[0] %>" name="shipping_instruction[si_containers_attributes][<%= count %>][volum]" id="shipping_instruction_si_containers_attributes_<%= count %>_volum" class="span4">
+                <% end %>
+                &nbsp;<%= c.container_type %>&nbsp;
+                <% if sic_id.any? %>
+                <input type="hidden" value="<%= sic_id[0] %>" name="shipping_instruction[si_containers_attributes][<%= count %>][id]" id="shipping_instruction_si_containers_attributes_<%= count %>_id" class="span2">
+                <% end %>
+                <input type="hidden" value="<%= c.id %>" name="shipping_instruction[si_containers_attributes][<%= count %>][container_id]" id="shipping_instruction_si_containers_attributes_<%= count %>_container_id" class="span2">
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row-fluid">
+      <div class="span3">
+        <div class="border border-left">
+          <label>Place of Receipt :</label>
+          <%= f.text_field :place_of_receipt, class: "span12" %>
+        </div>
+        <div class="border border-left">
+          <label>Port of Discharge :</label>
+          <%= f.text_field :port_of_discharge, class: "span12" %>
+        </div>
+      </div>
+      <div class="span3">
+        <div class="border border-right">
+          <label>Port of Loading :</label>
+          <%= f.text_field :port_of_loading, class: "span12" %>
+        </div>
+        <div class="border border-right">
+          <label>Final Destination :</label>
+          <%= f.text_field :final_destination, class: "span12" %>
+        </div>
+      </div>
+      <div class="span3">
+        <div class="border border-right">
+          <label>Feeder Vessel :</label>
+          <%= f.text_field :feeder_vessel, class: "span12" %>
+        </div>
+        <div class="border border-right">
+          <label>Connecting Vessel :</label>
+          <%= f.text_field :connection_vessel, class: "span12" %>
+        </div>
+      </div>
+      <div class="span3">
+        <div class="border border-right">
+          <label>Booking No :</label>
+          <%= f.text_field :booking_no, class: "span12" %>
+        </div>
+<!--         <div class="border border-right">
+          <label>Port of Transhipment :</label>
+          <%= f.text_field :port_of_transhipment, class: "span12" %>
+        </div> -->
+        <div class="border border-right">
+          <label>Master BL No. :</label>
+          <%= f.text_field :master_bl_no, class: "span12" %>
+        </div>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span3">
+        <div class="border border-left">
+          <div>
+            <label>Marks & No. :</label>
+            <%= f.text_area :marks_no, class: "span12", style: "height: 220px" %>
+          </div>
+          <div>
+            <%= f.text_area :freight, class: "span12", style: "height: 50px; margin-top: 5px;" %>
+          </div>
+        </div>
+      </div>
+      <div class="span6">
+        <div class="border border-right">
+          <label>Description of Goods & Packages :</label>
+          <%= f.text_area :description_packages, class: "span12", style: "height: 275px" %>
+        </div>
+      </div>
+      <div class="span3">
+        <div class="border border-right" style="height: 300px;">
+          <label>GW & Measurement</label>
+          <div>
+            <label>GW :</label>
+            <%= f.text_field :gw, class: "span12" %>
+          </div>
+          <div>
+            <label>NW :</label>
+            <%= f.text_field :nw, class: "span12" %>
+          </div>
+          <div>
+            <label>Measurement :</label>
+            <%= f.text_field :measurement, class: "span12" %>
+          </div>
+          <div>
+            <label>Dimension :</label>
+            <%= f.text_area :dimension, class: "span12", style: "height: 85px" %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span6">
+        <div class="border border-left">
+          <label>Freight details, charges etc :</label>
+          <%= f.text_field :freight_details, class: "span12" %>
+        </div>
+      </div>
+      <div class="span6">
+        <div class="border border-right">
+          <label>SI Date :</label>
+          <%= f.text_field :si_date, class: "span12 datepicker", value: normal_date_format(@shipping_instruction.si_date) %>
+        </div>
+      </div>
+    </div>
+    <div class="border border-full">
+      <div class="row-fluid">
+        <div class="span12">
+          <label>Special Instructions :</label>
+          <%= f.text_area :special_instructions, class: "span12", style: "height: 100px" %>
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div class="span9 border-none">
+          <label>Container No. :</label>
+          <div class="row-fluid">
+          <%= f.text_area :container_no, class: "span5", style: "height: 195px" %>
+          <%= f.text_area :container_no_2, class: "span5", style: "height: 195px" %>
+          </div>
+        </div>
+        <div class="span3 border-none" style="padding-left:10px;">
+          <div>
+            <label>PEB No. :</label>
+            <%= f.text_field :peb_no, class: "span12" %>
+          </div>
+          <div>
+            <label>Date :</label>
+            <%= f.text_field :inst_date, class: "span12 datepicker" %>
+          </div>
+          <div>
+            <label>KPBC :</label>
+            <%= f.text_field :kpbc, class: "span12" %>
+          </div>
+          <div>
+            <label>Hs Code :</label>
+            <%= f.text_area :hs_code, class: "span12", style: "height: 70px" %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row-fluid" id="attachment-wrapper">
+      <div class="span6" id="attachments">
+        <h4>Attachments</h4>
+        <span class="help-block">Specify the attachment name and browse the file</span>
+        <%= f.fields_for :attachments do |builder| %>
+          <%= render 'attachments_fields', :f => builder %>
+        <% end %>
+      </div>
+      <div class="span6">
+        <h4>View / Download Attachment</h4>
+        <ul>
+          <% @shipping_instruction.attachments.each do |attach| %>
+            <% if !attach.name.blank? && !attach.asset.nil? %>
+            <li><%= attach.name %> : <%= link_to "View", attach.asset.url, target: "_blank" %></li>
+            <% end %>
+          <% end %>
+        </ul>
+      </div>
+      <div class="clearfix"></div>
+      <div class="row-fluid">
+        <br/>
+        <a onclick="add_attachment_fields('shipping_instruction')" class="btn btn-default">Add More Attachment</a>
+      </div>
+    </div>
+      <div class="row-fluid" style="margin-top: 20px">
+        <%= f.hidden_field :is_shadow %>
+        <div class="pull-right">
+          <button type="submit" class="btn btn-primary"><i class="icon-save"></i> Save</button>
+          <a href="<%= shipping_instructions_path %>" class="btn"><i class="icon-reply"></i> Back</a>
+        </div>
+      </div>
+  </div>
+  <% end %>
+  <div class="row-fluid">
+  <%= render "shippers/modal", :@shippers => @shippers, :field => "shipping_instruction_shipper_name", :reference => "shipping_instruction_shipper_reference" %>
+  <%= render "consignees/modal", :@consignees => @consignees, :field => "shipping_instruction_consignee_name", :dup_field => "shipping_instruction_notify_party" %>
+  </div>
+  <script type="text/javascript">
+  $(document).ready(function(){
+    $(function(){
+      if($("#shipping_instruction_gw").val() != ''){
+        $("#shipping_instruction_gw").val(accounting.formatMoney($("#shipping_instruction_gw").val(), "", 2, ",", "."));
+        $("#shipping_instruction_gw").val($("#shipping_instruction_gw").val() + " KGS");
+      }
+
+      if($("#shipping_instruction_nw").val() != ''){
+        $("#shipping_instruction_nw").val(accounting.formatMoney($("#shipping_instruction_nw").val(), "", 2, ",", "."));
+        $("#shipping_instruction_nw").val($("#shipping_instruction_nw").val() + " KGS");
+      }
+
+      if($("#shipping_instruction_measurement").val() != ''){
+        $("#shipping_instruction_measurement").val(accounting.formatMoney($("#shipping_instruction_measurement").val(), "", 3, ",", "."));
+        $("#shipping_instruction_measurement").val($("#shipping_instruction_measurement").val() + " M3");
+      }
+    });
+
+    $("#shipping_instruction_gw")
+    .focus(function(){
+      $(this).val(accounting.unformat($(this).val(), ""));
+    })
+    .focusout(function(){
+      $(this).val(accounting.formatMoney($(this).val(), "", 2, ",", "."));
+      $(this).val($(this).val() + " KGS");
+    })
+
+    $("#shipping_instruction_nw")
+    .focus(function(){
+      $(this).val(accounting.unformat($(this).val(), ""));
+    })
+    .focusout(function(){
+      $(this).val(accounting.formatMoney($(this).val(), "", 2, ",", "."));
+      $(this).val($(this).val() + " KGS");
+    })
+
+    $("#shipping_instruction_measurement")
+    .focus(function(){
+      $(this).val(accounting.unformat($(this).val(), ""));
+    })
+    .focusout(function(){
+      $(this).val(accounting.formatMoney($(this).val(), "", 3, ",", "."));
+      $(this).val($(this).val() + " M3");
+    })
+
+    $("#other_detail").change(function(){
+      if($(this).val() != '')
+        $(this).prev().val("OTHER=" + $(this).val().toUpperCase());
+      else
+        $(this).prev().val('');
+    })
+
+    $('#country_of_origin').typeahead({
+      source: [
+      <% @countries.each do |c| %>
+      "<%= c.name %>",
+      <% end %>
+      ]
+    });
+    $("#shipping_instruction_carrier").typeahead({
+      source: [
+      <% @carriers.each do |c| %>
+      "<%= c.name %>",
+      <% end %>
+      ]
+    })
+    $("#shipping_instruction_place_of_receipt").change(function(){
+      $("#shipping_instruction_port_of_loading").val($(this).val());
+    })
+    // $("#shipping_instruction_port_of_discharge").change(function(){
+    //   $("#shipping_instruction_final_destination").val($(this).val());
+    // });
+    $("#shipping_instruction_vessels_attributes_0_vessel_name").livequery(function(){
+      $(this).change(function(){
+        $("#shipping_instruction_feeder_vessel").val($(this).val());
+      });
+    });
+    $("#shipping_instruction_vessels_attributes_1_vessel_name").livequery(function(){
+      $(this).change(function(){
+        $("#shipping_instruction_connection_vessel").val($(this).val());
+      });
+    });
+    $("#find_shipper").click(function(e){
+      e.preventDefault();
+    });
+    $("#find_consignee").click(function(e){
+      e.preventDefault();
+    });
+
+    $(".container-fluid input[type=text], .container-fluid textarea").on("change", function(){
+      $(this).val($(this).val().toUpperCase())
+    });
+
+    $("#shipping_instruction_shipper_name, #shipping_instruction_consignee_name, #shipping_instruction_notify_party").keypress(function(e){
+      var t = $(this);
+      var length = t.val().substr(0, t.selectionStart).split("\n").length;
+
+      if(length >= 6 && ((e.keyCode || e.which) == 13)){
+        e.preventDefault();
+      }
+    });
+
+    $("#shipping_instruction_freight").keypress(function(e){
+      var t = $(this);
+      var length = t.val().substr(0, t.selectionStart).split("\n").length;
+
+      if(length >= 2 && ((e.keyCode || e.which) == 13)){
+        e.preventDefault();
+      }
+    });
+
+    $("#shipping_instruction_marks_no").keypress(function(e){
+      var t = $(this);
+      var length = t.val().substr(0, t.selectionStart).split("\n").length;
+
+      if(length >= 38 && ((e.keyCode || e.which) == 13)){
+        e.preventDefault();
+      }
+    });
+
+    $("#shipping_instruction_description_packages").keypress(function(e){
+      var t = $(this);
+      var length = t.val().substr(0, t.selectionStart).split("\n").length;
+
+      if(length >= 38 && ((e.keyCode || e.which) == 13)){
+        e.preventDefault();
+      }
+    });
+
+    $("#shipping_instruction_special_instructions, #shipping_instruction_container_no, #shipping_instruction_container_no_2, #shipping_instruction_dimension").keypress(function(e){
+      var t = $(this);
+      var length = t.val().substr(0, t.selectionStart).split("\n").length;
+
+      if(length >= 5 && ((e.keyCode || e.which) == 13)){
+        e.preventDefault();
+      }
+    });
+
+    $("#shipping_instruction_container_no, #shipping_instruction_container_no_2").on("focusout", function(){
+      var t = $(this);
+      var arr = t.val().substr(0, t.selectionStart).split("\n");
+      var newArr = arr.slice(0, 5);
+      t.val(newArr.join("\n"))
+    })
+
+    $("#shipping_instruction_hs_code").keypress(function(e){
+      var t = $(this);
+      var length = t.val().substr(0, t.selectionStart).split("\n").length;
+
+      if(length >= 3 && ((e.keyCode || e.which) == 13)){
+        e.preventDefault();
+      }
+    });
+
+    $("#volume input[type=text]").focusout(function(){
+      var objArray = [
+        <% Container.all.each do |c| %>
+          "<%= c.container_type %>",
+        <% end %>
+      ];
+      var tmp = new Array();
+      var freight = "";
+
+      $("#volume input[type=text]").each(function(index, value){
+        var numb = parseInt($(this).val());
+
+        if(index == 0 && !isNaN(numb) && numb != 0)
+          freight = "LCL - LCL";
+
+        if(index > 0 && !isNaN(numb) && numb != 0)
+          freight = "FCL - FCL";
+
+        if(!isNaN(numb) && numb != 0)
+        {
+          if(index == 0)
+            tmp.push(objArray[index])
+          else
+            tmp.push(numb + "x" + objArray[index])
+        }
+      });
+      // $("#shipping_instruction_description_packages").val(tmp.join(' & ') + " CONTAINER STC: \n");
+      var desc_text = $("#shipping_instruction_description_packages").val().substr(0, $("#shipping_instruction_description_packages").selectionStart).split("\n");
+      desc_text[0] = tmp.join(' & ') + " CONTAINER STC: ";
+      $("#shipping_instruction_description_packages").val(desc_text.join("\n"));
+      $("#shipping_instruction_freight").val("FREIGHT PREPAID\n" + freight);
+    })
+  })
+  </script>
+</div>

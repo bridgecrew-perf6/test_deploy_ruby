@@ -1,0 +1,23 @@
+"IBL REF"<%= "\t" %>"Shipper REF"<%= "\t" %>"Shipper"<%= "\t" %>"Volume"<%= "\t" %>"Destination"<%= "\t" %>"ETD Vessel"<%= "\t" %>"SI Date"<%= "\t" %>"Carrier"<%= "\t" %>"POL"<%= "\t" %>"Order Type"<%= "\t" %>"Created by"
+<% cancel_si = shipment_si = total_si = add_si = 0 %>
+<% @shipping_instructions.each do |shipping_instruction| %>
+<% 
+add_si += 1 if shipping_instruction.is_shadow
+unless shipping_instruction.is_shadow
+total_si += 1
+if shipping_instruction.is_cancel == 1
+    cancel_si += 1
+else
+    shipment_si += 1
+end
+end
+%>
+<% cache(["report-list-si-xls", shipping_instruction]) do %>
+<% vessel = shipping_instruction.vessels.first %>
+"<%= shipping_instruction.si_no %><%= ' (Cancel)'.html_safe if shipping_instruction.is_cancel == 1 %>"<%= "\t" %>"<%= shipping_instruction.shipper_reference %>"<%= "\t" %>"<%= shipping_instruction.shipper_company_name %>"<%= "\t" %>"<%= shipping_instruction.si_containers.map {|c| (c.container.container_type == "LCL" ? "#{number_with_precision(c.volum, precision: 3, delimiter: ',')} M3 #{c.container.container_type}" : "#{c.volum}x#{c.container.container_type}") }.join(" & ") %>"<%= "\t" %>"<%= shipping_instruction.final_destination %>"<%= "\t" %>"<%= si_date_format vessel.etd_date unless vessel.nil? %>"<%= "\t" %>"<%= si_date_format shipping_instruction.si_date %>"<%= "\t" %>"<%= shipping_instruction.carrier %>"<%= "\t" %>"<%= shipping_instruction.port_of_loading %>"<%= "\t" %>"<%= shipping_instruction.order_type_text %>"<%= "\t" %>"<%= shipping_instruction.author.username unless shipping_instruction.author.nil? %>"
+<% end %>
+<% end %>
+
+"Total SI"<%= "\t" %>"<%= total_si %>"
+"Total Shipments"<%= "\t" %>"<%= shipment_si %>"
+"Cancel SI"<%= "\t" %>"<%= cancel_si %>"

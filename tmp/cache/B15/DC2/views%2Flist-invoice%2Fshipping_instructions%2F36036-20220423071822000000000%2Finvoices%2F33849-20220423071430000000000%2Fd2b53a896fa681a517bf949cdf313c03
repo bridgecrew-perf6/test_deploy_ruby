@@ -1,0 +1,43 @@
+o: ActiveSupport::Cache::Entry:@valueI"A  <tr class="">
+    <td>
+      <a href="/invoices/33849?year=2022" title="Show Invoice"><i class="icon-eye-open icon-large"></i></a>
+        <a href="/invoices/33849/edit?year=2022" title="Edit Invoice"><i class="icon-edit-sign icon-large"></i></a>
+
+      <a href="#invModal" role="button" class="btn btn-info btn-small btn-invoice" data-toggle="modal">Tax</a>
+    </td>
+    <td>
+      IBLINV221236
+      
+    </td>
+    <td>
+      IBL220925
+      
+      
+    </td>
+    <td>IDR</td>
+    <td style="text-align:right">429,566,861</td>
+    <td>PT. INDOTAMA FERRO ALLOYS  (SHIPPER)</td>
+    <td>PT. INDOTAMA FERRO ALLOYS </td>
+    <td>TG.PRIOK, JAKARTA, INDONESIA</td>
+    <td>Open</td>
+    <td></td>
+    <td style="text-align:right"></td>
+    <td></td>
+    <td style="text-align:right">4,715,804</td>
+    <td></td>
+    <td style="text-align:right">(8,574,189)</td>
+    <td>Open</td>
+    <td></td>
+    <td></td>
+    <td class="hidden disable"></td>
+    <td class="hidden disable"></td>
+    <td class="hidden disable row_id">33849</td>
+    <td class="hidden disable ibl_ref">IBL220925</td>
+    <td class="hidden disable invoice_no">IBLINV221236</td>
+    <td class="hidden disable head_letter">INVOICE</td>
+    <td class="hidden disable">1</td>
+    <td class="hidden disable"></td>
+    <td class="hidden disable"></td>
+    <td>23-Apr-2022</td>
+  </tr>
+:ET:@created_atf1650813787.9332252:@expires_in0

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interbenua</title>
+  <%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <%= csrf_meta_tags %>
+  <meta name="google-site-verification" content="CaKySRgfdvMmnn13nCONIo3US-WLCjPDBfVrdrsahBY"/>
+</head>
+<body>
+<div class="navbar navbar-inverse">
+  <div class="navbar-inner" style="border-radius:0">
+    <a href="/" class="brand"><strong class="second">PT. Interbenua Logistindo</strong></a>
+  </div>
+</div>
+<div class="sidebar-nav">
+  <a class="nav-header" href="<%= root_path %>"><i class="icon-dashboard"></i>Home</a>
+  <a data-toggle="collapse" class="nav-header" href="#manage-menu"><i class="icon-wrench"></i>Manages</a>
+  <ul class="nav nav-list collapse <%= current_class?("manages") %>" id="manage-menu">
+    <li><a href="<%= agents_path %>">Agent at Destination</a></li>
+    <li><a href="<%= carrier_banks_path %>">Banks</a></li>
+    <li><a href="<%= carriers_path %>">Carriers</a></li>
+    <li><a href="<%= consignees_path %>">Consignees</a></li>
+    <!-- <li><a href="<%= containers_path %>">Containers</a></li> -->
+    <li><a href="<%= shippers_path %>">Shippers</a></li>
+    <li><a href="<%= users_path %>">Users</a></li>
+  </ul>
+  <!-- <a class="nav-header" href="<%= shipping_instructions_path %>"><i class="icon-truck"></i>Shipping Instructions</a> -->
+  <a data-toggle="collapse" class="nav-header" href="#instructions-menu"><i class="icon-truck"></i>Shipping Instructions</a>
+  <ul class="nav nav-list collapse <%= current_class?("instructions") %>" id="instructions-menu">
+    <% Constant::MAX_YEAR.downto(Constant::MIN_YEAR) do |year| %>
+    <li><a href="<%= shipping_instructions_path(year: year) %>" class="text-center"><%= year %></a></li>
+    <% end %>
+  </ul>
+  <!-- <a class="nav-header" href="<%= bill_of_ladings_path %>"><i class="icon-plane"></i>Bill of Ladings</a> -->
+  <a data-toggle="collapse" class="nav-header" href="#ladings-menu"><i class="icon-plane"></i>Bill of Ladings</a>
+  <ul class="nav nav-list collapse <%= current_class?("ladings") %>" id="ladings-menu">
+    <% Constant::MAX_YEAR.downto(Constant::MIN_YEAR) do |year| %>
+    <li><a href="<%= bill_of_ladings_path(year: year) %>" class="text-center"><%= year %></a></li>
+    <% end %>
+  </ul>
+  <!-- <a class="nav-header" href="<%= shipment_trackings_path %>"><i class="icon-road"></i>Shipments Tracking</a> -->
+  <a data-toggle="collapse" class="nav-header" href="#trackings-menu"><i class="icon-road"></i>Shipments Tracking</a>
+  <ul class="nav nav-list collapse <%= current_class?("shipments") %>" id="trackings-menu">
+    <% Constant::MAX_YEAR.downto(Constant::MIN_YEAR) do |year| %>
+    <li><a href="<%= shipment_trackings_path(year: year) %>" class="text-center"><%= year %></a></li>
+    <% end %>
+  </ul>
+  <!-- <a class="nav-header" href="/list-inv-dbn"><i class="icon-file-text-alt"></i>Invoices</a> -->
+  <a data-toggle="collapse" class="nav-header" href="#invoices-menu"><i class="icon-file-text-alt"></i>Invoices</a>
+  <ul class="nav nav-list collapse <%= current_class?("invoices") %>" id="invoices-menu">
+    <% Constant::MAX_YEAR.downto(Constant::MIN_YEAR) do |year| %>
+    <li><a href="<%= list_inv_dbn_path(year: year) %>" class="text-center"><%= year %></a></li>
+    <% end %>
+  </ul>
+  <!-- <a class="nav-header" href="<%= debit_notes_path %>"><i class="icon-file-text-alt"></i>Debit Note</a> -->
+  <!-- <a class="nav-header" href="<%= payments_path %>"><i class="icon-credit-card"></i>Payments</a> -->
+  <a data-toggle="collapse" class="nav-header" href="#payments-menu"><i class="icon-credit-card"></i>Payments</a>
+  <ul class="nav nav-list collapse <%= current_class?("payments") %>" id="payments-menu">
+    <% Constant::MAX_YEAR.downto(Constant::MIN_YEAR) do |year| %>
+    <li><a href="<%= payments_path(year: year) %>" class="text-center"><%= year %></a></li>
+    <% end %>
+  </ul>
+  <!-- <a data-no-turbolink="true" class="nav-header" href="<%= new_payment_path %>"><i class="icon-credit-card"></i>New Request Payment</a> -->
+  <a class="nav-header" href="<%= control_center_path %>"><i class="icon-cogs"></i>Control Center</a>
+  <!-- <a class="nav-header" href="<%= cost_revenues_path %>"><i class="icon-book"></i>Cost & Revenue Analysis</a> -->
+  <a data-toggle="collapse" class="nav-header" href="#cra-menu"><i class="icon-book"></i>Cost & Revenue Analysis</a>
+  <ul class="nav nav-list collapse <%= current_class?("cra") %>" id="cra-menu">
+    <% Constant::MAX_YEAR.downto(Constant::MIN_YEAR) do |year| %>
+    <li><a href="<%= cost_revenues_path(year: year) %>" class="text-center"><%= year %></a></li>
+    <% end %>
+  </ul>
+  <a class="nav-header" href="<%= reports_path %>"><i class="icon-folder-open"></i>Reports</a>
+  <!-- <a data-toggle="collapse" class="nav-header" href="#report-menu"><i class="icon-book"></i>Reports</a>
+		<ul class="nav nav-list collapse <%= current_class?("reports") %>" id="report-menu">
+			<li><a href="<%= cost_revenues_path %>">Cost & Revenue Analysis</a></li>
+			<li><a href="<%= control_center_path %>">Control Center</a></li>
+			<li><a href="<%= outstanding_bonshipment_path %>">Outstanding Bon Shipment</a></li>
+		</ul> -->
+  <%# <a class="nav-header" href="/destroy" data-confirm="Data can't restore after that, are you sure?"><i class="icon-remove"></i> Empty DB</a> %>
+  <a class="nav-header" href="<%= backup_path %>"><i class="icon-cloud-upload"></i> Backup & Restore</a>
+  <a class="nav-header" href="<%= logout_path %>"><i class="icon-signout"></i>Logout</a>
+</div>
+<div class="content">
+  <div class="container-fluid">
+    <%= yield %>
+  </div>
+</div>
+<div id="loading"></div>
+<script type="text/javascript">
+  $(document).on('page:fetch', function () {
+    $("#loading").show();
+  });
+  $(document).on('page:change', function () {
+    $("#loading").hide();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+o: ActiveSupport::Cache::Entry:@valueI"¹  <tr class="warning ">
+    <td>
+      <a href="/bill_of_ladings/25484?year=2022" title="Show Bill of Lading"><i class="icon-eye-open icon-large"></i></a>
+      &nbsp;
+
+      <a href="/bill_of_ladings/25484/edit?year=2022" title="Edit Bill of Lading"><i class="icon-edit-sign icon-large"></i></a>
+      &nbsp;
+
+            <a data-confirm="Detail sell is empty. Proceed?" href="/bill_of_ladings/calculate_invoice?sid=36228&amp;year=2022" title="Calculate Invoice"><i class="icon-file icon-large"></i></a>
+        &nbsp;
+
+
+      
+      <a href="/cost_revenues/36228/print_cover?year=2022" target="_blank" title="Print"><i class="icon-print icon-large"></i></a>
+      &nbsp;
+      
+    </td>
+    <td>
+      IBL221078
+      
+      
+      
+        <span class="label label-warning">No Status CR</span>
+    </td>
+    <td></td>
+    <td>PT. MENTARI FREIGHT SERVICES</td>
+    <td>PT. INDESSO AROMA</td>
+    <td>PHAM PHAN TRADING CO., LTD</td>
+    <td>PHAM PHAN TRADING JOINT STOCK COMPANY</td>
+    <td>HO CHI MINH, VIETNAM</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+        No Invoice Yet
+    </td>
+    <td>5.000 M3 LCL</td>
+    <td>EXPORT (OCEAN FREIGHT, TRUCKING, FIAT PEB, PEB)</td>
+    <td>
+        No Payment Yet
+    </td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>16-Apr-2022</td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="25484">
+        <option selected="selected" value="Not Yet">Not Yet</option>
+<option value="Done">Done</option>
+      </select>
+    </td>
+    <td class="hidden disable">April 2022</td>
+    <td class="hidden disable">04/16/2022</td>
+    <td class="hidden disable reference_id">25484</td>
+    <td class="hidden disable ibl_ref">IBL221078</td>
+    <td class="hidden disable invoice">No Invoice Yet</td>
+    <td class="hidden disable payment">No Payment Yet</td>
+    <td class="hidden disable delivery_doc">Not Yet</td>
+  </tr>
+:ET:@created_atf1649612694.815773:@expires_in0

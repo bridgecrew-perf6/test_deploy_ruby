@@ -1,0 +1,94 @@
+<%# cache [row, row.shipping_instruction] do %>
+  <tr class="<%= ((row.invoices.any? || row.debit_notes.any? || row.notes.any?) ? "success" : "warning") %> <%= "error cancel" if row.is_cancel == 1 %>">
+    <td>
+      <%= link_to '<i class="icon-eye-open icon-large"></i>'.html_safe, row, title: "Show Bill of Lading" %>
+      &nbsp;&nbsp;<% if row.shipping_instruction.status != 1 %>
+        <%= link_to '<i class="icon-edit-sign icon-large"></i>'.html_safe, edit_bill_of_lading_path(row),
+                    title: "Edit Bill of Lading" if row.is_cancel != 1 %>
+      &nbsp;&nbsp;
+        <% if row.cost_revenue.blank? %>
+        <%= link_to '<i class="icon-file icon-large"></i>'.html_safe, calculate_invoice_bill_of_ladings_path(sid: row.shipping_instruction), title: 'Calculate Invoice', data: {confirm: 'Detail sell is empty. Proceed?'} %>
+        <% else %>
+        <%= link_to '<i class="icon-file icon-large"></i>'.html_safe, calculate_invoice_bill_of_ladings_path(sid: row.shipping_instruction), title: 'Calculate Invoice' %>
+        <% end %>
+        <% if row.is_cancel != 1 %>
+          <% unless row.is_shadow %>
+            <div>
+              <%= link_to 'Create Invoice', "/create-new-invoice/" + row.id.to_s %>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+      <% if row.is_shadow %>
+        <% if row.is_cancel != 1 %>
+          <div>
+            <%= link_to 'Cancel BL', cancel_bill_of_lading_path(row.id), data: {confirm: 'Are you sure?'} %>
+          </div>
+        <% else %>
+          <div>
+            <%= link_to 'Uncancel BL', cancel_bill_of_lading_path(row.id), data: {confirm: 'Are you sure?'} %>
+          </div>
+        <% end %>
+      <% end %>
+      <!-- <div>
+        <%# if row.delivery_doc? %>
+          <%# link_to 'Not Yet DO', not_yet_delivery_doc_bill_of_lading_path(row.id), data: {confirm: 'Are you sure?'} %>
+        <%# else %>
+          <%# link_to 'Done DO', done_delivery_doc_bill_of_lading_path(row.id), data: {confirm: 'Are you sure?'} %>
+        <%# end %>
+      </div> -->
+      <%= '<span class="label label-warning">Cancel SI</span>'.html_safe if row.shipping_instruction.is_cancel == 1 %>
+      <%= '<span class="label label-warning">Cancel BL</span>'.html_safe if row.is_cancel == 1 %>
+    </td>
+    <!-- <td class="hidden">&nbsp;</td> -->
+    <td>
+      <%= row.bl_number %>
+      <%= '<span class="label label-error">Closed</span>'.html_safe if row.shipping_instruction.status == 1 %>
+    </td>
+    <td><%= row.master_bl_no %></td>
+    <td><%= row.shipping_instruction.carrier %></td>
+    <td>
+      <pre class="free"><%= row.shipper_name %></pre>
+      &nbsp;</td>
+    <td>
+      <pre class="free"><%= row.consignee_name %></pre>
+      &nbsp;</td>
+    <td><%= row.first_line_notify_party %></td>
+    <td><%= row.final_destination %>&nbsp;</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+      <% if row.invoices.any? || row.debit_notes.any? || row.notes.any? %>
+        <ul>
+          <% row.invoices.each do |inv| %>
+            <li><%= link_to "#{inv.no_invoice} #{inv.is_cancel? ? '(Cancel)' : ''}", inv %></li>
+          <% end %>
+          <% row.debit_notes.each do |dbn| %>
+            <li><%= link_to "#{dbn.no_dbn} #{dbn.is_cancel? ? '(Cancel)' : ''}", dbn %></li>
+          <% end %>
+          <% row.notes.each do |note| %>
+            <li><%= link_to "#{note.no_note} #{note.is_cancel? ? '(Cancel)' : ''}", note %></li>
+          <% end %>
+        </ul>
+      <% else %>
+        No Invoices yet.
+      <% end %>
+    </td>
+    <td>
+      <%# row.shipping_instruction.si_containers.map { |c| (c.container.container_type == "LCL" ?
+              "#{number_with_precision(c.volum, precision: 3, delimiter: ',')} M3 #{c.container.container_type}" :
+              "#{c.volum}x#{c.container.container_type}") }.join(" & ") %>
+      <%= row.shipping_instruction.volume %>
+    </td>
+    <td><%= row.shipping_instruction.order_type_text %></td>
+    <td><% payment = PaymentReference.payment_no(row.bl_number) %>
+        <%= payment.blank? ? "No Payment Yet" : payment.join("<br/>").html_safe %>
+    </td>
+    <td><%= row.port_of_loading %></td>
+    <td><%= row.shipping_instruction.first_etd_date %></td>
+    <td>
+      <select name="status_delivery_doc" class="status_delivery_doc" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="<%= row.id %>">
+        <%= options_for_select [["Not Yet", "Not Yet"], ["Done", "Done"]], row.status_delivery_doc %>
+      </select>
+      <%# row.status_delivery_doc %></td>
+  </tr>
+<%# end %>

@@ -1,0 +1,54 @@
+<div class="page-header">
+  <h3>List Bill of Lading</h3>
+</div>
+
+<!-- <%= link_to 'New Bill of Landing', new_bill_of_landing_path, :class => "btn btn-primary" %><br/><br/> -->
+
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th width="10%">SI Number</th>
+      <th width="9%">B/L Number</th>
+      <th width="26%">Shipper</th>
+      <th width="28%">Consignee</th>
+      <th width="9%">Place of receipt</th>
+      <th width="9%">Final destination</th>
+      <th width="9%">Date of issue</th>
+      <th colspan="3">Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @bill_of_landings.each do |bill_of_landing| %>
+      <tr class="<%= (bill_of_landing.invoices.any? ? "success" : "warning") %>">
+        <td>
+          <%= bill_of_landing.shipping_instruction.si_no %>
+          <div><%= link_to 'Create Invoice', "/createInvoice/" + bill_of_landing.id.to_s %></div>
+          <div>
+            <% if bill_of_landing.invoices.any? %>
+              <%= link_to 'View Invoice', "/invoices?id=" + bill_of_landing.id.to_s %>
+            <% end %>
+          </div>
+        </td>
+        <td><%= bill_of_landing.bl_number %></td>
+        <td><pre class="free"><%= bill_of_landing.shipper_name %></pre></td>
+        <td><pre class="free"><%= bill_of_landing.consignee_name %></pre></td>
+        <td><%= bill_of_landing.place_of_receipt %></td>
+        <td><%= bill_of_landing.final_destination %></td>
+        <td><%= si_date_format bill_of_landing.date_of_issue %>
+        <td><%= link_to '<i class="icon-eye-open"></i>'.html_safe, bill_of_landing %></td>
+        <td><%= link_to '<i class="icon-edit-sign"></i>'.html_safe, edit_bill_of_landing_path(bill_of_landing) %></td>
+        <td><%= link_to '<i class="icon-remove"></i>'.html_safe, bill_of_landing, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+    <% if !@bill_of_landings.any? %>
+    <tr>
+      <td colspan="10">
+        <div class="alert alert-info text-center">
+          No Bill of Ladings Found...! Create a Bill of Lading from <a href="<%= shipping_instructions_path %>">List of Shipping Instruction</a>...
+        </div>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

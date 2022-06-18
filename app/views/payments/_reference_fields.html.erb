@@ -1,0 +1,20 @@
+<tr<%= ' class=hidden' if f.object.marked_for_destruction? %>>
+	<td><%= f.text_field :ibl_ref, class: "span12 reference_ibl_ref", autocomplete: "off" %></td>
+	<td class="hidden"><%= f.hidden_field :booking_no, class: "span12", autocomplete: "off" %></td>
+	<td><%= f.text_field :master_bl_no, class: "span12 reference_master_bl_no", autocomplete: "off" %></td>
+	<td><%= f.text_field :amount, class: "span12 reference_amount money_text", autocomplete: "off" %>
+		<%# f.text_field :amount_payment, class: "span12", autocomplete: "off", class: "reference_amount_payment", value: f.object.amount_payment.blank? ? f.object.amount : f.object.amount_payment %></td>
+	<td><%= f.text_field :amount_use_deposit, class: "span12 reference_amount_use_deposit money_text", autocomplete: "off", disabled: "disabled", value: f.object.amount_use_deposit %></td>
+	<td><%= f.text_field :amount_misc, class: "span12 reference_amount_misc money_text", autocomplete: "off" %></td>
+	<td><%= f.text_field :amount_overpaid, class: "span12 reference_amount_overpaid money_text", autocomplete: "off" %></td>
+	<td><%= f.text_field :amount_invoice, class: "span12 reference_amount_invoice money_text", autocomplete: "off" %></td>
+	<td><%= f.text_field :amount_estimate, class: "span12 reference_amount_estimate money_text", autocomplete: "off", disabled: "disabled", value: f.object.amount_estimate %></td>
+	<td>
+    <% if f.object.marked_for_destruction? %>
+			<%= f.hidden_field :_destroy, class: "span12", value: 1 %>
+		<% else %>
+			<%= f.hidden_field :_destroy, class: "span12" %>
+		<% end %>
+		<a onclick="remove_reference_fields(this); return false;" tabindex="-1" href="#" title="Remove"><i class="icon-remove-sign"></i></a>
+	</td>
+</tr>

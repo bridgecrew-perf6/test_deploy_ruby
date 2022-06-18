@@ -1,0 +1,112 @@
+<%= render 'commons/pdf' %>
+<% columns = @report.columns %>
+<% base = [] %>
+<% 20.times{ |i| base.push i.to_s } %>
+<div style="width: 100%">
+  <h3 id="report-title"><%# @report.title("List Invoice") %></h3>
+  <%# raise @invoices.inspect %>
+  <% @invoices.sort_by(&:customer).group_by(&:customer).each do |customer, invoices| %>
+    <table style="width: 100%" border="1">
+      <caption>LIST INVOICE <%= customer %></caption>
+      <thead>
+        <tr>
+          <%
+            head = []
+            head.push ""
+            head.push "<th width=\"10%\">IBL Ref</th>"
+            head.push"<th width=\"10%\">Customer</th>"
+            head.push"<th width=\"10%\">Shipper</th>"
+            head.push"<th width=\"10%\">Shipper Ref</th>"
+            head.push"<th width=\"10%\">MBL</th>"
+            head.push"<th width=\"10%\">Invoice No</th>"
+            head.push"<th width=\"10%\">Qty</th>"
+            head.push"<th width=\"10%\">Destination</th>"
+            head.push"<th width=\"10%\">USD</th>"
+            head.push"<th width=\"10%\">IDR</th>"
+            head.push"<th width=\"10%\">Freight</th>"
+            head.push"<th width=\"10%\">VAT 10%</th>"
+            head.push"<th width=\"10%\">VAT 1%</th>"
+            head.push"<th width=\"10%\">PPH 23</th>"
+            head.push"<th width=\"5%\">ETD Date</th>"
+            head.push"<th width=\"5%\">Due Date</th>"
+            head.push"<th width=\"10%\">Date Payment</th>"
+            head.push"<th width=\"5%\">Status</th>"
+            head.push"<th width=\"10%\">Note</th>"
+          %>
+          <% (base-columns).reverse_each{ |column| head.delete_at(column.to_i) } %>
+          <%= head.join("").html_safe %>
+        </tr>
+      </thead>
+      <tbody>
+        <%
+          total_usd = 0
+          total_idr = 0
+          total_freight_usd = 0
+          total_vat_10_usd = 0
+          total_vat_1_usd = 0
+          total_pph_23_usd = 0
+
+          total_freight_idr = 0
+          total_vat_10_idr = 0
+          total_vat_1_idr = 0
+          total_pph_23_idr = 0
+        %>
+        <% invoices.sort_by(&:invoice_date).each do |reference| %>
+          <%
+            if reference.currency_code == "USD"
+              total_usd += reference.total_invoice.to_f
+              total_freight_usd += reference.freight.to_f
+              total_vat_10_usd += reference.vat_10.to_f
+              total_vat_1_usd += reference.vat_1.to_f
+              total_pph_23_usd += reference.pph_23.to_f
+            elsif reference.currency_code == "IDR"
+              total_idr += reference.total_invoice.to_f
+              total_freight_idr += reference.freight.to_f
+              total_vat_10_idr += reference.vat_10.to_f
+              total_vat_1_idr += reference.vat_1.to_f
+              total_pph_23_idr += reference.pph_23.to_f
+            end
+          %>
+          <tr>
+            <% body = report_list_cc_list_invoice(reference, "pdf") %>
+            <% (base-columns).reverse_each{ |column| body.delete_at(column.to_i) } unless body.blank? %>
+            <%= body.join("").html_safe unless body.blank? %>
+          </tr>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <% index = columns.index("9") %>
+          <th colspan="<%= index %>" style="text-align:left">Total :</th>
+          <%= "<th style=\"text-align:right\">#{money_format(total_usd)}</th>".html_safe if columns.include? "9" %>
+          <%= "<th style=\"text-align:right\">#{money_format(total_idr)}</th>".html_safe if columns.include? "10" %>
+          <%
+            total_freight = []
+            total_freight.push "#{money_with_currency_format(total_freight_usd, 'USD')}" if total_freight_usd != 0
+            total_freight.push "#{money_with_currency_format(total_freight_idr, 'IDR')}" if total_freight_idr != 0
+          %>
+          <%= "<th style=\"text-align:right\">#{total_freight.join('<br>')}</th>".html_safe if columns.include? "11" %>
+          <%
+            total_vat_10 = []
+            total_vat_10.push "#{money_with_currency_format(total_vat_10_usd, 'USD')}" if total_vat_10_usd != 0
+            total_vat_10.push "#{money_with_currency_format(total_vat_10_idr, 'IDR')}" if total_vat_10_idr != 0
+          %>
+          <%= "<th style=\"text-align:right\">#{total_vat_10.join('<br>')}</th>".html_safe if columns.include? "12" %>
+          <%
+            total_vat_1 = []
+            total_vat_1.push "#{money_with_currency_format(total_vat_1_usd, 'USD')}" if total_vat_1_usd != 0
+            total_vat_1.push "#{money_with_currency_format(total_vat_1_idr, 'IDR')}" if total_vat_1_idr != 0
+          %>
+          <%= "<th style=\"text-align:right\">#{total_vat_1.join('<br>')}</th>".html_safe if columns.include? "13" %>
+          <%
+            total_pph_23 = []
+            total_pph_23.push "#{money_with_currency_format(total_pph_23_usd, 'USD')}" if total_pph_23_usd != 0
+            total_pph_23.push "#{money_with_currency_format(total_pph_23_idr, 'IDR')}" if total_pph_23_idr != 0
+          %>
+          <%= "<th style=\"text-align:right\">#{total_pph_23.join('<br>')}</th>".html_safe if columns.include? "14" %>
+        </tr>
+      </tfoot>
+    </table>
+    <br>
+  <% end %>
+</div>

@@ -1,0 +1,45 @@
+o: ActiveSupport::Cache::Entry:@valueI"Ý  <tr class="">
+    <td>
+      <a href="/shipping_instructions/36296?year=2022" title="Show Shipping Instruction"><i class="icon-eye-open icon-large"></i></a>
+
+      <a href="/shipping_instructions/36296/edit?year=2022" title="Edit Shipping Instruction"><i class="icon-edit-sign icon-large"></i></a>
+
+      <a href="/shipping_instructions/36296/email?year=2022" target="_blank" title="Email"><i class="icon icon-envelope"></i></a>
+
+          <div>
+              <a data-confirm="Already update SI data?" href="/createBL/36296">Create BL</a>
+          </div>
+          <div>
+            <a data-confirm="Are you sure?" href="/shipping_instructions/36296/cancel?year=2022">Cancel SI</a>
+          </div>
+    </td>
+    <td>
+      IBL221136
+      
+      
+    </td>
+    <td>PO NO. BR-2022-MQ-14</td>
+    <td>PT. HAGIHARA WESTJAVA INDUSTRIES</td>
+    <td>1x40FT</td>
+    <td>SANTOS, BRASIL</td>
+    <td>29-Apr-2022</td>
+    <td>11-Apr-2022</td>
+    <td>EVERGREEN LINE</td>
+    <td>TBA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>TANJUNG PRIOK, JAKARTA, INDONESIA</td>
+    <td>080200169466</td>
+    <td></td>
+    <td>EXPORT (OCEAN FREIGHT, COO, TRUCKING, PEB)</td>
+    <td>Frans</td>
+    <td class="hidden disable">April 2022</td>
+    <td class="hidden disable">04/29/2022</td>
+    <td class="hidden disable row_id">36296</td>
+    <td class="hidden disable ibl_ref">IBL221136</td>
+    <td class="hidden disable status">
+      
+      
+    </td>
+    <td class="hidden disable additional_si">false</td>
+  </tr>
+:ET:@created_atf1649688108.8027081:@expires_in0

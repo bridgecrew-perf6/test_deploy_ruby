@@ -1,0 +1,236 @@
+<%# render 'commons/pdf' %>
+<%# @shipping_instruction = @cost_revenue.shipping_instruction %>
+<% @cost_revenue = @shipping_instruction.cost_revenue %>
+<style type="text/css">
+  th, td {
+    vertical-align: top;
+  }
+  caption, table#selling tfoot td:first-child, table#buying tfoot td:first-child {
+    font-weight: bold;
+  }
+  table#selling tfoot td span, table#buying tfoot td span {
+    font-weight: normal;
+  }
+  table#selling, table#buying {
+    border: none;
+    border-collapse: collapse;
+  }
+  table#selling th, table#selling td, table#buying th, table#buying td {
+    border: none;
+  }
+  table#selling th, table#buying th {
+    border-top: 3px solid black;
+    border-bottom: 3px solid black;
+  }
+  table#selling tfoot tr:first-child td, table#buying tfoot tr:first-child td {
+    border-top: 3px solid black;
+  }
+</style>
+<div style="width: 100%">
+  <h3 id="report-title"></h3>
+
+  <table border="1" style="float: right;padding-right: 25px;padding-top: 25px;">
+    <thead>
+      <tr>
+        <th>MAKER</th>
+        <th>CHECKER</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td width="100" height="75"></td>
+        <td width="100" height="75"></td>
+      </tr>
+    </tbody>
+  </table>
+  <table>
+    <tbody>
+      <tr>
+        <td><strong>IBL REF</strong></td>
+        <td>: <%= @shipping_instruction.ibl_ref %></td>
+      </tr>
+      <tr>
+        <td><strong>BOOKING NO</strong></td>
+        <td>: <%= @shipping_instruction.booking_no %></td>
+      </tr>
+      <tr>
+        <td><strong>MBL NO</strong></td>
+        <td>: <%= @shipping_instruction.master_bl_no %></td>
+      </tr>
+      <tr>
+        <td><strong>SHIPPER REF</strong></td>
+        <td>: <%= @shipping_instruction.shipper_reference %></td>
+      </tr>
+      <tr>
+        <td><strong>SHIPPER</strong></td>
+        <td>: <%= @shipping_instruction.shipper_company_name %></td>
+      </tr>
+      <tr>
+        <td><strong>VESSEL</strong></td>
+        <td>: <%= @shipping_instruction.first_vessel_name %></td>
+      </tr>
+      <tr>
+        <td><strong>ETD</strong></td>
+        <td>: <%= normal_date_format(@shipping_instruction.first_etd_date) %></td>
+      </tr>
+      <tr>
+        <td><strong>POL</strong></td>
+        <td>: <%= @shipping_instruction.port_of_loading %></td>
+      </tr>
+      <tr>
+        <td><strong>DESTINATION</strong></td>
+        <td>: <%= @shipping_instruction.final_destination %></td>
+      </tr>
+      <tr>
+        <td><strong>VOLUME</strong></td>
+        <td>: <%= @shipping_instruction.volume %></td>
+      </tr>
+      <tr>
+        <td><strong>ORDER TYPE</strong></td>
+        <td>: <%= @shipping_instruction.order_type_text %></td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <table width="100%" border="1" id="selling">
+    <caption>SELLING</caption>
+    <thead>
+      <tr>
+        <th width="100">DATE</th>
+        <th width="100">INV NO</th>
+        <th width="150">VAT 10% NO</th>
+        <th width="150">VAT 1% NO</th>
+        <th colspan="2">AMOUNT</th>
+        <th width="50">STATUS</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%
+        # ibl_ref = @cost_revenue.ibl_ref
+        ibl_ref = @shipping_instruction.ibl_ref
+        invoices = Invoice.where(ibl_no: ibl_ref)
+        debit_notes = DebitNote.where(ibl_no: ibl_ref)
+        notes = Note.where(ibl_no: ibl_ref)
+        invoices += debit_notes+notes
+
+        total_invoice_usd = 0
+        total_invoice_idr = 0
+      %>
+      <% invoices.sort_by(&:invoice_no).group_by{|a| a.head_letter}.reverse_each do |type, invoices| %>
+        <% invoices.each_with_index do |invoice, index| %>
+          <%
+            unless invoice.is_canceled?
+              if invoice.invoice_no.include? "CRN"
+                total_invoice_usd -= invoice.grand_total.to_f if invoice.currency_code == "USD"
+                total_invoice_idr -= invoice.grand_total.to_f if invoice.currency_code == "IDR"
+              else
+                total_invoice_usd += invoice.grand_total.to_f if invoice.currency_code == "USD"
+                total_invoice_idr += invoice.grand_total.to_f if invoice.currency_code == "IDR"
+              end
+            end
+          %>
+              
+          <tr>
+            <td><%= si_date_format invoice.invoice_date %>&nbsp;</td>
+            <td><%= invoice.invoice_no %>&nbsp;</td>
+            <td><%= invoice.vat_10_no %>&nbsp;</td>
+            <td><%= invoice.vat_1_no %>&nbsp;</td>
+            <td width="135" style="text-align: right;"><%= money_with_currency_format(invoice.grand_total, invoice.currency_code) if invoice.currency_code == "IDR" %>&nbsp;</td>
+            <td width="135" style="text-align: right;"><%= money_with_currency_format(invoice.grand_total, invoice.currency_code) if invoice.currency_code == "USD" %>&nbsp;</td>
+            <td><%= invoice.status_info if invoice.is_canceled? %>&nbsp;</td>
+          </tr>
+        <% end %>
+      <% end %>
+      <tr><td colspan="7">&nbsp;</td></tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4">TOTAL INVOICE</td>
+        <td style="text-align: right;"><%= money_with_currency_format(total_invoice_idr, "IDR") %>&nbsp;</td>
+        <td style="text-align: right;"><%= money_with_currency_format(total_invoice_usd, "USD") %>&nbsp;</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td colspan="4">TOTAL INVOICE FR CALCULATE</td>
+        <td style="text-align: right;"><%= money_with_currency_format(@shipping_instruction.total_bill_of_lading_invoices, "IDR") %>&nbsp;</td>
+        <td style="text-align: right;">&nbsp;</td>
+        <td></td>
+      </tr>
+      <tr><td colspan="7">&nbsp;</td></tr>
+      <tr>
+        <td colspan="2">RATE<span style="float: right;"><%= money_with_currency_format(@shipping_instruction.bill_of_lading_invoices.first.rate, "IDR") unless @shipping_instruction.bill_of_lading_invoices.blank? %>&nbsp;</span></td>
+        <td colspan="5"></td>
+      </tr>
+    </tfoot>
+  </table>
+  <br><br>
+
+  <table width="100%" border="1" id="buying">
+    <caption>BUYING</caption>
+    <thead>
+      <tr>
+        <th width="100">DATE</th>
+        <th width="50">REQ NO</th>
+        <th width="135">PAYMENT</th>
+        <th width="135">USE DEPOSIT</th>
+        <th width="85">IBL DEPOSIT</th>
+        <th width="135">MISC</th>
+        <th width="135">OVERPAID</th>
+        <th colspan="2">INVOICE</th>
+        <th width="50">STATUS</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%
+        # ibl_ref = @cost_revenue.ibl_ref
+        ibl_ref = @shipping_instruction.ibl_ref
+        references = PaymentReference.includes(:payment).where(ibl_ref: ibl_ref)
+
+        total_payment_usd = 0
+        total_payment_idr = 0
+      %>
+      <% references.sort_by{|a| a.no}.group_by{|a| a.currency}.reverse_each do |currency, references| %>
+        <% references.each_with_index do |reference, index| %>
+          <% 
+            unless reference.is_canceled?
+              total_payment_idr += number_format(reference.amount_invoice).to_f if reference.currency == "IDR"
+              total_payment_usd += number_format(reference.amount_invoice).to_f if reference.currency == "USD"
+            end
+          %>
+          <tr>
+            <td><%= si_date_format reference.payment_date %>&nbsp;</td>
+            <td><%= "#{reference.req_no}" %>&nbsp;</td>
+            <td style="text-align: right;"><%= money_with_currency_format(reference.amount, reference.currency) %>&nbsp;</td>
+            <td style="text-align: right;"><%= money_with_currency_format(reference.amount_use_deposit, reference.currency) %>&nbsp;</td>
+            <td><%= reference.payment_deposits.where(ibl_ref: ibl_ref).map{|p| p.ibl_deposit}.join("<br>").html_safe %>&nbsp;</td>
+            <td style="text-align: right;"><%= money_with_currency_format(reference.amount_misc, reference.currency) %>&nbsp;</td>
+            <td style="text-align: right;"><%= money_with_currency_format(reference.amount_overpaid, reference.currency) %>&nbsp;</td>
+            <td width="135" style="text-align: right;"><%= money_with_currency_format(reference.amount_invoice, reference.currency) if reference.currency == "IDR" %>&nbsp;</td>
+            <td width="135" style="text-align: right;"><%= money_with_currency_format(reference.amount_invoice, reference.currency) if reference.currency == "USD" %>&nbsp;</td>
+            <td><%= reference.status_info if reference.is_canceled? %>&nbsp;</td>
+          </tr>
+        <% end %>
+      <% end %>
+      <tr><td colspan="10">&nbsp;</td></tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="7">TOTAL INVOICE FR PAYMENT INQUIRY</td>
+        <td style="text-align: right;"><%= money_with_currency_format(total_payment_idr, "IDR") %>&nbsp;</td>
+        <td style="text-align: right;"><%= money_with_currency_format(total_payment_usd, "USD") %>&nbsp;</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td colspan="7">TOTAL INVOICE FR PAYMENT PLAN</td>
+        <td style="text-align: right;"><%= money_with_currency_format(@shipping_instruction.total_payment_invoices, "IDR") %>&nbsp;</td>
+        <td style="text-align: right;"></td>
+        <td></td>
+      </tr>
+      <tr><td colspan="10">&nbsp;</td></tr>
+      <tr>
+        <td colspan="2">RATE<span style="float: right;"><%= money_with_currency_format(@shipping_instruction.payment_invoices.first.rate, "IDR") unless @shipping_instruction.payment_invoices.blank? %>&nbsp;</span></td>
+        <td colspan="6"></td>
+      </tr>
+    </tfoot>
+  </table>
+</div>

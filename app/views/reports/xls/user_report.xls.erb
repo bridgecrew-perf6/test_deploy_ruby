@@ -1,0 +1,22 @@
+<%
+  head = []
+  head.push "Username\t"
+  head.push "Email\t"
+  head.push "Register at\t"
+  head.push "Last Login at\t"
+  head.push "Role\t"
+  head.push "Status\t"
+%>
+<%= head.join("").html_safe %>
+<% @results.each do |user| %>
+  <%
+    body = []
+    body.push "#{user.username}\t"
+    body.push "#{user.email}\t"
+    body.push "#{local_date(user.register_at)}\t"
+    body.push "#{local_date(user.login_at)}\t"
+    body.push "#{user.administrator? ? 'Administrator' : 'Moderator'}\t"
+    body.push "#{strip_tags user.label_status}\t"
+  %>
+<%= body.join("").html_safe %>
+<% end %>

@@ -1,0 +1,287 @@
+<%= form_for(@report, url: report_payment_taxes_path, html: { class: "form-inline", target: "_blank"}) do |f| %>
+  <div id="report_params"></div>
+  <div>
+    <button type="submit" class="btn btn-primary">View Report</button>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exFilterExternallyTriggered(paymentsTaxTable);">Filter</button>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exResetAllFilters(paymentsTaxTable);">Reset Filter</button>
+    <button type="button" class="btn btn-primary" onclick="paymentsTaxTable.state.clear();window.location.reload();" style="float: right;">Refresh</button>
+  </div>
+<% end %>
+
+<div class="clearfix"></div>
+
+<% columns = { 
+              carrier: "Carrier",
+              payment_date: "Payment date",
+              status: "Status",
+              vat_type: "VAT Type"
+            } 
+  
+  filter = "<table><tr style='vertical-align: top;'><td>Advance Filter :</td>"
+  columns.each_with_index do |(key, value), index|
+    filter+="<td style='vertical-align: top;'><span>#{value}</span><span id=#{key}></span></td>"
+  end
+  filter+="</tr></table>"
+%>
+
+<div>
+  <div class="span3" style="margin-left: 0;">Format :
+    <select name="format" id="format">
+      <option value="pdf">PDF</option>
+      <option value="xls">XLS</option>
+    </select>
+  </div>
+  
+  <div class="span3">Filter By :
+    <span id="monthly"></span>
+  </div>
+
+  <div class="span3">&nbsp;
+    <span id="date_range"></span>
+  </div>
+
+  <div class="clearfix"></div>
+  <br/>
+
+  <%= filter.html_safe %>
+
+  <div class="clearfix"></div>
+  <br/>
+</div>
+
+<div class="clearfix"></div>
+
+<table class="table table-striped table-bordered" id="payments_tax_table" width="100%">
+  <thead>
+  <tr>
+    <th width="10%" class="disable">Actions</th>
+    <th>IBL REF</th>
+    <th>Carrier</th>
+    <th>VAT Type</th>
+    <th>Amount Tax</th>
+    <th>Tax No</th>
+    <th>Tax Issued</th>
+    <th>Payment Date</th>
+    <th>Invoice No</th>
+    <th>Paid Status</th>
+    <th>Status</th>
+    <th class="hidden disable">Filter Monthly</th>
+    <th class="hidden disable">Filter Date</th>
+    <th class="hidden disable">Row Id</th>
+    <th class="hidden disable">IBL Ref</th>
+    <th class="hidden disable">Row Ref Id</th>
+    <th class="hidden disable">Payment Date</th>
+    <th class="hidden disable">Status</th>
+  </tr>
+  </thead>
+  <tbody>
+    <%= render partial: 'payment_taxes/row', :collection => @shipping_instructions %>
+  </tbody>
+</table>
+
+<div id="paymentTaxModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="paymentTaxModalTitle">Tax</h3>
+    </div>
+    <div class="modal-body">
+      <form action="/payment_taxes/update_tax" id="payment-tax-form" class="form-horizontal">
+        <div class="control-group">
+          <label for="" class="control-label">Carrier : </label>
+
+          <div id="carrier" class="controls padding"></div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">IBL Ref : </label>
+
+          <div id="ibl_ref" class="controls padding"></div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">VAT Type : </label>
+
+          <div id="vat_type" class="controls padding"></div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">Amount Tax : </label>
+
+          <div id="amount_tax" class="controls padding"></div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">Tax No : </label>
+
+          <div class="controls">
+            <input id="tax_no" type="text" name="tax_no"/>
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">Tax Issued : </label>
+
+          <div class="controls">
+            <input type="text" name="tax_issued" id="tax_issued" class="tax_issued_with_date"/>
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">Payment Date : </label>
+
+          <div id="payment_date" class="controls padding"></div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">Invoice No : </label>
+
+          <div class="controls">
+            <input id="invoice_no" type="text" name="invoice_no"/>
+          </div>
+        </div>
+        <!-- <div class="control-group">
+          <label for="" class="control-label">Status : </label>
+
+          <div class="controls">
+            <%= select_tag 'status', options_for_select(["Open", "Close"]), id: "status" %>
+          </div>
+        </div> -->
+        <div class="control-group">
+          <input type="hidden" name="id" value="" id="id">
+          <input type="hidden" name="vat_type" value="" id="vat_type">
+
+          <div class="controls">
+            <button id="notes" type="button" class="btn-submit btn btn-primary">Update</button>
+          </div>
+        </div>
+      </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    var row, row_id, ref_id, ibl_ref, carrier, vat_type, amount_tax, tax_no, tax_issued, payment_date, invoice_no, status;
+
+    $('#payments_tax_table tbody').on( 'click', 'tr', function () {
+      row = paymentsTaxTable.row( this );
+    });
+
+    function payment_tax_data(rowIdx){
+      row_id = paymentsTaxTable.cell( rowIdx, 13 ).data();
+      ref_id = paymentsTaxTable.cell( rowIdx, 15 ).data();
+      ibl_ref = paymentsTaxTable.cell( rowIdx, 14 ).data();
+      carrier = paymentsTaxTable.cell( rowIdx, 2 ).data();
+      vat_type = paymentsTaxTable.cell( rowIdx, 3 ).data();
+      amount_tax = paymentsTaxTable.cell( rowIdx, 4 ).data();
+      tax_no = paymentsTaxTable.cell( rowIdx, 5 ).data();
+      tax_issued = paymentsTaxTable.cell( rowIdx, 6 ).data();
+      payment_date = paymentsTaxTable.cell( rowIdx, 7 ).data();
+      invoice_no = paymentsTaxTable.cell( rowIdx, 8 ).data();
+      // status = paymentsTaxTable.cell( rowIdx, 9 ).data();
+      // status = paymentsTaxTable.cell( rowIdx, 16 ).data();
+    }
+
+    function modal_data(name){
+      $('#'+name+'-form #id').val(ref_id);
+      $('#'+name+'-form #vat_type').val(vat_type);
+      $('#'+name+'-form #ibl_ref').html(ibl_ref);
+      $('#'+name+'-form #carrier').html(carrier);
+      $('#'+name+'-form #vat_type').html(vat_type);
+      $('#'+name+'-form #amount_tax').html(amount_tax);
+      $('#'+name+'-form #tax_no').val(tax_no);
+      $('#'+name+'-form #tax_issued').val(tax_issued);
+      $('#'+name+'-form #payment_date').html(payment_date);
+      $('#'+name+'-form #invoice_no').val(invoice_no);
+      // $('#'+name+'-form #status').val(status);
+    }
+    $(".btn-payment-tax").livequery(function () {
+      $(this).click(function () {
+        payment_tax_data(paymentsTaxTable.cell( $(this).parent("td") ).index().row);
+        $("#paymentTaxModalTitle").text("Tax: " + carrier);
+        $("#payment-tax-id").val(row_id);
+        modal_data("payment-tax");
+        // split = $(this).attr("id").split("-");
+        // $("#paymentTaxModalTitle").text("Tax: " + split[1]);
+        // $("#payment-tax-id").val(split[0]);
+        // btn = $(this);
+
+        // if ($(this).data('tax_issued') != "")
+        //   $('#payment-tax-form input[name=tax_issued]').val($.datepicker.formatDate("MM yy", new Date($(this).data('tax_issued'))));
+        // $('#payment-tax-form input[name="tax_no"]').val($(this).data('tax_no'));
+        // $('#payment-tax-form #paid_status').val($(this).data('paid_status'));
+        
+        // $('#payment-tax-form .payment_carrier').html($(this).data('payment_carrier'));
+        // $('#payment-tax-form .ibl_ref').html($(this).data('ibl_ref'));
+        // $('#payment-tax-form .amount').html($(this).data('amount'));
+        // console.log($(this).data('amount'));
+      });
+    });
+    $(".btn-submit").on("click", function (e) {
+      e.preventDefault();
+      $.ajax({
+        url: $("#payment-tax-form").attr("action"),
+        type: "POST",
+        data: $("#payment-tax-form").serialize(),
+        success: function (data) {
+          if (data.success) {
+            // var parent = btn.parent().parent();
+            // var actions = parent.children('.actions');
+            
+            // failed search after update column
+            // parent.children('.tax_status_column').html(data.status_tax_humanize);
+            // invoices.draw();
+            // $('#payments-tax').DataTable().row(parent).cell('.tax_issued_column').data(data.tax_issued);
+            // $('#payments-tax').DataTable().row(parent).cell('.tax_no_column').data(data.tax_no);
+            // $('#payments-tax').DataTable().row(parent).cell('.paid_status_column').data(data.paid_status);
+
+            // $('#payments-tax').DataTable().search($('#payments-tax_filter input').first().val()).draw(); //force reload search datatable
+            // btn.data('tax_issued', data.tax_issued);
+            // btn.data('tax_no', data.tax_no);
+            // btn.data('paid_status', data.paid_status);
+
+            paymentsTaxTable.cell(row, 5).data(data.tax_no).draw();
+            paymentsTaxTable.cell(row, 6).data($.datepicker.formatDate("dd-M-yy", new Date(data.tax_issued))).draw();
+            paymentsTaxTable.cell(row, 8).data(data.invoice_no).draw();
+            // paymentsTaxTable.cell(row, 9).data(data.status).draw();
+            paymentsTaxTable.cell(row, 11).data($.datepicker.formatDate("MM yy", new Date(data.tax_issued))).draw();
+            paymentsTaxTable.cell(row, 12).data($.datepicker.formatDate("mm/dd/yy", new Date(data.tax_issued))).draw();
+            // paymentsTaxTable.cell(row, 16).data(data.status).draw();
+            
+            $(".close").click();
+            alert(data.message);
+          } else {
+            alert(data.message);
+          }
+        }
+      });
+      return false;
+    });
+
+    var row, vat_type;
+    $('#payments_tax_table tbody').on( 'click', 'tr', function () {
+      row = paymentsTaxTable.row( this );
+      console.log(row.data());
+      vat_type = paymentsTaxTable.cell(row, 3).data();
+    });
+    
+    $( ".tax_status" ).change(function() {
+      $("#loading").show();
+      $.ajax({
+        url: '<%= update_status_payment_taxes_path %>',
+        type: 'GET',
+        dataType: "json",
+        data: {invoice_id: $(this).data('id'), vat_type: vat_type, status: $(this).val()},
+        success: function(data){
+          $("#loading").hide();
+          
+          if(data.success){
+            paymentsTaxTable.cell(row, 17).data(data.status).draw();
+            console.log(row.data());
+            alert(data.status);
+          }
+          else{
+            alert("Invalid Status");
+          }
+        }
+      });
+    })
+  });
+</script>
+
+<script type="text/javascript">
+  $(document).on('ready page:change', ready);
+  $(document).on('page:fetch', function() { paymentsTaxTable.destroy(); });
+</script>

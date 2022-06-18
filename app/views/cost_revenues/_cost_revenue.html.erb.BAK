@@ -1,0 +1,24 @@
+<%# cache_unless(shipping_instruction.cost_revenue.nil?, ["cost-revenues", shipping_instruction]) do %>
+<tr>
+  <td data-no-turbolink="true">
+    <% if shipping_instruction.cost_revenue.nil? %>
+      <%= link_to "Input", new_cost_revenue_path(:si_no => shipping_instruction.si_no) %>
+    <% else %>
+      <%= link_to "Input", edit_cost_revenue_path(shipping_instruction.cost_revenue) if shipping_instruction.cost_revenue.status == 0 %>
+      <%= link_to "View", shipping_instruction.cost_revenue %>
+    <% end %>
+  </td>
+  <td><%= shipping_instruction.si_no %></td>
+  <td><%= shipping_instruction.shipper_name %></td>
+  <td><%= shipping_instruction.final_destination %></td>
+  <td>
+    <%=
+        shipping_instruction.si_containers.map { |c| (c.container.container_type == "LCL" ? "#{number_with_precision(c.volum, precision: 3, delimiter: ',')} M3 #{c.container.container_type}" : "#{c.volum}x#{c.container.container_type}") }.join(" & ")
+    %>
+  </td>
+  <td style="text-align:right"><%= "USD " + number_with_precision(shipping_instruction.cost_revenue.total_profit_usd, precision: 2, delimiter: ",") unless shipping_instruction.cost_revenue.nil? %></td>
+  <td style="text-align:right"><%= "IDR " + number_with_precision(shipping_instruction.cost_revenue.total_profit_idr, precision: 2, delimiter: ",") unless shipping_instruction.cost_revenue.nil? %></td>
+  <td><%= si_date_format shipping_instruction.vessels.first.etd_date if shipping_instruction.vessels.size > 0 %></td>
+  <td><%= shipping_instruction.cost_revenue.nil? ? "No Status" : shipping_instruction.cost_revenue.status_text %></td>
+</tr>
+<%# end %>

@@ -1,0 +1,116 @@
+<style type="text/css">
+  .clearfix {
+    clear: both;
+  }
+
+  #report-title {
+    font-family: Arial;
+    font-size: 20pt; /*30pt;*/
+    text-align: center;
+    margin-bottom: 71px;
+  }
+
+  table > thead > tr > th, table > tbody > tr > td, ul > li, pre.free {
+    font-family: Arial;
+    font-size: 7pt; /*12pt;*/
+  }
+
+  table > thead > tr > th {
+    background: yellow;
+  }
+
+  table > thead > tr > th, table > tbody > tr > td {
+    padding: 5px;
+  }
+
+  pre.free {
+    width: 100px;
+    word-wrap: break-word;
+  }
+</style>
+<div style="width: 100%">
+  <h3 id="report-title">CONTROL CENTER <%= (!params[:filter_cc].to_s.empty? ? "- #{params[:filter_cc]}" :
+          (!params[:filter_year].to_s.empty? ? "- #{params[:filter_year]}" : "")) %></h3>
+  <table style="width: 100%" border="1">
+    <thead>
+    <tr>
+      <th>IBL REF</th>
+      <th>Shipper</th>
+      <th>Customer</th>
+      <th>Invoice No</th>
+      <th>USD</th>
+      <th>IDR</th>
+      <th>ETD Vessel</th>
+      <th>Due Date</th>
+      <th>Date of Payment</th>
+      <th>Status</th>
+      <th>Notes</th>
+    </tr>
+    </thead>
+    <tbody>
+    <%
+       repeat_number = false
+       last_bl = 0
+    %>
+    <% @invoices.each do |inv| %>
+      <% cache(["report-control-center", inv]) do %>
+        <tr>
+          <%
+             if last_bl != 0 && last_bl == inv.ibl_no
+               repeat_number = true
+             else
+               repeat_number = false
+               last_bl = inv.ibl_no
+             end
+             vessel = inv.bill_of_lading.shipping_instruction.vessels.first
+          %>
+          <td><%= inv.bill_of_lading.shipping_instruction.si_no %></td>
+          <td><%= inv.to_shipper %></td>
+          <td><%= inv.customer_ori %></td>
+          <td><%= inv.try(:no_invoice) || inv.try(:no_dbn) || inv.try(:no_note) %></td>
+          <% if inv.currency_code == "USD" %>
+            <td align="right"><%= number_with_precision(inv.total_invoice, precision: 2, delimiter: ",") %> USD</td>
+            <td>&nbsp;</td>
+          <% elsif inv.currency_code == "IDR" %>
+            <td>&nbsp;</td>
+            <td align="right"><%= number_with_precision(inv.total_invoice, precision: 2, delimiter: ",") %> IDR</td>
+          <% end %>
+          <td><%= si_date_format vessel.etd_date unless vessel.nil? %></td>
+          <td><%= si_date_format inv.due_date %></td>
+          <td><%= si_date_format inv.date_of_payment %></td>
+          <td>
+            <% if inv.status_payment == 0 %>
+              Open
+            <% else %>
+              Closed
+            <% end %>
+          </td>
+          <td>
+            <pre class="free"><%= inv.notes_payment %></pre>
+          </td>
+        </tr>
+      <% end %>
+      <% if @shipping_instructions.any? %>
+        <% @shipping_instructions.each do |shipping_instruction| %>
+          <tr>
+            <td><%= shipping_instruction.si_no %></td>
+            <td><%= shipping_instruction.shipper_company_name %></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+              <% vessel = shipping_instruction.vessels.first %>
+              <%= si_date_format vessel.etd_date unless vessel.nil? %>
+            </td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+        <% end %>
+      <% end %>
+    <% end %>
+    </tbody>
+  </table>
+</div>

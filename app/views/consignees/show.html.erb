@@ -1,0 +1,57 @@
+<div class="page-header">
+  <h3>Consignee: <%= @consignee.company_name %></h3>
+</div>
+<% if !notice.nil? %>
+<p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+<div class="details">
+  <div>
+    <strong>COMPANY NAME:</strong>
+    <span><%= @consignee.company_name %>&nbsp;</span>
+  </div>
+  <div>
+    <strong>REFERENCE:</strong>
+    <span><%= @consignee.reference %>&nbsp;</span>
+  </div>
+  <div>
+    <strong>CREDIT TERMS:</strong>
+    <span><%= @consignee.credit_term %> Days</span>
+  </div>
+
+  <div>
+    <strong>ADDRESS:</strong>
+    <pre><%= @consignee.full_address %>&nbsp;</pre>
+  </div>
+
+  <div class="details" style="margin-top: 10px">
+    <% @consignee.custom_fields.where(field_key: "ADDRESS").each do |cf| %>
+      <%= render 'shared/custom_field', :cf => cf %>
+    <% end %>
+    <% @consignee.custom_fields.where(field_key: "PHONE").each do |cf| %>
+      <%= render 'shared/custom_field', :cf => cf %>
+    <% end %>
+    <% @consignee.custom_fields.where(field_key: "FAX").each do |cf| %>
+      <%= render 'shared/custom_field', :cf => cf %>
+    <% end %>
+    <% @consignee.custom_fields.where(field_key: "EMAIL").each do |cf| %>
+      <%= render 'shared/custom_field', :cf => cf %>
+    <% end %>
+    <% @consignee.custom_fields.where(field_key: "PIC").each do |cf| %>
+      <%= render 'shared/custom_field', :cf => cf %>
+    <% end %>
+    <% @consignee.custom_fields.where(field_key: "URL").each do |cf| %>
+      <%= render 'shared/custom_field', :cf => cf %>
+    <% end %>
+    <% @consignee.custom_fields.where(field_key: "CUSTOM").each do |cf| %>
+      <%= render 'shared/custom_field', :cf => cf %>
+    <% end %>
+  </div>
+
+  <div>
+    <strong>NOTE :</strong>
+    <pre><%= @consignee.custom_field1 %>&nbsp;</pre>
+  </div>
+</div>
+<div class="clearfix"></div>
+<%= link_to 'Edit', edit_consignee_path(@consignee) %> |
+<%= link_to 'Back', consignees_path %>

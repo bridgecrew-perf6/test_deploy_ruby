@@ -1,0 +1,30 @@
+<tr<%= " class=hidden" if f.object.marked_for_destruction? %>>
+	<td><%= f.object.ibl_ref %>
+    <%= f.hidden_field :ibl_ref, class: "close_payment_field ibl_ref", autocomplete: "off" %>
+  </td>
+	<td><span class="customer_text"><%= f.object.customer %></span>
+    <%= f.hidden_field :customer, class: "close_payment_field customer", autocomplete: "off" %>
+  </td>
+	<td><span class="shipper_text"><%= f.object.shipper %></span>
+    <%= f.hidden_field :shipper, class: "close_payment_field shipper", autocomplete: "off" %>
+  </td>
+	<td><span class="invoice_no_text"><%= f.object.invoice_no %></span>
+    <%= f.hidden_field :invoice_no, class: "close_payment_field invoice_no", autocomplete: "off" %>
+  </td>
+	<td style="text-align:right"><span class="amount_text"><%= money_with_currency_format(f.object.amount, f.object.currency) %></span>
+    <%= f.hidden_field :amount, class: "close_payment_field money_text amount", autocomplete: "off" %>
+  </td>
+	<td style="text-align:right"><%= f.text_field :amount_paid, class: "close_payment_field money_text amount_paid", autocomplete: "off", disabled: "disabled", style: "width: 130px;" %></td>
+	<td>
+    <%= f.hidden_field :currency, class: "close_payment_field currency", autocomplete: "off" %>
+    <%= f.hidden_field :rate, class: "close_payment_field rate", autocomplete: "off" %>
+    <%= f.hidden_field :payment_date, class: "close_payment_field payment_date", autocomplete: "off" %>
+    <%= f.hidden_field :status, class: "close_payment_field status", autocomplete: "off" %>
+    <% if f.object.marked_for_destruction? %>
+      <%= f.hidden_field :_destroy, class: "", value: 1 %>
+    <% else %>
+      <%= f.hidden_field :_destroy, class: "" %>
+    <% end %>
+    <a onclick="remove_reference_fields(this); return false;" tabindex="-1" href="#" title="Remove"><i class="icon-remove-sign"></i></a>
+  </td>
+</tr>

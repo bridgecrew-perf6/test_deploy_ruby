@@ -1,0 +1,547 @@
+<div class="page-header">
+  <h3>List Invoices</h3>
+</div>
+<% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+<!--
+<form action="/list-inv-dbn" method="get" class="form-inline" data-turboform>
+  <fieldset>
+    <div>
+      <input type="text" name="query" placeholder="Search Keywords" value="<%= params[:query] %>"/>
+      <select name="sort" style="margin-bottom: 0">
+        <option value="">All</option>
+        <option value="Invoice" <%= 'selected' if params[:sort] == "Invoice" %>>Invoice</option>
+        <option value="Credit Note" <%= 'selected' if params[:sort] == "Credit Note" %>>Credit Note</option>
+        <option value="Reimbursement Cost" <%= 'selected' if params[:sort] == "Reimbursement Cost" %>>Reimbursement Cost
+        </option>
+        <option value="Debit Note" <%= 'selected' if params[:sort] == "Debit Note" %>>Debit Note</option>
+      </select>
+      <select name="status" style="margin-bottom: 0">
+        <option value="">Select Status...</option>
+        <option value="0" <%= 'selected' if params[:status] == "0" %>>Open</option>
+        <option value="1" <%= 'selected' if params[:status] == "1" %>>Closed</option>
+        <option value="3" <%= 'selected' if params[:status] == "3" %>>Printed</option>
+      </select>
+      <label class="checkbox">
+        <input type="checkbox" name="cancel" value="1" <%= 'checked="checked"' if params[:cancel].to_i == 1 %>>
+        Cancel
+      </label>
+    </div>
+    <div style="margin-top: 15px">
+      <button type="submit" class="btn btn-success" data-disable-with="Searching...">Search</button>
+      <%= link_to 'Remove Search', bill_of_ladings_path, :class => "btn" %>
+    </div>
+  </fieldset>
+</form>
+-->
+<div class="pull-left" style="padding: 5px 5px 5px 0;">
+  Tax Issued:
+  <input type="text" name="tax_issued" id="tax_issued" class="dtpicker" value="<%= params[:tax_issued] %>" style="margin-bottom: 0"/>
+  <button id="filter" class="btn" type="button">Sort Data</button>
+  <script type="text/javascript">
+    var filter = function(){
+      // alert($(this).val());
+      var link = '/list-inv-dbn';
+      var year = parseInt(location.search.split('year=')[1]);
+      if(year != undefined)
+        link = link + '?year='+ year;
+
+      if ($('#sort_data').val() != '')
+        if (link == '/list-inv-dbn')
+          link = link + '?sort='+ $('#sort_data').val();
+        else
+          link = link + '&sort='+ $('#sort_data').val();
+
+      if ($('#tax_issued').val() != '')
+        if (link == '/list-inv-dbn')
+          link = link + '?tax_issued='+ $('#tax_issued').val();
+        else
+          link = link + '&tax_issued='+ $('#tax_issued').val();
+
+      Turbolinks.visit(link);
+      
+    }
+    $("#tax_issued").change(filter);
+    $("#filter").on("click", function(){
+      if($("#tax_issued").val() != ''){
+        $("#tax_issued").change();
+      }
+    })
+  </script>
+</div>
+<div class="pull-right" style="padding: 5px;">
+  Sort Data:
+  <select name="sort_data" id="sort_data" style="margin-bottom: 0">
+    <option value="">All</option>
+    <option value="Invoice" <%= 'selected' if params[:sort] == "Invoice" %>>Invoice</option>
+    <option value="Credit Note" <%= 'selected' if params[:sort] == "Credit Note" %>>Credit Note</option>
+    <option value="Reimbursement Cost" <%= 'selected' if params[:sort] == "Reimbursement Cost" %>>Reimbursement Cost
+    </option>
+    <option value="Debit Note" <%= 'selected' if params[:sort] == "Debit Note" %>>Debit Note</option>
+  </select>
+  <script type="text/javascript">
+    $("#sort_data").change(filter);
+  </script>
+</div>
+<br/>
+<div class="clearfix"></div>
+<%# will_paginate @invoices, renderer: BootstrapPagination::Rails %>
+
+<!-- # Revisi 1 Dec 2015 -->
+<table class="table table-striped table-bordered skip_checkbox" id="list-ivn-dbn">
+  <thead>
+  <tr>
+    <th width="10%">Actions</th>
+    <!-- <th>No Invoice</th>
+    <th>IBL REF</th>
+    <th>Currency</th>
+    <th>Customer</th>
+    <th>Shipper</th>
+    <th>Destination</th>
+    <th>Volume</th>
+    <th>Order Type</th>
+    <th>Status</th> -->
+
+    <th>Invoice No</th>
+    <th>IBL Ref</th>
+    <th>Currency</th>
+    <th>Customer</th>
+    <th>Shipper</th>
+    <!-- <th>Destination</th> -->
+    <!-- <th>Volume</th> -->
+    <!-- <th>Order Type</th> -->
+    <th>Invoice Status</th>
+    <th>VAT 10%</th>
+    <th>VAT 1%</th>
+    <th>PPH 23</th>
+    <th>Tax Status</th>
+    <th>Paid Month</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @invoices.each do |invoice| %>
+    <%# cache invoice do %>
+      <%= render 'invoices/row', invoice: invoice %>
+    <%# end %>
+  <% end %>
+  </tbody>
+</table>
+
+<%# will_paginate @invoices, renderer: BootstrapPagination::Rails %>
+
+  <div id="invModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="invModalTitle"></h3>
+    </div>
+    <div class="modal-body">
+      <form action="/invoices/tax" id="invoices-form" class="form-horizontal">
+        <div class="control-group">
+          <label for="" class="control-label">Tax Issued : </label>
+
+          <div class="controls">
+            <input type="text" name="tax_issued" class="dtpicker"/>
+          </div>
+        </div>
+        <div class="control-group" style="margin-bottom: 0px;">
+          <label for="" class="control-label">VAT 10% : </label>
+
+          <div class="controls vat_10">
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">No : </label>
+
+          <div class="controls">
+            <input type="text" name="vat_10_no"/>
+          </div>
+        </div>
+        <div class="control-group" style="margin-bottom: 0px;">
+          <label for="" class="control-label">VAT 1% : </label>
+
+          <div class="controls vat_1">
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">No : </label>
+
+          <div class="controls">
+            <input type="text" name="vat_1_no"/>
+          </div>
+        </div>
+        <div class="control-group" style="margin-bottom: 0px;">
+          <label for="" class="control-label">PPH 23 : </label>
+
+          <div class="controls pph_23">
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">No : </label>
+
+          <div class="controls">
+            <input type="text" name="pph_23_no"/>
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">Tax Status : </label>
+
+          <div class="controls">
+            <%= select_tag 'status_tax', options_for_select(Invoice.status_taxes.collect { |s| [s[0].humanize, s[0]] }) %>
+          </div>
+        </div>
+        <div class="control-group">
+          <input type="hidden" name="id" value="" id="inv-id">
+
+          <div class="controls">
+            <button id="invoices" type="button" class="btn-submit btn btn-primary">Update</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div id="dbnModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="dbnModalTitle"></h3>
+    </div>
+    <div class="modal-body">
+      <form action="/debit_notes/tax" id="debit-notes-form" class="form-horizontal">
+        <div class="control-group">
+          <label for="" class="control-label">Tax Issued : </label>
+
+          <div class="controls">
+            <input type="text" name="tax_issued" class="dtpicker"/>
+          </div>
+        </div>
+        <div class="control-group" style="margin-bottom: 0px;">
+          <label for="" class="control-label">VAT 10% : </label>
+
+          <div class="controls vat_10">
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">No : </label>
+
+          <div class="controls">
+            <input type="text" name="vat_10_no"/>
+          </div>
+        </div>
+        <div class="control-group" style="margin-bottom: 0px;">
+          <label for="" class="control-label">VAT 1% : </label>
+
+          <div class="controls vat_1">
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">No : </label>
+
+          <div class="controls">
+            <input type="text" name="vat_1_no"/>
+          </div>
+        </div>
+        <div class="control-group" style="margin-bottom: 0px;">
+          <label for="" class="control-label">PPH 23 : </label>
+
+          <div class="controls pph_23">
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">No : </label>
+
+          <div class="controls">
+            <input type="text" name="pph_23_no"/>
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">Tax Status : </label>
+
+          <div class="controls">
+            <%= select_tag 'status_tax', options_for_select(Invoice.status_taxes.collect { |s| [s[0].humanize, s[0]] }) %>
+          </div>
+        </div>
+        <div class="control-group">
+          <input type="hidden" name="id" value="" id="inv-id">
+
+          <div class="controls">
+            <button id="debit-notes" type="button" class="btn-submit btn btn-primary">Update</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div id="noteModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="noteModalTitle"></h3>
+    </div>
+    <div class="modal-body">
+      <form action="/notes/tax" id="notes-form" class="form-horizontal">
+        <div class="control-group">
+          <label for="" class="control-label">Tax Issued : </label>
+
+          <div class="controls">
+            <input type="text" name="tax_issued" class="dtpicker"/>
+          </div>
+        </div>
+        <div class="control-group" style="margin-bottom: 0px;">
+          <label for="" class="control-label">VAT 10% : </label>
+
+          <div class="controls vat_10">            
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">No : </label>
+
+          <div class="controls">
+            <input type="text" name="vat_10_no"/>
+          </div>
+        </div>
+        <div class="control-group" style="margin-bottom: 0px;">
+          <label for="" class="control-label">VAT 1% : </label>
+
+          <div class="controls vat_1">
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">No : </label>
+
+          <div class="controls">
+            <input type="text" name="vat_1_no"/>
+          </div>
+        </div>
+        <div class="control-group" style="margin-bottom: 0px;">
+          <label for="" class="control-label">PPH 23 : </label>
+
+          <div class="controls pph_23">
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">No : </label>
+
+          <div class="controls">
+            <input type="text" name="pph_23_no"/>
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">Tax Status : </label>
+
+          <div class="controls">
+            <%= select_tag 'status_tax', options_for_select(Invoice.status_taxes.collect { |s| [s[0].humanize, s[0]] }) %>
+          </div>
+        </div>
+        <div class="control-group">
+          <input type="hidden" name="id" value="" id="inv-id">
+
+          <div class="controls">
+            <button id="notes" type="button" class="btn-submit btn btn-primary">Update</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+ 
+  <script type="text/javascript">
+    $(function () {
+      var btn;
+      var unpaid_invoices_path = '<%= unpaid_invoices_path %>';
+      var unpaid_debit_notes_path = '<%= unpaid_debit_notes_path %>';
+      var unpaid_notes_path = '<%= unpaid_notes_path %>';
+
+  // var invoicesTable = $('#list-ivn-dbn').DataTable({
+  //   order: [[ 1, 'desc' ]],
+  //   buttons: [
+  //     'pageLength',
+  //     {
+  //       extend: 'colvis',
+  //       collectionLayout: 'fixed two-column',
+  //       columns: ':not(:nth-child(1))',
+  //       postfixButtons: [ { 
+  //         text: 'Restore visibility',
+  //         action: function ( e, dt, node, config ) {
+  //           dt.columns().visible( true, false );
+  //           dt.columns.adjust().draw( false );
+  //         }
+  //       } ]
+  //     },
+  //   ],
+  //   columnDefs: [
+  //     { targets: [ 0 ], orderable: false, searchable: false }
+  //   ]
+  // });
+
+      $(".btn-invoice").livequery(function () {
+        $(this).click(function () {
+          split = $(this).attr("id").split("-");
+          $("#invModalTitle").text("Invoice: " + split[1]);
+          $("#inv-id").val(split[0]);
+          btn = $(this);
+
+          if ($(this).data('tax_issued') != "")
+            $('#invoices-form input[name=tax_issued]').val($.datepicker.formatDate("MM yy", new Date($(this).data('tax_issued'))));
+          $('#invoices-form input[name=vat_10_no]').val($(this).data('vat_10_no'));
+          $('#invoices-form input[name=vat_1_no]').val($(this).data('vat_1_no'));
+          $('#invoices-form input[name="pph_23_no"]').val($(this).data('pph_23_no'));
+          $('#invoices-form #status_tax').val($(this).data('status_tax'));
+          
+          var vat_10 = $.trim($(this).parent().parent().children('.vat_10_column').children('.color_blue').text());
+          var vat_1 = $.trim($(this).parent().parent().children('.vat_1_column').children('.color_blue').text());
+          var pph_23 = $.trim($(this).parent().parent().children('.pph_23_column').children('.color_blue').text());
+          var currency_code = $.trim($(this).parent().parent().children('.currency_code').text());
+          if (vat_10 != "")
+            $('#invoices-form .vat_10').html(vat_10+' '+currency_code);
+          if (vat_1 != "")
+            $('#invoices-form .vat_1').html(vat_1+' '+currency_code);
+          if (pph_23 != "")
+            $('#invoices-form .pph_23').html(pph_23+' '+currency_code);
+        });
+      });
+
+      $(".btn-dbn").livequery(function () {
+        $(this).click(function () {
+          split = $(this).attr("id").split("-");
+          $("#dbnModalTitle").text("Debit Note: " + split[1]);
+          $("#dbn-id").val(split[0]);
+          btn = $(this);
+
+          if ($(this).data('tax_issued') != "")
+            $('#debit-notes-form input[name=tax_issued]').val($.datepicker.formatDate("MM yy", new Date($(this).data('tax_issued'))));
+          $('#debit-notes-form input[name=vat_10_no]').val($(this).data('vat_10_no'));
+          $('#debit-notes-form input[name=vat_1_no]').val($(this).data('vat_1_no'));
+          $('#debit-notes-form input[name="pph_23_no"]').val($(this).data('pph_23_no'));
+          $('#debit-notes-form #status_tax').val($(this).data('status_tax'));
+          
+          var vat_10 = $.trim($(this).parent().parent().children('.vat_10_column').children('.color_blue').text());
+          var vat_1 = $.trim($(this).parent().parent().children('.vat_1_column').children('.color_blue').text());
+          var pph_23 = $.trim($(this).parent().parent().children('.pph_23_column').children('.color_blue').text());
+          var currency_code = $.trim($(this).parent().parent().children('.currency_code').text());
+          if (vat_10 != "")
+            $('#debit-notes-form .vat_10').html(vat_10+' '+currency_code);
+          if (vat_1 != "")
+            $('#debit-notes-form .vat_1').html(vat_1+' '+currency_code);
+          if (pph_23 != "")
+            $('#debit-notes-form .pph_23').html(pph_23+' '+currency_code);
+        });
+      });
+
+      $(".btn-note").livequery(function () {
+        $(this).click(function () {
+          split = $(this).attr("id").split("-");
+          $("#noteModalTitle").text("Note: " + split[1]);
+          $("#note-id").val(split[0]);
+          btn = $(this);
+
+          if ($(this).data('tax_issued') != "")
+            $('#notes-form input[name=tax_issued]').val($.datepicker.formatDate("MM yy", new Date($(this).data('tax_issued'))));
+          $('#notes-form input[name=vat_10_no]').val($(this).data('vat_10_no'));
+          $('#notes-form input[name=vat_1_no]').val($(this).data('vat_1_no'));
+          $('#notes-form input[name="pph_23_no"]').val($(this).data('pph_23_no'));
+          $('#notes-form #status_tax').val($(this).data('status_tax'));
+          
+          var vat_10 = $.trim($(this).parent().parent().children('.vat_10_column').children('.color_blue').text());
+          var vat_1 = $.trim($(this).parent().parent().children('.vat_1_column').children('.color_blue').text());
+          var pph_23 = $.trim($(this).parent().parent().children('.pph_23_column').children('.color_blue').text());
+          var currency_code = $.trim($(this).parent().parent().children('.currency_code').text());
+          if (vat_10 != "")
+            $('#notes-form .vat_10').html(vat_10+' '+currency_code);
+          if (vat_1 != "")
+            $('#notes-form .vat_1').html(vat_1+' '+currency_code);
+          if (pph_23 != "")
+            $('#notes-form .pph_23').html(pph_23+' '+currency_code);
+        });
+      });
+
+      // when using turbolinks, trigger multiple ajax click submit form
+      $(".btn-submit").on("click", function (e) {
+        e.preventDefault();
+        $.ajax({
+          url: $("#" + this.id + "-form").attr("action"),
+          type: "POST",
+          data: $("#" + this.id + "-form").serialize(),
+          success: function (data) {
+            if (data.success) {
+              var parent = btn.parent().parent();
+              var actions = parent.children('.actions');
+              // var date_payment = parent.children('.date-of-payment');
+              // var status = parent.children('.status');
+              // var notes = parent.children('.notes');
+              // var ids = parent.attr("id").split("_");
+
+              // if (actions.hasClass("INV"))
+              //   actions.html('<a id="' + ids[1] + '" class="btn btn-warning btn-small btn-unpaid-inv" href="' + unpaid_invoices_path + '">Unclosed</a>')
+              // else {
+              //   if (actions.hasClass("DBN"))
+              //     actions.html('<a id="' + ids[1] + '" class="btn btn-warning btn-small btn-unpaid-dbn" href="' + unpaid_debit_notes_path + '">Unclosed</a>')
+              //   else
+              //     actions.html('<a id="' + ids[1] + '" class="btn btn-warning btn-small btn-unpaid-note" href="' + unpaid_notes_path + '">Unclosed</a>')
+              // }
+
+              // date_payment.html(data.date_of_payment);
+              // notes.html(data.notes);
+              // status.html("Closed");
+
+              if (data.vat_10_no == "")
+                parent.children('.vat_10_column').children('.color_blue').css('color', 'blue');
+              else
+                parent.children('.vat_10_column').children('.color_blue').css('color', 'black');
+
+              if (data.vat_1_no == "")
+                parent.children('.vat_1_column').children('.color_blue').css('color', 'blue');
+              else
+                parent.children('.vat_1_column').children('.color_blue').css('color', 'black');
+
+              if (data.pph_23_no == "")
+                parent.children('.pph_23_column').children('.color_blue').css('color', 'blue');
+              else
+                parent.children('.pph_23_column').children('.color_blue').css('color', 'black');
+
+              // failed search after update column
+              // parent.children('.tax_status_column').html(data.status_tax_humanize);
+              // invoices.draw();
+              $('#list-ivn-dbn').DataTable().row(parent).cell('.tax_status_column').data(data.status_tax_humanize);
+              $('#list-ivn-dbn').DataTable().search($('#list-ivn-dbn_filter input').first().val()).draw(); //force reload search datatable
+              btn.data('tax_issued', data.tax_issued);
+              btn.data('vat_10_no', data.vat_10_no);
+              btn.data('vat_1_no', data.vat_1_no);
+              btn.data('pph_23_no', data.pph_23_no);
+              btn.data('status_tax', data.status_tax);
+
+              $(".close").click();
+              alert(data.message);
+            } else {
+              alert(data.message);
+            }
+          }
+        });
+        return false;
+      });
+    });
+  </script>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".dtpicker").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        dateFormat: 'MM yy',
+        onClose: function(dateText, inst) { 
+            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).datepicker('setDate', new Date(year, month, 1));
+            // $('#'+$(this).attr('id')).change();
+        }
+    });
+  });
+</script>  
+<style>
+  .ui-datepicker-calendar {
+    display: none;
+  }
+  .color_blue {
+    color: blue;
+  }
+  .vat_10, .vat_1, .pph_23 {
+    padding-top: 5px;
+  }
+</style>

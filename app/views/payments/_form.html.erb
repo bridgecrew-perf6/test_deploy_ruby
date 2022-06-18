@@ -1,0 +1,725 @@
+<style type="text/css">
+#payment_si_bl_no_tag{
+  text-transform: uppercase;
+}
+.reference_amount, .reference_amount_invoice, .reference_amount_use_deposit, .reference_amount_misc, .reference_amount_estimate, .reference_amount_overpaid, .deposit_amount, .tax_amount{
+    /*padding: 0!important;*/
+    /*margin:-10px;*/
+    /*float: left;*/
+    width: 100%;
+    text-align: right;
+}
+</style>
+<div class="row-fluid">
+  <%= form_for(@payment, html: {class: "form-horizontal"}) do |f| %>
+    <% if @payment.errors.any? %>
+    <div class="alert alert-error">
+        <ul class="unstyled">
+        <% @payment.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+    </div>
+    <% end %>
+    <div class="span6">
+      <div class="control-group">
+        <label for="" class="control-label">Payment Type</label>
+        <div class="controls">
+          <% if !@payment.new_record? %>
+          <label class="inline radio">
+            <%= radio_button "payment", "payment_type", "USD", disabled: "disabled", checked: @payment.payment_no.include?('USD') %> USD
+          </label>
+          <label class="inline radio">
+            <%= radio_button "payment", "payment_type", "IDR", disabled: "disabled", checked: @payment.payment_no.include?('IDR') %> IDR
+          </label>
+          <% else %>
+          <label class="inline radio">
+            <%= radio_button "payment", "payment_type", "USD" %> USD
+          </label>
+          <label class="inline radio">
+            <%= radio_button "payment", "payment_type", "IDR" %> IDR
+          </label>
+          <% end %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Payment No.</label>
+        <div class="controls">
+        <% if !@payment.new_record? %>
+          <%= f.text_field :payment_no, class: "span12", autocomplete: "off", placeholder: "Auto generate after select a payment type", disabled: "disabled" %>
+        <% else %>
+          <%= f.text_field :payment_no, class: "span12", autocomplete: "off", placeholder: "Auto generate after select a payment type" %>
+        <% end %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Payment Date</label>
+        <div class="controls">
+          <%= f.text_field :payment_date, class: "datepicker span12", autocomplete: "off", value: normal_date_format(@payment.payment_date) %>
+        </div>
+      </div>
+<!--       <div class="control-group">
+        <label for="" class="control-label">SI # - MBL #</label>
+        <div class="controls">
+          <%= f.text_field :si_bl_no, class: "span12", autocomplete: "off" %>
+          <span class="help-block">With Format <em>SI#-MBL#</em>, e.g: IBLJKT000001-JKTNSA123123. Press comma (,) to add another number.</span>
+        </div>
+      </div> -->
+      <div class="control-group">
+        <label for="" class="control-label">Carrier</label>
+        <div class="controls">
+          <%= f.collection_select :carrier_id, @carriers, :id, :name, { include_blank: "Select Carrier" }, class: "span12" %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Payment Method</label>
+        <div class="controls">
+          <%# unless @payment.new_record? %>
+            <%# 
+              carriers = CarrierBank.includes(:carrier).where(currency: @payment.payment_type).references(:carrier).order("carriers.name ASC").all
+              carriers = carriers.where(carrier_id: @payment.carrier_id) unless @payment.carrier_id.blank?
+            %>
+          <%# else %>
+            <%# carriers = CarrierBank.includes(:carrier).references(:carrier).order("carriers.name ASC").all %>
+          <%# end %>
+          <%# f.select(:carrier_bank_id, options_for_select(carriers.collect {|p| [ p.carrier_bank_name, p.id ]}.insert(0, ["Select a Beneficiary Name", ""], ["DEPOSIT", "-1"], ["CASH", "0"]), @payment.carrier_bank_id), {}, {:class => 'span12'}) %>
+          <%= f.select(:carrier_bank_id, options_for_select(@carrier_banks.collect {|p| [ p.carrier_bank_name, p.id ]}.insert(0, ["Select a Beneficiary Name", ""], ["CASH", "0"]), @payment.carrier_bank_id), {}, {:class => 'span12'}) %>
+        </div>
+      </div>
+      <div id="cash_carrier" class="control-group" style="display:none;<%# 'display:none' if @payment.carrier_bank_id.to_f > 0 %>">
+        <label for="" class="control-label">Reference</label>
+        <div class="controls">
+          <div class="input-append">
+          <%= f.text_field :cash_carrier_name, class: "span10", autocomplete: "off" %>
+          <button class="btn" type="button" data-toggle="modal" href="#carrierModal" data-no-turbolink="true">Find Carrier</button>
+          </div>
+        </div>
+      </div>
+      <div id="carrier_bank" class="control-group" style="<%= 'display:none' if @payment.carrier_bank_id.to_f <= 0 %>">
+        <label class="control-label">Beneficiary Detail</label>
+        <div class="controls">
+          <% if !@payment.carrier_bank_id.nil? && @payment.carrier_bank_id > 0 %>
+          <pre class="free"><%= @payment.carrier_bank.acc_name %>
+<%= @payment.carrier_bank.bank_name %>
+<%= @payment.carrier_bank.branch %>
+<%= @payment.carrier_bank.bank_address %>
+A/C : <%= @payment.carrier_bank.acc_no %>
+<% if @payment.payment_type == "USD" %>
+Swift Code : <%= @payment.carrier_bank.swift_code %>
+<% end %>
+</pre>
+          <% end %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Amount</label>
+        <div class="controls">
+        <%= f.text_field :amount, class: "span12 money_text", autocomplete: "off", style: "text-align: right" %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Notes</label>
+        <div class="controls">
+        <%= f.text_area :notes, class: "span12", autocomplete: "off" %>
+        </div>
+      </div>
+      </div>
+      <div class="row">
+        <div class="span12"></div>
+        <table class="span12 table table-striped table-bordered" id="payment_references" data-no-turbolinks="true">
+          <caption class="text-left"><h4>Payment References</h4></caption>
+          <thead>
+            <tr>
+              <th class="span2">IBL REF</th>
+              <th class="hidden">BOOKING NO</th>
+              <th class="span2">MBL</th>
+              <th class="span2">PAYMENT</th>
+              <th class="span2">USE DEPOSIT</th>
+              <th class="span2">MISC</th>
+              <th class="span2">OVERPAID</th>
+              <th class="span2">INVOICE</th>
+              <th class="span2"></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= f.fields_for :payment_references do |builder| %>
+              <%= render 'reference_fields', :f => builder %>
+            <% end %>
+          </tbody>
+        </table>
+        <p class="span12"><a onclick="add_reference_fields(); return false;" href="#" class="btn btn-small"><i class="icon-plus-sign"></i> Add SI</a></p>
+      </div>
+      <div class="row">
+        <div class="span12"></div>
+        <table class="span12 table table-striped table-bordered" id="payment_deposits" data-no-turbolinks="true">
+          <thead>
+            <tr>
+              <th class="span4">IBL DEPOSIT - MBL - DEPOSIT BALANCE</th>
+              <th class="hidden">MBL</th>
+              <th class="span2">USE DEPOSIT</th>
+              <th class="span2">IBL REF</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= f.fields_for :payment_deposits do |builder| %>
+              <%= render 'deposit_fields', :f => builder %>
+            <% end %>
+          </tbody>
+        </table>
+        <p class="span12"><a onclick="add_deposit_fields(); return false;" href="#" class="btn btn-small"><i class="icon-plus-sign"></i> Use Deposit</a></p>
+      </div>
+      <!-- <div class="row">
+        <div class="span12"></div>
+        <table class="span12 table table-striped table-bordered" id="payment_taxes" data-no-turbolinks="true">
+          <thead>
+            <tr>
+              <th class="span2">IBL REF</th>
+              <th class="span2">AMOUNT TAX</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= f.fields_for :payment_taxes do |builder| %>
+              <%= render 'tax_fields', :f => builder %>
+            <% end %>
+          </tbody>
+        </table>
+        <p class="span12"><a onclick="add_tax_fields(); return false;" href="#" class="btn btn-small"><i class="icon-plus-sign"></i> PPH 23</a></p>
+      </div> -->
+      <div class="clearfix"></div>
+      <div class="">
+        <label for="" class="">&nbsp;</label>
+        <div class="">
+          <a href="<%= payment_inquiries_path %>" class="btn"><i class="icon-reply"></i> Back</a>
+          <button class="btn btn-primary" type="submit">Save Request</button>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<%= render "shared/carrier_modal", field: "payment_cash_carrier_name" %>
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    // $(function(){
+    //   // if($("#payment_amount").val() != ''){
+    //   //   $("#payment_amount").val(money_format($("#payment_amount").val()));
+    //   // }
+
+    //   $("#payment_amount, .reference_amount, .reference_amount_payment, .reference_amount_invoice, .deposit_amount, .tax_amount").each(function(){
+    //       $(this).val(money_format($(this).val()));
+    //   })
+
+    //   // if($(".payment_amount").val() != ''){
+    //   //   $(this).val(money_format($(this).val()));
+    //   // }
+    // });
+
+    // $("#payment_amount, .reference_amount, .reference_amount_payment, .reference_amount_invoice, .deposit_amount, .tax_amount").livequery(function(){
+    //   $("#payment_amount, .reference_amount, .reference_amount_payment, .reference_amount_invoice, .deposit_amount, .tax_amount")
+    //   .focus(function(){
+    //     $(this).val(number_format($(this).val()));
+    //   })
+    //   .focusout(function(){
+    //     $(this).val(money_format($(this).val()));
+    //   });
+    // });
+
+    $(".reference_ibl_ref").livequery(function(){
+      $(this).change(function(){
+        ibl = $(this);
+        if(ibl.val() != '')
+        {
+          $.ajax({
+            url: '<%= get_booking_no_path %>',
+            type: 'GET',
+            dataType: "json",
+            data: {ibl: ibl.val()},
+            success: function(data){
+              if(data.success)
+              {
+                ibl.parent().parent().find(".reference_booking_no").val(data.booking_no);
+              }
+              else
+              {
+                // ibl.val('');
+                // ibl.focus();
+                // alert(data.message);
+              }
+            }
+          });
+
+          $.ajax({
+            url: '<%= get_master_bl_no_path %>',
+            type: 'GET',
+            dataType: "json",
+            data: {ibl: ibl.val()},
+            success: function(data){
+              if(data.success)
+              {
+                ibl.parent().parent().find(".reference_master_bl_no").val(data.master_bl_no);
+              }
+              else
+              {
+                ibl.val('');
+                ibl.parent().parent().find(".reference_master_bl_no").val('');
+                ibl.focus();
+                alert(data.message);
+              }
+            }
+          })
+        }
+      })
+    });
+
+    // $(".reference_ibl_ref").livequery(function(){
+    //   $(this).change(function(){
+    //     ibl = $(this);
+    //     if(ibl.val() != '')
+    //     {
+    //       $.ajax({
+    //         url: '<%= get_master_bl_no_path %>',
+    //         type: 'GET',
+    //         dataType: "json",
+    //         data: {ibl: ibl.val()},
+    //         success: function(data){
+    //           if(data.success)
+    //           {
+    //             ibl.parent().parent().find(".reference_master_bl_no").val(data.master_bl_no);
+    //           }
+    //           else
+    //           {
+    //             ibl.val('');
+    //             ibl.focus();
+    //             alert(data.message);
+    //           }
+    //         }
+    //       })
+    //     }
+    //   })
+    // });
+
+    $(".reference_amount").livequery(function(){
+      $(".reference_amount").focusout(function(){
+        var total_sum = 0;
+        $(".reference_amount").each(function(){
+          if(!$(this).parent().parent().hasClass("hidden"))
+            total_sum += parseFloat(number_format($(this).val()));
+        });
+        $("#payment_amount").val(total_sum).focusout();
+      })
+    });
+
+    $("#payment_payment_type_idr, #payment_payment_type_usd").click(function(){
+      year = "<%= params[:year] %>"
+      $.ajax({
+        url: "/generatePaymentNumber/" + $(this).val() + "?year=" + year,
+        success: function(data) { $("#payment_payment_no").val(data) }
+      });
+
+      var code;
+      if($("#payment_payment_type_idr").is(":checked"))
+        code = "IDR";
+      if($("#payment_payment_type_usd").is(":checked"))
+        code = "USD";
+      $.ajax({
+        url: '<%= carrier_banks_path %>',
+        type: "GET",
+        data: {code: code, carrier_id: $("#payment_carrier_id").val()},
+        dataType: "json",
+        success: function(data){
+          // $("#payment_carrier_bank_id option:gt(2)").remove();
+          $("#payment_carrier_bank_id option:gt(1)").remove();
+          for(i in data){
+            $("#payment_carrier_bank_id").append('<option value="'+ data[i].id +'">'+ [data[i].carrier.name, data[i].bank_name, data[i].currency].join(" ") +'</option>');
+            console.log(data[i]);
+          }
+        }
+      })
+
+      // $(".deposit_ibl_deposit").each(function(){
+      //   $(this).parent().parent().find("a").click();
+      // })
+    });
+    
+    $("#payment_carrier_id").change(function(){
+      var code;
+      if($("#payment_payment_type_idr").is(":checked"))
+        code = "IDR";
+      if($("#payment_payment_type_usd").is(":checked"))
+        code = "USD";
+      $.ajax({
+        url: '<%= carrier_banks_path %>',
+        type: "GET",
+        data: {code: code, carrier_id: $("#payment_carrier_id").val()},
+        dataType: "json",
+        success: function(data){
+          // $("#payment_carrier_bank_id option:gt(2)").remove();
+          $("#payment_carrier_bank_id option:gt(1)").remove();
+          for(i in data){
+            $("#payment_carrier_bank_id").append('<option value="'+ data[i].id +'">'+ [data[i].carrier.name, data[i].bank_name, data[i].currency].join(" ") +'</option>');
+            console.log(data[i]);
+          }
+          $("#carrier_bank").hide();  
+        }
+      })
+
+      // $(".deposit_ibl_deposit").each(function(){
+      //   $(this).parent().parent().find("a").click();
+      // })
+    });
+
+    $("#payment_si_bl_no").tagsInput({
+      'width':'100%',
+      'height':'auto',
+      'defaultText': 'Add Number',
+      'minChars': 12
+    });
+
+    $("#payment_carrier_bank_id").change(function(){
+      if($(this).val() <= 0){
+        // $("#cash_carrier").show();
+        $("#carrier_bank").hide();
+      }
+      else{
+        $.ajax({
+          url: "/carrier_details/" + $(this).val(),
+          success: function(data) { $("#carrier_bank .controls").html(data); }
+        });
+        $("#carrier_bank").show();
+        // $("#cash_carrier").hide();
+      }
+
+      // $(".deposit_ibl_deposit").each(function(){
+      //   $(this).parent().parent().find("a").click();
+      // })
+    })
+
+    $(".selectCustomer").click(function(){
+      // $(".deposit_ibl_deposit").each(function(){
+      //   $(this).parent().parent().find("a").click();
+      // })
+    })
+
+    $(".row-fluid input[type=text], .row-fluid textarea").on("change", function(){
+      $(this).val($(this).val().toUpperCase())
+    });
+
+    // $("#payment_si_no_tag").typeahead({
+    //   minLength: 6,
+    //   source: function(query, process){
+    //     $.ajax({
+    //       url: "/shipping_instructions.json",
+    //       dataType: "json",
+    //       data: {query: query, status: 0},
+    //       success: function(data){
+    //         bls = [];
+    //         $.each(data, function(i, bl){
+    //           bls.push(bl.si_no);
+    //         });
+    //         return process(bls);
+    //       }
+    //     })
+    //   }
+    // });
+
+    // $("#payment_bl_number_tag").typeahead({
+    //   minLength: 3,
+    //   source: function(query, process){
+    //     $.ajax({
+    //       url: "/bill_of_ladings.json",
+    //       dataType: "json",
+    //       data: {SI: $("#payment_si_no").val(), query: query},
+    //       success: function(data){
+    //         bls = [];
+    //         $.each(data, function(i, bl){
+    //           bls.push(bl.master_bl_no);
+    //         });
+    //         return process(bls);
+    //       }
+    //     })
+    //   }
+    // })
+
+    // $("#payment_no_invoice_tag").typeahead({
+    //   minLength: 6,
+    //   source: function(query, process){
+    //     $.ajax({
+    //       url: "/invoices.json",
+    //       dataType: "json",
+    //       data: {SI: $("#payment_si_no").val(), query: query},
+    //       success: function(data){
+    //         invoices = [];
+    //         $.each(data, function (i, invoice) {
+    //             invoices.push(invoice.no_invoice);
+    //         });
+    //         return process(invoices);
+    //       }
+    //     })
+    //   }
+    // });
+    // $("#payment_no_invoice").change(function(){
+    //   $.ajax({
+    //     url: "/invoiceDetails/" + $("#payment_no_invoice").val(),
+    //     success: function(data){
+    //       $("#searchResult").html(data);
+    //     }
+    //   });
+    //   $.ajax({
+    //     url: "/generatePaymentNumber/" + $("#payment_no_invoice").val(),
+    //     success: function(data){
+    //       $("#payment_payment_no").val(data);
+    //     }
+    //   })
+    // });
+    $(".deposit_ibl_ref, .tax_ibl_ref").livequery(function(){
+      var temp = [];
+      $(".reference_ibl_ref").each(function(){
+        temp.push($(this).val());
+      });
+      // console.log(temp);
+      $(this).typeahead({
+        source: temp
+      });
+    });
+    // $(".reference_ibl_ref").livequery(function(){
+    //   $(this).change(function(){
+    //     var temp = [];
+    //     $(".reference_ibl_ref").each(function(){
+    //       if($(this).val())
+    //       temp.push($(this).val());
+    //     });
+    //     console.log(temp);
+    //     $(".deposit_ibl_ref, .tax_ibl_ref").typeahead({
+    //       source: temp
+    //     });
+    //   });
+    // });
+
+    // $("form").submit(function(){
+    //   $("#payment_amount").each(function(){ $(this).val(number_format($(this).val())) });
+    //   $(".reference_amount").each(function(){ $(this).val(number_format($(this).val())) });
+    //   $(".reference_amount_invoice").each(function(){ $(this).val(number_format($(this).val())) });
+    //   $(".reference_amount_payment").each(function(){ $(this).val(number_format($(this).val())) });
+    //   $(".tax_amount").each(function(){ $(this).val(number_format($(this).val())) });
+    //   $(".deposit_amount").each(function(){ $(this).val(number_format($(this).val())) });
+    // });
+
+    // $("tr:not('.hidden') .reference_amount_invoice").on("change", function(){
+    //   var ibl_ref = $(this).parent().parent().find('.reference_ibl_ref').val();
+    //   if(ibl_ref != ""){
+    //     calculate_amount_payment(ibl_ref);
+    //   }
+    // });
+
+    // function calculate_amount_payment(ibl_ref){
+    //   var use_deposit = 0;
+    //   var pph23 = 0;
+    //   var amount_invoice = 0;
+    //   var amount_payment = 0;
+
+    //   $("tr:not('.hidden') .deposit_ibl_ref").each(function(){ 
+    //     if($(this).val() == ibl_ref){
+    //       use_deposit+=number_format($(this).parent().parent().find('.deposit_amount').val());
+    //     }
+    //   });
+    //   // console.log("use deposit: "+use_deposit);
+    //   $("tr:not('.hidden') .tax_ibl_ref").each(function(){ 
+    //     if($(this).val() == ibl_ref){
+    //       pph23+=number_format($(this).parent().parent().find('.tax_amount').val());
+    //     }
+    //   });
+    //   // console.log("pph 23: "+pph23);
+    //   $("tr:not('.hidden') .reference_amount_invoice").each(function(){
+    //     if($(this).parent().parent().find('.reference_ibl_ref').val() == ibl_ref){
+    //       temp = number_format($(this).parent().parent().find('.reference_amount').val());
+    //       if(temp == "" || temp == 0){
+    //         amount_invoice = number_format($(this).parent().parent().find('.reference_amount_invoice').val());
+    //         // console.log("amount invoice: "+amount_invoice);
+    //         amount_payment = amount_invoice - use_deposit - pph23;
+    //         // console.log("amount payment: "+amount_payment);
+    //         $(this).parent().parent().find('.reference_amount').val(money_format(amount_payment));
+    //       }
+    //     }
+    //   });
+    // }
+
+    // $(".deposit_ibl_deposit").livequery(function(){
+    //   $(this).change(function(){
+    //     ibl = $(this);
+    //     if(ibl.val() != '')
+    //     {
+    //       $.ajax({
+    //         url: '<%= get_master_bl_no_path %>',
+    //         type: 'GET',
+    //         dataType: "json",
+    //         data: {ibl: ibl.val()},
+    //         success: function(data){
+    //           if(data.success)
+    //           {
+    //             ibl.parent().parent().find(".reference_master_bl_no").val(data.master_bl_no);
+    //           }
+    //           else
+    //           {
+    //             ibl.val('');
+    //             ibl.focus();
+    //             alert(data.message);
+    //           }
+    //         }
+    //       })
+    //       // console.log("IBL Deposit - Deposit Balance");
+    //     }
+    //   })
+    // });
+
+    // $("select.deposit_ibl_deposit").livequery(function(){
+    //   var ibl_deposit = [];
+      
+    //   carrier_bank_id = $("#payment_carrier_bank_id");
+    //   console.log(carrier_bank_id.val());
+    //   if(carrier_bank_id.val() != '')
+    //   {
+    //     $.ajax({
+    //       url: '<%= get_ibl_deposit_path %>',
+    //       type: 'GET',
+    //       dataType: "json",
+    //       data: {carrier_bank_id: carrier_bank_id.val(), cash_carrier_name: $("#payment_cash_carrier_name").val(), payment_type: $('input[name="payment[payment_type]"]:checked').val(),
+    //         carrier_id: $("#payment_carrier_id").val() 
+    //         },
+    //       success: function(data){
+    //         if(data.success)
+    //         {
+    //           ibl_deposit = data.ibl_deposit;
+    //           console.log(ibl_deposit);      
+    //           // $(".deposit_ibl_deposit").typeahead({
+    //           //   source: ibl_deposit
+    //           // });
+
+    //           $(".deposit_ibl_deposit:last option").remove();
+    //           $(".deposit_ibl_deposit:last").append('<option value="">Select IBL Deposit</option>');
+    //           for(i in ibl_deposit){
+    //             var deposit_balance = money_format(ibl_deposit[i].deposit_balance)
+    //             var master_bl_no = money_format(ibl_deposit[i].master_bl_no)
+    //             $(".deposit_ibl_deposit:last").append('<option value="'+ ibl_deposit[i].ibl_ref +'">'+ [ibl_deposit[i].ibl_ref, master_bl_no, deposit_balance].join(" - ") +'</option>');
+    //           }
+    //           // console.log(data[i]);
+    //         }
+    //         else
+    //         {
+    //           console.log(data);
+    //         }
+    //       }
+    //     })
+    //     // var source = [];
+    //     // for(i in ibl_deposit){
+    //     //   // $("#payment_carrier_bank_id").append('<option value="'+ data[i].id +'">'+ [data[i].carrier.name, data[i].bank_name, data[i].currency].join(" ") +'</option>');
+    //     //   source = i.ibl_ref+' - '+i.deposit_balance;
+    //     //   console.log(data[i]);
+    //     // }
+    //   }
+    // });
+    
+    $("select.deposit_ibl_deposit").livequery(function(){
+      var ibl_deposit = [];
+      
+      carrier_bank_id = $("#payment_carrier_bank_id");
+      carrier_id = $("#payment_carrier_id");
+      if(carrier_id.val() != '')
+      {
+        $.ajax({
+          url: '<%= get_ibl_deposit_path %>',
+          type: 'GET',
+          dataType: "json",
+          data: {carrier_bank_id: carrier_bank_id.val(), cash_carrier_name: $("#payment_cash_carrier_name").val(), payment_type: $('input[name="payment[payment_type]"]:checked').val(),
+            carrier_id: $("#payment_carrier_id").val() 
+            },
+          success: function(data){
+            if(data.success)
+            {
+              ibl_deposit = data.ibl_deposit;
+              console.log(ibl_deposit);      
+              // $(".deposit_ibl_deposit").typeahead({
+              //   source: ibl_deposit
+              // });
+
+              $(".deposit_ibl_deposit:last option").remove();
+              $(".deposit_ibl_deposit:last").append('<option value="">Select IBL Deposit</option>');
+              for(i in ibl_deposit){
+                var ibl_ref = ibl_deposit[i].ibl_ref;
+                var master_bl_no = ibl_deposit[i].master_bl_no;
+                var payment_type = ibl_deposit[i].payment_type;
+                var deposit_balance = parentheses_format(ibl_deposit[i].deposit_balance, payment_type);
+                $(".deposit_ibl_deposit:last").append('<option value="'+ ibl_deposit[i].ibl_ref +'">'+ [ibl_ref, master_bl_no, deposit_balance].join(" - ") +'</option>');
+              }
+              // console.log(data[i]);
+            }
+            else
+            {
+              // console.log(data);
+              alert(data.message);
+              $("table#payment_deposits tbody tr:not('.hidden')").last().find("a").click();
+            }
+          }
+        })
+      }
+      else{
+        // alert("Please enter the SI No.");
+        alert("Select a Carrier first");
+        $("table#payment_deposits tbody tr:not('.hidden')").last().find("a").click();
+      }
+    });
+
+    $(".reference_ibl_ref, .deposit_ibl_ref, .tax_ibl_ref, .reference_amount, .reference_amount_misc, .reference_amount_overpaid, .reference_amount_invoice, .deposit_amount, .tax_amount").on("focusout", function(){
+      // calculate_amount_payment();
+      calculate_amount_estimate();
+    });
+
+    $(".reference_ibl_ref, .deposit_ibl_ref, .tax_ibl_ref, .reference_amount, .reference_amount_misc, .reference_amount_overpaid, .reference_amount_invoice, .deposit_amount, .tax_amount").livequery(function(){
+      $(this).focusout(function(){
+        calculate_amount_estimate();
+      });
+    });
+
+  });
+</script>
+<script type="text/javascript">
+  function calculate_amount_use_deposit(){
+    $("table#payment_references tbody tr:not('.hidden') .reference_amount_use_deposit").val(0);
+    $("table#payment_deposits tbody tr:not('.hidden')").each(function(){ 
+      var deposit_ibl_ref = $(this).find(".deposit_ibl_ref").val();
+      var deposit_amount = number_format($(this).find(".deposit_amount").val());
+
+      $("table#payment_references tbody tr:not('.hidden')").each(function(){
+        var reference_ibl_ref = $(this).find(".reference_ibl_ref").val();
+        var reference_amount_use_deposit = number_format($(this).find(".reference_amount_use_deposit").val());
+
+        if(deposit_ibl_ref == reference_ibl_ref){
+          reference_amount_use_deposit = reference_amount_use_deposit + deposit_amount;
+          $(this).find(".reference_amount_use_deposit").val(money_format(reference_amount_use_deposit));
+          deposit_amount = 0;
+        }
+      });
+    });
+  }
+  function calculate_amount_estimate(){
+    calculate_amount_use_deposit();
+
+    var payment_amount = 0;
+    $("table#payment_references tbody tr:not('.hidden')").each(function(){ 
+      var reference_amount = number_format($(this).find(".reference_amount").val());
+      var reference_amount_use_deposit = number_format($(this).find(".reference_amount_use_deposit").val());
+      var reference_amount_misc = number_format($(this).find(".reference_amount_misc").val());
+      var reference_amount_overpaid = number_format($(this).find(".reference_amount_overpaid").val());
+      var reference_amount_invoice = number_format($(this).find(".reference_amount_invoice").val());
+      var reference_amount_estimate = reference_amount + reference_amount_use_deposit - reference_amount_misc - reference_amount_overpaid;
+
+      $(this).find(".reference_amount_estimate").val(money_format(reference_amount_estimate));
+      payment_amount += reference_amount;
+    });
+
+    $("#payment_amount").val(money_format(payment_amount));
+  }
+  
+  calculate_amount_estimate();
+</script>

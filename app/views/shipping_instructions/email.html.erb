@@ -1,0 +1,46 @@
+<% 
+message = ""
+# message += "<p>Dear Finance team,</p>"
+# message += "<p>Please kindly assist to arrange payment as below :</p>"
+# message += "<table>"
+# message += "<tr><td>IBL Ref</td><td>: #{@shipping_instruction.ibl_ref}</td></tr>"
+# message += "<tr><td>Carrier</td><td>: #{@shipping_instruction.carrier}</td></tr>"
+# message += "<tr><td>Shipper</td><td>: #{@shipping_instruction.shipper_company_name}</td></tr>"
+# message += "<tr><td>Volume</td><td>: #{@shipping_instruction.volume}</td></tr>"
+# message += "<tr><td>Etd Vessel</td><td>: #{si_date_format @shipping_instruction.first_etd_date}</td></tr>"
+# message += "<tr><td>POL</td><td>: #{@shipping_instruction.port_of_loading}</td></tr>"
+# message += "<tr><td>Destination</td><td>: #{@shipping_instruction.final_destination}</td></tr>"
+# message += "<tr><td>Payment Detail</td><td>: </td></tr>"
+# message += "<tr><td>Amount</td><td>: </td></tr>"
+# message += "</table>"
+# message += "<p>Thanks.</p>"
+message += "Dear Finance team,\n\n"
+message += "Please kindly assist to arrange payment as below :\n\n"
+message += "<table border='0'>"
+message += "<tr><td>IBL Ref</td><td>: #{@shipping_instruction.ibl_ref}</td></tr>"
+message += "<tr><td>Carrier</td><td>: #{@shipping_instruction.carrier}</td></tr>"
+message += "<tr><td>Shipper</td><td>: #{@shipping_instruction.shipper_company_name}</td></tr>"
+message += "<tr><td>Booking No</td><td>: #{@shipping_instruction.booking_no}</td></tr>"
+message += "<tr><td>MBL No</td><td>: #{@shipping_instruction.master_bl_no}</td></tr>"
+message += "<tr><td>Volume</td><td>: #{@shipping_instruction.volume}</td></tr>"
+message += "<tr><td>Etd Vessel</td><td>: #{si_date_format @shipping_instruction.first_etd_date}</td></tr>"
+message += "<tr><td>POL</td><td>: #{@shipping_instruction.port_of_loading}</td></tr>"
+message += "<tr><td>Destination</td><td>: #{@shipping_instruction.final_destination}</td></tr>"
+message += "<tr><td>Payment Detail</td><td>: </td></tr>"
+message += "<tr><td>Amount</td><td>: </td></tr>"
+message += "</table>\n\n"
+message += "Thanks."
+
+subject = "Request Payment #{@shipping_instruction.ibl_ref} (#{@shipping_instruction.carrier}) Date : #{si_date_format @shipping_instruction.first_etd_date}"
+%>
+
+<a id="open-link" href="mailto:?subject=<%= CGI.escape(subject).gsub("+", "%20") %>&html-body=<%= CGI.escape(message).gsub("+", "%20") %>">Open in E-Mail Client</a>
+
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+    // mail_str ="mailto:?subject=<%= CGI.escape(subject).gsub("+", "%20") %>&body=" + escape("<a href='http://yahoo.com'>click here</a>"); 
+    // jQuery("#open-link")[0].href = mail_str;
+		jQuery("#open-link")[0].click();
+		window.setTimeout(function() { window.close() }, 2000);
+	})
+</script>

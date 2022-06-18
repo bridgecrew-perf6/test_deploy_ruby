@@ -1,0 +1,61 @@
+<%= render 'commons/pdf' %>
+<% columns = @report.columns %>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <table style="width: 100%" border="1">
+    <thead>
+    <tr>
+      <%= "<th>Carrier</th>".html_safe if columns.include? "1" %>
+      <%= "<th>MBL</th>".html_safe if columns.include? "2" %>
+      <%= "<th>IBL Deposit</th>".html_safe if columns.include? "3" %>
+      <%= "<th>Deposit Balance</th>".html_safe if columns.include? "4" %>
+    </tr>
+    </thead>
+    <tbody>
+      <% @deposits.each do |row| %>
+      <%# cache(["si_report", row]) do %>
+        <% 
+          references = row.payment_references
+          # payment = row.payments
+          deposits = row.payment_deposits
+        %>
+        <tr>
+          <%= "<td>#{row.carrier}</td>".html_safe if columns.include? "1" %>
+          <%= "<td>#{row.master_bl_no}</td>".html_safe if columns.include? "2" %>
+          <%= "<td>#{row.ibl_ref}</td>".html_safe if columns.include? "3" %>
+          <% 
+            deposit_usd = 0
+            deposit_idr = 0
+
+            references.each do |reference|
+              if reference.currency == "USD"
+                deposit_usd += reference.amount_deposit.to_f
+              else
+                deposit_idr += reference.amount_deposit.to_f
+              end
+            end
+
+            use_deposit_usd = 0
+            use_deposit_idr = 0
+
+            deposits.each do |deposit|
+              if deposit.currency == "USD"
+                use_deposit_usd += deposit.amount.to_f
+              else
+                use_deposit_idr += deposit.amount.to_f
+              end
+            end
+
+            amount = []
+            amount_usd = deposit_usd.to_f - use_deposit_usd.to_f
+            amount_idr = deposit_idr.to_f - use_deposit_idr.to_f
+            amount.push "#{number_format amount_usd} USD" unless amount_usd == 0
+            amount.push "#{number_format amount_idr} IDR" unless amount_idr == 0
+          %>
+          <%= "<td class=\"text-right\">#{amount.join('<br>').html_safe}</td>".html_safe if columns.include? "4" %>
+        </tr>
+      <%# end %>
+    <% end %>
+    </tbody>
+  </table>
+</div>

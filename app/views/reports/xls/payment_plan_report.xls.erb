@@ -1,0 +1,27 @@
+<% columns = @report.columns %>
+<% base = [] %>
+<% 13.times{ |i| base.push i.to_s } %>
+<% 
+  head = []
+  head.push ""
+  head.push "IBL Ref\t"
+  head.push "Booking No\t"
+  head.push "MBL No\t"
+  head.push "Volume\t"
+  head.push "Carrier\t"
+  head.push "Shipper\t"
+  head.push "POL\t"
+  head.push "Destination\t"
+  head.push "Amount\t"
+  head.push "Payment Date\t"
+  head.push "ETD Vessel\t"
+  head.push "Paid Status\t" 
+  head.push "BL Status\t" 
+%>
+<% (base-columns).reverse_each{ |column| head.delete_at(column.to_i) } %>
+<%= head.join("").html_safe %>
+<% @results.each do |reference| %>
+  <% body = report_list_payment_plan(reference, "xls") %>
+  <% (base-columns).reverse_each{ |column| body.delete_at(column.to_i) } unless body.blank? %>
+<%= body.join("").html_safe unless body.blank? %>
+<% end %>

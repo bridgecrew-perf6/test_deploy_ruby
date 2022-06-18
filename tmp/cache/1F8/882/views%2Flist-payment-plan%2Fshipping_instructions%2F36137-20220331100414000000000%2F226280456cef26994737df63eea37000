@@ -1,0 +1,25 @@
+o: ActiveSupport::Cache::Entry:@valueI"!    <tr>
+      <td data-no-turbolink="true">
+                <a data-confirm="Detail cost is empty. Proceed?" href="/payments/calculate_invoice?sid=36137&amp;year=2022">Input</a>
+          
+      </td>
+      <td>IBL221004</td>
+      <td>086200002072</td>
+      <td></td>
+      <td>1x20FT</td>
+      <td>EVERGREEN LINE</td>
+      <td>PT. TRIJASA PRIMA INTERNATIONAL</td>
+      <td>PALEMBANG</td>
+      <td>PORTKLANG WEST, MALAYSIA</td>
+      <td></td>
+      <td></td>
+      <td>08-Apr-2022</td>
+      <td>No</td>
+      <td>On Going</td>
+      <td class="hidden disable">April 2022</td>
+      <td class="hidden disable">04/08/2022</td>
+      <td class="hidden disable row_id">36137</td>
+      <td class="hidden disable ibl_ref">IBL221004</td>
+      <td class="hidden disable row_ref_id"></td>
+    </tr>
+:ET:@created_atf1648734069.6225507:@expires_in0

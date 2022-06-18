@@ -1,0 +1,9 @@
+<pre class="free"><%= @carrier_bank.acc_name %>
+<%= @carrier_bank.bank_name %>
+<%= @carrier_bank.branch %>
+<%= @carrier_bank.bank_address %>
+A/C : <%= @carrier_bank.acc_no %>
+<% if @carrier_bank.currency == "USD" %>
+Swift Code : <%= @carrier_bank.swift_code %>
+<% end %>
+</pre>

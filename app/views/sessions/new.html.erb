@@ -1,0 +1,32 @@
+<div class="row-fluid">
+	<div class="login-dialog">
+		<div class="block">
+			<p class="block-heading">PT. Interbenua Logistindo - Log In</p>
+			<div class="block-body">
+				<% if flash.any? -%>
+				<div class="alert">
+					<% flash.each do |name, msg| -%>
+					  <%= content_tag :div, msg %>
+					<% end -%>
+				</div>
+				<% end -%>
+				<%= form_tag sessions_path do %>
+					<div class="field">
+						<%= label_tag :username %>
+						<%= text_field_tag :username, params[:username], :class => "span12" %>
+					</div>
+					<div class="field">
+						<%= label_tag :password %>
+						<%= password_field_tag :password, "", :class => "span12" %>
+					</div>
+					<div class="actions"><%= button_tag "Sign In", type: "submit", class: "btn btn-primary pull-right",
+                                              data: { disable_with: "Signing in..." } %></div>
+					<% if params[:callback] %>
+						<input type="hidden" name="callback" value="<%= params[:callback] %>">
+					<% end %>
+					<div class="clearfix"></div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>

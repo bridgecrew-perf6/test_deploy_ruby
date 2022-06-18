@@ -1,0 +1,53 @@
+<div id="emailModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3>Email <%= @shipping_instruction.ibl_ref %></h3>
+  </div>
+  <div class="modal-body">
+    <p>Subject : Request Payment <%= @shipping_instruction.ibl_ref %> (<%= @shipping_instruction.carrier %>) Date : <%= si_date_format @shipping_instruction.first_etd_date %></p>
+    <p>Dear Finance team,</p>
+    <p>Please kindly assist to arrange payment as below :</p>
+    <table>
+      <tr>
+        <td>IBL Ref</td>
+        <td>: <%= @shipping_instruction.ibl_ref %></td>
+      </tr>
+      <tr>
+        <td>Carrier</td>
+        <td>: <%= @shipping_instruction.carrier %></td>
+      </tr>
+      <tr>
+        <td>Shipper</td>
+        <td>: <%= @shipping_instruction.shipper_company_name %></td>
+      </tr>
+      <tr>
+        <td>Volume</td>
+        <td>: <%= @shipping_instruction.volume %></td>
+      </tr>
+      <tr>
+        <td>Etd Vessel</td>
+        <td>: <%= si_date_format @shipping_instruction.first_etd_date %></td>
+      </tr>
+      <tr>
+        <td>POL</td>
+        <td>: <%= @shipping_instruction.port_of_loading %></td>
+      </tr>
+      <tr>
+        <td>Destination</td>
+        <td>: <%= @shipping_instruction.final_destination %></td>
+      </tr>
+      <tr>
+        <td>Payment Detail</td>
+        <td>: </td>
+      </tr>
+      <tr>
+        <td>Amount</td>
+        <td>: </td>
+      </tr>
+    </table>
+    <p>Thanks.</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
+</div>

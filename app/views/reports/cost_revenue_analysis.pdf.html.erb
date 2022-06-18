@@ -1,0 +1,66 @@
+<style type="text/css">
+  .clearfix {
+    clear: both;
+  }
+
+  #report-title {
+    font-family: Arial;
+    font-size: 16pt; /*25pt;*/
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  table > thead > tr > th, table > tbody > tr > td, table > tfoot > tr > td, table > tfoot > tr > th {
+    padding: 5px;
+  }
+
+  table > thead > tr > th, table > tbody > tr > td, table > tfoot > tr > td, table > tfoot > tr > th, ul > li {
+    font-family: Arial;
+    font-size: 7pt; /*12pt;*/
+  }
+
+  table > thead > tr > th {
+    background: yellow;
+  }
+</style>
+<div style="width: 100%">
+  <h3 id="report-title">COST & REVENUES ANALYSIS - <%= params[:filter_cra] %></h3>
+  <% cache(["report-cost-revenues-table", @cost_revenues.size]) do %>
+    <table style="width: 100%" border="1" style="page-break-before: always">
+      <tr>
+        <th rowspan="2" style="width: 25%">IBL Ref</th>
+        <th colspan="2" style="width: 50%">Profit</th>
+        <th rowspan="2" style="width: 25%">ETD Vessel</th>
+      </tr>
+      <tr>
+        <th style="width: 25%">USD</th>
+        <th style="width: 25%">IDR</th>
+      </tr>
+      <% total_idr = total_usd = 0 %>
+      <% @cost_revenues.each do |cost_revenue| %>
+        <%
+           total_usd += cost_revenue.total_profit_usd
+           total_idr += cost_revenue.total_profit_idr
+        %>
+        <% cache(["report-cost-revenues", cost_revenue]) do %>
+          <tr>
+            <td><%= cost_revenue.shipping_instruction.si_no %> <%= "(Cancel)" if cost_revenue.shipping_instruction.is_cancel == 1 %></td>
+            <td align="right">
+              <%= number_with_precision(cost_revenue.total_profit_usd, precision: 2, delimiter: ",") + " USD" unless cost_revenue.nil? %>
+            </td>
+            <td align="right">
+              <%= number_with_precision(cost_revenue.total_profit_idr, precision: 2, delimiter: ",") + " IDR" unless cost_revenue.nil? %>
+            </td>
+            <td><%= si_date_format cost_revenue.shipping_instruction.vessels.first.try(:etd_date) unless cost_revenue.shipping_instruction.vessels.nil? %></td>
+          </tr>
+        <% end %>
+      <% end %>
+      <tr>
+        <th>TOTAL</th>
+        <th align="right"><%= number_with_precision(total_usd, precision: 2, delimiter: ",") + " USD" %></th>
+        <th align="right"><%= number_with_precision(total_idr, precision: 2, delimiter: ",") + " IDR" %></th>
+        <td>&nbsp;</td>
+      </tr>
+    </table>
+  <% end %>
+</div>

@@ -1,0 +1,101 @@
+<div class="page-header">
+  <h3>Shipping Instruction: <%= @shipping_instruction.si_no %></h3>
+</div>
+<% if !notice.nil? %>
+<p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<div class="btn-group ">
+	<% unless @shipping_instruction.is_shadow %>
+		<% if @shipping_instruction.is_uncanceled? && @shipping_instruction.is_open? %>
+		<a href="<%= edit_shipping_instruction_path(@shipping_instruction) %>" class="btn btn-small" title="Edit: <%= @shipping_instruction.si_no %>"><i class="icon-edit-sign"></i> Edit</a>
+		<a data-no-turbolink="true" target="_blank" href="<%= shipping_instruction_path(@shipping_instruction, format: "pdf") %>" class="btn btn-small" title="Print: <%= @shipping_instruction.si_no %>"><i class="icon-print"></i> Print</a>
+		<% end %>
+	<% else %>
+		<a data-no-turbolink="true" target="_blank" href="<%= shipping_instruction_path(@shipping_instruction, format: "pdf") %>" class="btn btn-small" title="Print: <%= @shipping_instruction.si_no %>"><i class="icon-print"></i> Print</a>
+	<% end %>
+	<!-- <a data-toggle="modal" href="#emailModal" class="btn btn-small" data-no-turbolink="true"><i class="icon icon-envelope"></i> E-Mail</a> -->
+	<a href="<%= shipping_instructions_path %>" class="btn btn-small" title="Back to Lists"><i class="icon-reply"></i> Back</a>
+</div>
+
+<style type="text/css">
+	#size-a4-print, #size-a4-print pre, #size-a4-print div, #size-a4-print table, #size-a4-print label{
+		font-family: "Ubuntu", Arial;
+	  	font-size: 7pt;
+	  	font-weight: 700;
+	}
+	.si_field {
+		display: block;
+		width: 100%;
+	}
+	.si_field label{
+		width: 60px;
+		float: left;
+	}
+	.si_field span.field, .si_field pre{
+		float: left;
+		width: 120px;
+		margin-bottom: 0;
+	}
+	.si_field .pull-left{
+		float: left;
+		margin-right: 5px;
+	}
+	address{
+		float: right;
+	    font-family: "Comic Sans MS";
+	    font-size: 8pt;
+	    font-weight: normal;
+	    line-height: 1.5;
+	    margin: -20px 0 -50px;
+	    position: relative;
+	    z-index: 2;
+	}
+</style>
+
+<div id="size-a4-print">
+<%= render "shipping_instruction" %>
+</div>
+
+<% if false && @shipping_instruction.attachments.any? %>
+<div class="span6">
+	<h4>View / Download Attachment</h4>
+	<ul>
+	  <% @shipping_instruction.attachments.each do |attach| %>
+	    <% if !attach.name.blank? && !attach.asset.nil? %>
+	    <li><%= attach.name %> : <%= link_to "View", attach.asset.url, target: "_blank" %></li>
+	    <% end %>
+	  <% end %>
+	</ul>
+</div>
+<div class="clearfix"></div>
+<% end %>
+
+<!-- # Revisi 1 Dec 2015 -->
+<h4>Shipping Instruction Histories</h4>
+<table class="table" style="margin-bottom: 20px">
+<thead>
+	<tr>
+		<th>SI No.</th>
+		<th>Update by</th>
+		<th>Update at</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td><%= link_to @shipping_instruction.si_no, shipping_instruction_path(@shipping_instruction, format: "pdf"), target: "_blank" %></td>
+		<td><%= User.find(@shipping_instruction.update_by).username %></td>
+		<td><%= @shipping_instruction.updated_at.to_s(:long) %></td>
+	</tr>
+<% unless @shipping_instruction.shipping_instruction_histories.blank? %>
+	<% @shipping_instruction.shipping_instruction_histories.order("updated_at DESC").last(5).each do |si| %>
+	<tr>
+		<td><%= link_to si.si_no, history_shipping_instruction_path(si, format: "pdf"), target: "_blank" %></td>
+		<td><%= User.find(si.update_by).username %></td>
+		<td><%= si.updated_at.to_s(:long) %></td>
+	</tr>
+	<% end %>
+<% end %>
+</tbody>
+</table>
+<%# render "shipping_instructions/email", :@shipping_instruction => @shipping_instruction %>

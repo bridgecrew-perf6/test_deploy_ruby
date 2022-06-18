@@ -1,0 +1,71 @@
+<style type="text/css">
+  #size-a4-print {
+    width: 1100px;
+  }
+
+  #size-a4-print, #size-a4-print pre, #size-a4-print div, #size-a4-print table, #size-a4-print label {
+    font-family: Arial;
+    font-size: 12pt;
+    font-weight: 700;
+  }
+
+  pre {
+    width: 150px;
+  }
+
+  .si_field {
+    display: block;
+    width: 100%;
+  }
+
+  .si_field label {
+    width: 100px;
+    float: left;
+  }
+
+  .si_field span.field, .si_field pre {
+    float: left;
+    width: 180px;
+    margin-bottom: 0;
+  }
+
+  .si_field .pull-left {
+    float: left;
+    margin-right: 5px;
+  }
+
+  .et_label, .et_space, .et_date {
+    float: left;
+  }
+
+  .et_label {
+    width: 150px;
+  }
+
+  .et_space {
+    width: 10px;
+  }
+
+  .et_date {
+    width: 380px
+  }
+
+  #vessel-wrapper {
+    text-transform: none;
+  }
+
+  address {
+    float: right;
+    font-family: "Comic Sans MS", "cursive" !important;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1.2;
+    margin: -50px 0 -45px;
+    position: relative;
+    z-index: 2;
+    font-style: normal;
+  }
+</style>
+<div id="size-a4-print">
+  <%= render "shipping_instruction" %>
+</div>

@@ -1,0 +1,25 @@
+<style type="text/css">
+  div{
+    font-family: "cursive";
+  	font-size: 14pt;
+    font-weight: 700!important;
+  }
+  .inline-group{
+  	margin: 2px 5px;
+  }
+  td, th{
+    font-size: 14pt;
+    padding: 5px;
+  }
+  #invoice{
+    width: 1100px; 
+    margin-left: -45px;
+  }
+  .8point{
+  	font-size: 14pt
+  }
+</style>
+<div id="size-a4-print">
+  <%# render "invoice" %>
+  <%= render "invoices/invoice" %>
+</div>

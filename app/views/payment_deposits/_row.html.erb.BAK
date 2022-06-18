@@ -1,0 +1,24 @@
+<tr>
+  <td><%= link_to "View", view_payment_deposits_path(sid: row) %></td>
+  <td><%= row.carrier %></td>
+  <td><%= row.master_bl_no %></td>
+  <td><%= row.ibl_ref %></td>
+  <td style="text-align:right;">
+    <% 
+      references_idr = @deposit_balance_idr.where(ibl_ref: row.ibl_ref)
+      references_usd = @deposit_balance_usd.where(ibl_ref: row.ibl_ref)
+
+      str = []
+      amount_idr = references_idr.map{|p| p.amount_deposit}.sum(&:to_f) - @use_deposit_idr.map{|p| p.amount}.sum(&:to_f)
+      str.push "#{number_format amount_idr} IDR" if references_idr.count > 0
+      
+      amount_usd = references_usd.map{|p| p.amount_deposit}.sum(&:to_f) - @use_deposit_usd.map{|p| p.amount}.sum(&:to_f)
+      str.push "#{number_format amount_usd} USD" if references_usd.count > 0
+    %>
+    <%= str.join("<br>").html_safe %>
+  </td>
+  <td class="hidden disable"><%# monthly_format row.payment_date %></td>
+  <td class="hidden disable"><%# datepicker_format row.payment_date %></td>
+  <td class="hidden disable row_id"><%= row.id %></td>
+  <td class="hidden disable ibl_ref"><%= row.ibl_ref %></td>
+</tr>

@@ -1,0 +1,122 @@
+<div class="page-header">
+  <h3>Payment Deposit : <%= @shipping_instruction.ibl_ref %></h3>
+</div>
+
+<% if !notice.nil? %>
+<p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<% @payments.group_by{|a| a.carrier_id}.each do |carrier_id, references| %>
+<table class="table table-striped table-bordered">
+  <caption class="text-left">Carrier : <%= Carrier.find(carrier_id).try(:name) %></caption>
+  <thead>
+    <tr>
+      <th>IBL Deposit</th>
+      <th width="125">Use Deposit</th>
+      <th width="125">Overpaid</th>
+      <th width="125">Balance</th>
+      <th>IBL Ref</th>
+      <th width="55">Req No</th>
+      <th width="75">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%  balance = {}
+        balance["IDR"] = 0
+        balance["USD"] = 0
+    %>  
+    <% references.each do |row|  %>
+      <% if row.kind_of? PaymentReference %>
+        <%  
+          balance[row.currency] += row.amount_overpaid.to_f
+          balance_text = []
+          balance_text.push money_with_currency_format(balance["IDR"], "IDR") unless balance["IDR"] == 0
+          balance_text.push money_with_currency_format(balance["USD"], "USD") unless balance["USD"] == 0
+        %>
+        <tr>
+          <td><%= "#{row.ibl_ref} - #{row.master_bl_no}#{(' - ' + row.currency) if row.currency == 'USD'}" %><%# row.payment_date %></td>
+          <td style="text-align:right;"><%=  %></td>
+          <td style="text-align:right;"><%= money_with_currency_format(row.amount_overpaid, row.currency) %></td>
+          <td style="text-align:right;"><%= balance_text.join(" ") %></td>
+          <td><%=  %></td>
+          <td><%= "#{row.req_no}" %></td>
+          <td><%= si_date_format row.payment_date %></td>
+        </tr>
+      <% elsif row.kind_of? PaymentDeposit %>
+        <%  
+          balance[row.currency] -= row.amount.to_f
+          balance_text = []
+          balance_text.push money_with_currency_format(balance["IDR"], "IDR") unless balance["IDR"] == 0
+          balance_text.push money_with_currency_format(balance["USD"], "USD") unless balance["USD"] == 0
+        
+          balance_text.push "0 IDR" if @payment_type == "IDR" && balance["IDR"] == 0
+          balance_text.push "0 USD" if @payment_type == "USD" && balance["USD"] == 0
+        %>
+        <tr>
+          <td><%# row.payment_date %></td>
+          <td style="text-align:right;"><%= money_with_currency_format(row.amount, row.currency) %></td>
+          <td style="text-align:right;"><%=  %></td>
+          <td style="text-align:right;"><%= balance_text.join(" ") %></td>
+          <td><%= "#{row.ibl_ref} - #{row.master_bl_no_2}" %></td>
+          <td><%= "#{row.req_no}" %></td>
+          <td><%= si_date_format row.payment_date %></td>
+        </tr>
+      <% elsif row.kind_of? PaymentCloseDeposit %>
+        <%  
+          balance[row.currency] -= row.amount.to_f
+          balance_text = []
+          balance_text.push money_with_currency_format(balance["IDR"], "IDR") unless balance["IDR"] == 0
+          balance_text.push money_with_currency_format(balance["USD"], "USD") unless balance["USD"] == 0
+        
+          balance_text.push "0 IDR" if @payment_type == "IDR" && balance["IDR"] == 0
+          balance_text.push "0 USD" if @payment_type == "USD" && balance["USD"] == 0
+        %>
+        <tr>
+          <td><%# row.payment_date %></td>
+          <td style="text-align:right;"><%= money_with_currency_format(row.amount, row.currency) %></td>
+          <td style="text-align:right;"><%=  %></td>
+          <td style="text-align:right;"><%= balance_text.join(" ") %></td>
+          <td><%=  %></td>
+          <td><%=  %></td>
+          <td><%= si_date_format row.payment_date %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
+<br>
+<% end %>
+<style type="text/css">
+td {
+  vertical-align: top;
+}
+</style>
+<% if current_user.administrator? %>
+<%= form_for(@close_deposit, url: close_payment_deposits_path, html: { class: "form-horizontal"}) do |f| %>
+  <h5>Close Deposit</h5>
+  <table>
+    <tbody>
+      <tr>
+        <td width="85">Date</td>
+        <td width="250">: <%= f.text_field :payment_date, class: "datepicker", autocomplete: "off", value: normal_date_format(f.object.payment_date) %></td>
+      </tr>
+      <tr>
+        <td>Amount</td>
+        <td>: <%= f.text_field :amount, class: "money_text", autocomplete: "off" %></td>
+      </tr>
+      <tr>
+        <td>Note</td>
+        <td>: <%= f.text_area :note, cols: 50, rows: 3 %></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="actions" style="margin-top: 20px">
+    <%= f.hidden_field :carrier_id %>
+    <%= f.hidden_field :ibl_ref %>
+    <%= f.hidden_field :payment_type %>
+    <button type="submit" class="btn btn-primary"><i class="icon-save"></i> Save</button>
+    <a href="<%= payment_deposits_path %>" class="btn"><i class="icon-reply"></i> Back</a>
+  </div>
+<% end %>
+<% end %>

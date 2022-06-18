@@ -1,0 +1,73 @@
+<style type="text/css">
+  #report-title {
+    font-family: Arial;
+    font-size: 20pt; /*30pt*/
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .hidden {
+    display: none
+  }
+
+  .text-right {
+    text-align: right;
+  }
+</style>
+<div style="width: 100%">
+  <h3 id="report-title">INVOICES UNPAID <%= params[:year] %></h3>
+  <table style="width: 100%" border="1">
+    <thead>
+    <tr>
+      <th style="width: 100px;">IBL REF</th>
+      <th style="width: 140px;">SHIPPER</th>
+      <th style="width: 140px;">CUSTOMER</th>
+      <th style="width: 100px;">INV REF</th>
+      <th style="width: 120px;">USD</th>
+      <th style="width: 120px;">IDR</th>
+      <th style="width: 70px;">ETD DATE</th>
+      <th style="width: 70px;">DUE DATE</th>
+    </tr>
+    </thead>
+    <tbody>
+    <%
+       repeat_number = false
+       last_bl = 0
+    %>
+    <% @invoices.each do |invoice| %>
+      <% cache(["report-unpaid-invoices", invoice]) do %>
+        <%
+           if last_bl != 0 && last_bl == invoice.bill_of_lading_id
+             repeat_number = true
+           else
+             repeat_number = false
+             last_bl = invoice.bill_of_lading_id
+           end
+        %>
+        <tr>
+          <td>
+            <span class="<%= "hidden" if repeat_number %>"><%= invoice.bill_of_lading.shipping_instruction.si_no %></span>&nbsp;
+          </td>
+          <td><%= invoice.bill_of_lading.shipping_instruction.shipper_company_name %></td>
+          <td><%= invoice.customer_ori %></td>
+          <td><%= invoice.try(:no_invoice) || invoice.try(:no_dbn) || invoice.try(:no_note) %></td>
+          <% if invoice.currency_code == "USD" %>
+            <td align="right"><%= number_with_precision(invoice.total_invoice, precision: 2, delimiter: ',') %> </td>
+            <td>&nbsp;</td>
+          <% else %>
+            <td>&nbsp;</td>
+            <td align="right"><%= number_with_precision(invoice.total_invoice, precision: 2, delimiter: ',') %> </td>
+          <% end %>
+          <td>
+            <% vessel = invoice.bill_of_lading.shipping_instruction.vessels.first %>
+            <%= si_date_format vessel.etd_date unless vessel.nil? %>
+          </td>
+          <td><%= si_date_format invoice.due_date %></td>
+        </tr>
+      <% end %>
+    <% end %>
+    </tbody>
+  </table>
+</div>
+<br/>
+<strong>Total Invoices Unpaid: <%= @invoices.length %></strong>

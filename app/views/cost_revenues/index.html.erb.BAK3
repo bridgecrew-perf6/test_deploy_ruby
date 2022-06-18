@@ -1,0 +1,134 @@
+<div class="page-header">
+  <h3>Summary Cost & Revenue Analysis</h3>
+</div>
+
+<%= form_for(@report, url: report_cost_revenues_path, html: { class: "form-inline", target: "_blank"}) do |f| %>
+  <div id="report_params"></div>
+  <div>
+    Etd Vessel :
+      <span id="etd" style="display: inline-block;width: 220px;"></span>
+    <button type="button" class="btn" onclick="yadcf.exFilterExternallyTriggered(costRevenuesTable);">Submit</button>
+    <button type="submit" class="btn btn-primary">View Report</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" href="#viewSummaryModal" data-no-turbolink="true">View Summary</button>
+    <button type="button" class="btn btn-primary" onclick="costRevenuesTable.state.clear();window.location.reload();" style="float: right;">Reset all column filters</button>
+  </div>
+<% end %>
+
+<div class="clearfix"></div>
+
+<% columns = { 
+              ibl_ref: "IBL Ref",
+              mbl_no: "MBL No",
+              carrier: "Carrier",
+              shipper_ref: "Shipper Ref",
+              shipper: "Shipper",
+              consignee: "Consignee",
+              vessel: "Vessel",
+              # etd: "Etd",
+              pol: "POL",
+              pod: "POD",
+              destination: "Destination",
+              volume: "Volume",
+              owner: "Owner",
+              status: "Status",
+              trade: "Trade",
+              sell_usd: "Sell USD",
+              sell_idr: "Sell IDR",
+              cost_usd: "Cost USD",
+              cost_idr: "Cost IDR"
+            } 
+  
+  filter = ""
+  columns.each_with_index do |(key, value), index|
+    # filter+="<span>#{value} :</span><span id=#{key}></span>"
+    filter+="<div class=\"span3\"><span>#{value} :</span><span id=#{key}></span></div>"
+    filter+="<div class=\"clearfix\"></div>" if (index+1)%4 == 0
+  end
+%>
+
+<div>
+  <div class="span3">Format :
+    <select name="format" id="format">
+      <option value="pdf">PDF</option>
+      <option value="xls">XLS</option>
+    </select>
+  </div>
+  
+  <div class="span3">Filter By :
+    <span id="monthly"></span>
+  </div>
+
+  <div class="span3">&nbsp;
+    <span id="date_range"></span>
+  </div>
+
+  <div class="clearfix"></div>
+  <br/>
+
+  <%= filter.html_safe %>
+
+  <div class="clearfix"></div>
+  <br/>
+  <div id="externaly_triggered_wrapper-controls" class="text-center">
+    <button type="button" class="btn btn-primary" onclick="yadcf.exFilterExternallyTriggered(costRevenuesTable);">Filter</button>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exResetAllFilters(costRevenuesTable);">Reset</button>
+  </div>
+</div>
+
+<div class="clearfix"></div>
+
+<table class="table table-striped table-bordered" id="cost_revenues_table" width="100%">
+  <thead>
+    <tr>
+      <th width="10%" rowspan="2" class="disable">Actions</th>
+      <th rowspan="2">IBL Ref</th>
+      <th rowspan="2">MBL No</th>
+      <th rowspan="2">Carrier</th>
+      <th rowspan="2">Shipper Ref</th>
+      <th rowspan="2">Shipper</th>
+      <th rowspan="2">Consignee</th>
+      <th rowspan="2">Vessel</th>
+      <th rowspan="2">Etd</th>
+      <th rowspan="2">POL</th>
+      <th rowspan="2">POD</th>
+      <th rowspan="2">Destination</th>
+      <th rowspan="2">Volume</th>
+      <th rowspan="2">Owner</th>
+      <th rowspan="2">Status</th>
+      <th rowspan="2">Trade</th>
+      <th colspan="2">Sell</th>
+      <th colspan="2">Cost</th>
+      <th rowspan="2" class="hidden disable">Filter Monthly</th>
+      <th rowspan="2" class="hidden disable">Filter Date</th>
+      <th rowspan="2" class="hidden disable">Row Id</th>
+      <th rowspan="2" class="hidden disable">IBL Ref</th>
+      <th rowspan="2" class="hidden disable">Status</th>
+      <th rowspan="2" class="hidden disable">Sell VAT 10%</th>
+      <th rowspan="2" class="hidden disable">Sell VAT 1%</th>
+      <th rowspan="2" class="hidden disable">Sell PPH 23</th>
+      <th rowspan="2" class="hidden disable">Cost VAT 10%</th>
+      <th rowspan="2" class="hidden disable">Cost VAT 1%</th>
+      <th rowspan="2" class="hidden disable">Cost PPH 23</th>
+      <th rowspan="2" class="hidden disable">ADDT</th>
+      <th rowspan="2" class="hidden disable">NPT</th>
+      <th rowspan="2" class="hidden disable">Sell Currency</th>
+      <th rowspan="2" class="hidden disable">Cost Currency</th>
+    </tr>
+    <tr>
+      <th>USD</th>
+      <th>IDR</th>
+      <th>USD</th>
+      <th>IDR</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= render partial: 'cost_revenues/row', :collection => @shipping_instruction %>
+  </tbody>
+</table>
+
+<%= render "commons/summary" %>
+
+<script type="text/javascript">
+  $(document).on('ready page:change', ready);
+  $(document).on('page:fetch', function() { costRevenuesTable.destroy(); });
+</script>

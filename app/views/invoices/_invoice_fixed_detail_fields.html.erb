@@ -1,0 +1,7 @@
+<tr>
+  <td><%= f.object.description %>
+    <%= f.hidden_field :description, class: "span12 invoice_description", autocomplete: "off" %>
+    <%= f.hidden_field :volume, class: "span12", autocomplete: "off", value: "1" %></td>
+  <td><%= f.text_field :amount, class: "span12 #{f.object.description.parameterize}", autocomplete: "off" %></td>
+  <td></td>
+</tr>

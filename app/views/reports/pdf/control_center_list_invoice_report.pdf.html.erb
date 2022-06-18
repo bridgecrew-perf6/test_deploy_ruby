@@ -1,0 +1,94 @@
+<%= render 'commons/pdf' %>
+<% columns = @report.columns %>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title("List Invoice") %></h3>
+
+  <% @invoices.sort_by(&:customer).group_by(&:customer).each do |customer, invoices| %>
+    <table style="width: 100%" border="1">
+      <caption>LIST INVOICE <%= customer %></caption>
+      <thead>
+        <tr>
+          <%= "<th width=\"10%\">IBL Ref</th>".html_safe if columns.include? "1" %>
+          <%= "<th width=\"10%\">Customer</th>".html_safe if columns.include? "2" %>
+          <%= "<th width=\"10%\">Shipper</th>".html_safe if columns.include? "3" %>
+          <%= "<th width=\"10%\">Shipper Ref</th>".html_safe if columns.include? "4" %>
+          <%= "<th width=\"10%\">MBL</th>".html_safe if columns.include? "5" %>
+          <%= "<th width=\"10%\">Invoice No</th>".html_safe if columns.include? "6" %>
+          <%= "<th width=\"10%\">Qty</th>".html_safe if columns.include? "7" %>
+          <%= "<th width=\"10%\">Destination</th>".html_safe if columns.include? "8" %>
+          <%= "<th width=\"10%\">USD</th>".html_safe if columns.include? "9" %>
+          <%= "<th width=\"10%\">IDR</th>".html_safe if columns.include? "10" %>
+          <%= "<th width=\"10%\">Freight</th>".html_safe if columns.include? "11" %>
+          <%= "<th width=\"10%\">VAT 10%</th>".html_safe if columns.include? "12" %>
+          <%= "<th width=\"10%\">VAT 1%</th>".html_safe if columns.include? "13" %>
+          <%= "<th width=\"10%\">PPH 23</th>".html_safe if columns.include? "14" %>
+          <%= "<th width=\"5%\">ETD Date</th>".html_safe if columns.include? "15" %>
+          <%= "<th width=\"5%\">Due Date</th>".html_safe if columns.include? "16" %>
+          <%= "<th width=\"10%\">Date Payment</th>".html_safe if columns.include? "17" %>
+          <%= "<th width=\"5%\">Status</th>".html_safe if columns.include? "18" %>
+          <%= "<th width=\"10%\">Note</th>".html_safe if columns.include? "19" %>
+        </tr>
+      </thead>
+      <tbody>
+        <%
+          total_usd = 0
+          total_idr = 0
+          total_freight_usd = 0
+          total_vat_10_usd = 0
+          total_vat_1_usd = 0
+          total_pph_23_usd = 0
+
+          total_freight_idr = 0
+          total_vat_10_idr = 0
+          total_vat_1_idr = 0
+          total_pph_23_idr = 0
+        %>
+        <% invoices.sort_by(&:invoice_date).each do |row| %>
+        <%
+          if row.currency_code == "USD"
+            total_usd += row.total_invoice
+          elsif row.currency_code == "IDR"
+            total_idr += row.total_invoice
+          end
+        %>
+        <tr>
+          <%= "<td>#{row.shipping_instruction.si_no}</td>".html_safe if columns.include? "1" %>
+          <%= "<td>#{row.customer_ori}</td>".html_safe if columns.include? "2" %>
+          <%= "<td>#{row.shipping_instruction.shipper_company_name}</td>".html_safe if columns.include? "3" %>
+          <%= "<td></td>".html_safe if columns.include? "4" %>
+          <%= "<td>#{row.shipping_instruction.master_bl_no}</td>".html_safe if columns.include? "5" %>
+          <%= "<td>#{row.invoice_no}</td>".html_safe if columns.include? "6" %>
+          <%= "<td></td>".html_safe if columns.include? "7" %>
+          <%= "<td>#{row.shipping_instruction.final_destination}</td>".html_safe if columns.include? "8" %>
+          <% amount_usd = number_with_precision(row.total_invoice, precision: 2, delimiter: ',') if row.currency_code == "USD" %>
+          <%= "<td style=\"text-align:right\">#{amount_usd}</td>".html_safe if columns.include? "9" %>
+          <% amount_idr = number_with_precision(row.total_invoice, precision: 2, delimiter: ',') if row.currency_code == "IDR" %>
+          <%= "<td style=\"text-align:right\">#{amount_idr}</td>".html_safe if columns.include? "10" %>
+          <%= "<td style=\"text-align:right\"></td>".html_safe if columns.include? "11" %>
+          <%= "<td style=\"text-align:right\"></td>".html_safe if columns.include? "12" %>
+          <%= "<td style=\"text-align:right\"></td>".html_safe if columns.include? "13" %>
+          <%= "<td style=\"text-align:right\"></td>".html_safe if columns.include? "14" %>
+          <%= "<td>#{si_date_format row.etd}</td>".html_safe if columns.include? "15" %>
+          <%= "<td>#{si_date_format row.due_date}</td>".html_safe if columns.include? "16" %>
+          <%= "<td>#{si_date_format row.payment_date}</td>".html_safe if columns.include? "17" %>
+          <%= "<td>#{row.status_text(row.status_payment)}</td>".html_safe if columns.include? "18" %>
+          <%= "<td></td>".html_safe if columns.include? "19" %>
+        </tr>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <% index = columns.index("9") %>
+          <th colspan="<%= index %>">Total :</th>
+          <%= "<th style=\"text-align:right\">#{number_with_precision(total_usd, precision: 2, delimiter: ',') if total_usd != 0}</th>".html_safe if columns.include? "9" %>
+          <%= "<th style=\"text-align:right\">#{number_with_precision(total_idr, precision: 2, delimiter: ',') if total_idr != 0}</th>".html_safe if columns.include? "10" %>
+          <%= "<th style=\"text-align:right\"></th>".html_safe if columns.include? "11" %>
+          <%= "<th style=\"text-align:right\"></th>".html_safe if columns.include? "12" %>
+          <%= "<th style=\"text-align:right\"></th>".html_safe if columns.include? "13" %>
+          <%= "<th style=\"text-align:right\"></th>".html_safe if columns.include? "14" %>
+        </tr>
+      </tfoot>
+    </table>
+    <br>
+  <% end %>
+</div>

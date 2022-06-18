@@ -1,0 +1,489 @@
+<% params[:sort_by] = params[:sort_by].presence || "yearly" %>
+<div class="page-header">
+  <h3>Control Center</h3>
+</div>
+<div class="row-fluid" style="margin-top: 20px">
+  <%= form_tag(search_control_path, :method => 'get', class: "form-horizontal", "data-turboform" => "") do %>
+    <div class="row-fluid">
+      <div class="span3">
+        <div class="control-group">
+          <label for="" class="label text-left">Sort By :</label>
+
+          <div class="control-fields">
+            <select name="sort_by" class="span12">
+              <%= options_for_select(Constant::SORTED_BY, selected: params[:sort_by]) %>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div id="sort-data" class="<%= params[:sort_by] == "all" ? "hidden" : "span3" %>">
+        <div id="sort-data-monthly" class="<%= "hidden" if params[:sort_by] != "monthly" %>">
+          <div class="control-group">
+            <label for="" class="label text-left">Sort Data :</label>
+
+            <div class="control-fields">
+              <%= text_field_tag :date_filter, params[:date_filter], class: "span12 filter_my" %>
+            </div>
+          </div>
+        </div>
+        <div id="sort-data-yearly" class="<%= "hidden" if params[:sort_by] != "yearly" %>">
+          <div class="control-group">
+            <label for="" class="label text-left">Sort Data :</label>
+
+            <div class="control-fields">
+              <select id="year_filter" name="filter_year" class="span12">
+                <option value="">Select a Year...</option>
+                <%= options_for_select(Constant::MAX_YEAR.downto(Constant::MIN_YEAR), selected: params[:filter_year]) %>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="span3">
+        <div class="control-group">
+          <label for="" class="label text-left">Shipper :</label>
+
+          <div class="control-fields">
+            <select name="shipper_id" class="span12">
+              <option value="">All Shipper</option>
+              <%= options_from_collection_for_select(Shipper.order(:company_name), :id, :company_name, params[:shipper_id]) %>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="span3">
+        <div class="control-group">
+          <label for="" class="label text-left">Status :</label>
+
+          <div class="control-fields">
+            <select name="status" class="span12">
+              <%= options_for_select([['All', 2], ['Open', 0], ['Closed', 1]], params[:status]) %>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <button type="submit" class="btn btn-primary pull-right" data-disable-with="Searching...">Search</button>
+    </div>
+  <% end %>
+  <script type="text/javascript">
+    jQuery(document).ready(function () {
+      jQuery(".filter_my").datepicker({
+        altField: "#actualDate",
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        dateFormat: 'MM yy',
+        onClose: function (dateText, inst) {
+          var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+          var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+          $(this).datepicker('setDate', new Date(year, month, 1));
+        }
+      });
+
+      $("#date_filter").on("focus", function () {
+        $(".ui-datepicker-calendar").hide();
+        $("#ui-datepicker-div").position({
+          my: "center top",
+          at: "center bottom",
+          of: $(this)
+        });
+      });
+
+      $("select[name=sort_by]").on("change", function(){
+        value = $(this).val();
+        if(value == "all")
+        {
+          $("#sort-data").addClass("hidden").removeClass("span3");
+          $("#year_filter").val("");
+          $("#date_filter").val("");
+        }
+        else if(value == "monthly")
+        {
+          $("#sort-data").removeClass("hidden").addClass("span3");
+          $("#sort-data-monthly").removeClass("hidden");
+          $("#sort-data-yearly").addClass("hidden");
+          $("#year_filter").val("");
+        }
+        else if(value == "yearly")
+        {
+          $("#sort-data").removeClass("hidden").addClass("span3");
+          $("#sort-data-monthly").addClass("hidden");
+          $("#sort-data-yearly").removeClass("hidden");
+          $("#date_filter").val("");
+        }
+      })
+    })
+  </script>
+</div>
+<hr style="margin-top: 0"/>
+<style type="text/css">
+  .table thead th {
+    line-height: normal;
+    vertical-align: middle;
+  }
+
+  /*.dataTables_filter {
+    padding-right: 370px;
+  }*/
+
+  .collapsed {
+    height: 20px;
+    overflow: hidden
+  }
+
+/*  .dataTables_paginate {
+    margin-right: 740px;
+  }*/
+</style>
+
+
+<% if !@invoices.nil? || !@shipping_instructions.nil? %>
+      <!-- <table class="table table-striped table-bordered skip_checkbox"<%# ' id=control-center' if @invoices.size > 0 %>> -->
+      <table class="table table-striped table-bordered skip_checkbox" id="control-center">
+        <thead>
+        <tr>
+          <th width="10%">Action</th>
+          <th>IBL REF</th>
+          <th>SHIPPER</th>
+          <th>CUSTOMER</th>
+          <th>INV REF</th>
+          <th>USD</th>
+          <th>IDR</th>
+          <th>ETD DATE</th>
+          <th>DUE DATE</th>
+          <th>DATE OF PAYMENT</th>
+          <th>STATUS</th>
+          <th>NOTES</th>
+        </tr>
+        </thead>
+        <tbody>
+        <%
+           repeat_number = false
+           last_bl = 0
+        %>
+        <% if @invoices.any? %>
+          <% @invoices.each do |inv| %>
+            <% cache(["control-center", inv]) do %>
+              <%
+                 no_invoice = inv.try(:no_invoice) || inv.try(:no_dbn) || inv.try(:no_note)
+
+                 if last_bl != 0 && last_bl == inv.bill_of_lading_id
+                   repeat_number = true
+                 else
+                   repeat_number = false
+                   last_bl = inv.bill_of_lading_id
+                 end
+
+                 if inv.kind_of? Invoice
+                   modals = '#invModal'
+                   btn_paid = 'btn-invoice'
+                   btn_unpaid = 'btn-unpaid-inv'
+                   link_unpaid = unpaid_invoices_path
+                   btn_class = "INV"
+                 elsif inv.kind_of? Note
+                   modals = '#noteModal'
+                   btn_paid = 'btn-note'
+                   btn_unpaid = 'btn-unpaid-note'
+                   link_unpaid = unpaid_notes_path
+                   btn_class = "CRN"
+                 else
+                   modals = '#dbnModal'
+                   btn_paid = 'btn-dbn'
+                   btn_unpaid = 'btn-unpaid-dbn'
+                   link_unpaid = unpaid_debit_notes_path
+                   btn_class = "DBN"
+                 end
+              %>
+              <tr id="row_<%= "#{inv.id}-#{no_invoice}" %>" class="<%= "error" if inv.is_cancel == 1 %>">
+                <td class="actions <%= btn_class %>">
+                  <% if inv.is_cancel == 1 %>
+                    <span class="label label-warning">Cancel</span>
+                  <% elsif inv.status_payment == 0 %>
+                    <a id="<%= "#{inv.id}-#{no_invoice}" %>" href="<%= modals %>" role="button" class="btn btn-info btn-small <%= btn_paid %>" data-toggle="modal">Close
+                      Payment</a>
+                  <% else %>
+                    <a id="<%= "#{inv.id}-#{no_invoice}" %>" class="btn btn-warning btn-small <%= btn_unpaid %>"
+                       href="<%= link_unpaid %>">Unclosed</a>
+                  <% end %>
+                </td>
+                <td>
+                  <span><%= inv.bill_of_lading.shipping_instruction.si_no %></span>&nbsp;
+                </td>
+                <td><%= inv.bill_of_lading.shipping_instruction.shipper_name %></td>
+                <td><%= inv.customer_ori %></td>
+                <td><%= no_invoice %></td>
+                <% if inv.currency_code == "USD" %>
+                  <td><%= number_with_precision(inv.total_invoice, precision: 2, delimiter: ',') %> USD</td>
+                  <td>&nbsp;</td>
+                <% else %>
+                  <td>&nbsp;</td>
+                  <td><%= number_with_precision(inv.total_invoice, precision: 2, delimiter: ',') %> IDR</td>
+                <% end %>
+                <td>
+                  <% vessel = inv.bill_of_lading.shipping_instruction.vessels.first %>
+                  <%= si_date_format vessel.etd_date unless vessel.nil? %>
+                </td>
+                <td><%= si_date_format inv.due_date %></td>
+                <td class="date-of-payment"><%= si_date_format inv.date_of_payment %></td>
+                <td class="status"><%= inv.status_text(inv.status_payment) %></td>
+                <td class="notes">
+                  <% if inv.notes_payment.blank? %>
+                    &nbsp;
+                  <% else %>
+                    <div class="wrap collapsed">
+                      <%= inv.notes_payment %>
+                    </div>
+                    <a class="adjust" href="#">+ More</a>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          <% end %>
+          <% if @invoices.size == 0 %>
+            <tr>
+              <td colspan="12">No Result Found...</td>
+            </tr>
+          <% end %>
+        <% end %>
+        <% if @shipping_instructions.any? %>
+          <% @shipping_instructions.each do |shipping_instruction| %>
+            <tr>
+              <td>&nbsp;</td>
+              <td><%= shipping_instruction.si_no %></td>
+              <td><%= shipping_instruction.shipper_name %></td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>
+                <%= si_date_format shipping_instruction.vessels.first.etd_date unless shipping_instruction.vessels
+                .first.nil? %>
+              </td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+          <% end %>
+        <% end %>
+        </tbody>
+      </table>
+    
+  <div id="invModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="invModalTitle"></h3>
+    </div>
+    <div class="modal-body">
+      <form action="/invoices/paid" id="invoices-form">
+        <div class="control-group">
+          <label for="" class="control-label">Date of Payment</label>
+
+          <div class="controls">
+            <input type="text" name="date_of_payment" class="datepicker"/>
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">Payment Notes</label>
+
+          <div class="controls">
+            <textarea name="notes_payment" style="width: 515px; height: 120px"></textarea>
+          </div>
+        </div>
+        <div class="control-group">
+          <input type="hidden" name="id" value="" id="inv-id">
+
+          <div class="controls">
+            <button id="invoices" type="button" class="btn-submit btn btn-primary">Update</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div id="dbnModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="dbnModalTitle"></h3>
+    </div>
+    <div class="modal-body">
+      <form action="/debit_notes/paid" id="debit-notes-form">
+        <div class="control-group">
+          <label for="" class="control-label">Date of Payment</label>
+
+          <div class="controls">
+            <input type="text" name="date_of_payment" class="datepicker"/>
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">Payment Notes</label>
+
+          <div class="controls">
+            <textarea name="notes_payment" style="width: 515px; height: 120px"></textarea>
+          </div>
+        </div>
+        <div class="control-group">
+          <input type="hidden" name="id" value="" id="dbn-id">
+
+          <div class="controls">
+            <button id="debit-notes" type="button" class="btn-submit btn btn-primary">Update</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div id="noteModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3 id="noteModalTitle"></h3>
+    </div>
+    <div class="modal-body">
+      <form action="/notes/paid" id="notes-form">
+        <div class="control-group">
+          <label for="" class="control-label">Date of Payment</label>
+
+          <div class="controls">
+            <input type="text" name="date_of_payment" class="datepicker"/>
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="" class="control-label">Payment Notes</label>
+
+          <div class="controls">
+            <textarea name="notes_payment" style="width: 515px; height: 120px"></textarea>
+          </div>
+        </div>
+        <div class="control-group">
+          <input type="hidden" name="id" value="" id="note-id">
+
+          <div class="controls">
+            <button id="notes" type="button" class="btn-submit btn btn-primary">Update</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script type="text/javascript">
+    $(function () {
+      var btn;
+      var unpaid_invoices_path = '<%= unpaid_invoices_path %>';
+      var unpaid_debit_notes_path = '<%= unpaid_debit_notes_path %>';
+      var unpaid_notes_path = '<%= unpaid_notes_path %>';
+
+      $(".adjust").click(function (e) {
+        $(this).prev().toggleClass("collapsed");
+        if ($(this).prev().hasClass("collapsed")) {
+          $(this).text("- More")
+        } else {
+          $(this).text("+ Less")
+        }
+        e.preventDefault();
+      });
+
+      $(".btn-invoice").livequery(function () {
+        $(this).click(function () {
+          split = $(this).attr("id").split("-");
+          $("#invModalTitle").text("Invoice: " + split[1]);
+          $("#inv-id").val(split[0]);
+          btn = $(this);
+        });
+      });
+
+      $(".btn-dbn").livequery(function () {
+        $(this).click(function () {
+          split = $(this).attr("id").split("-");
+          $("#dbnModalTitle").text("Debit Note: " + split[1]);
+          $("#dbn-id").val(split[0]);
+          btn = $(this);
+        });
+      });
+
+      $(".btn-note").livequery(function () {
+        $(this).click(function () {
+          split = $(this).attr("id").split("-");
+          $("#noteModalTitle").text("Note: " + split[1]);
+          $("#note-id").val(split[0]);
+          btn = $(this);
+        });
+      });
+
+      $(".btn-submit").on("click", function () {
+        $.ajax({
+          url: $("#" + this.id + "-form").attr("action"),
+          type: "POST",
+          data: $("#" + this.id + "-form").serialize(),
+          success: function (data) {
+            if (data.success) {
+              var parent = btn.parent().parent();
+              var actions = parent.children('.actions');
+              var date_payment = parent.children('.date-of-payment');
+              var status = parent.children('.status');
+              var notes = parent.children('.notes');
+              var ids = parent.attr("id").split("_");
+
+              if (actions.hasClass("INV"))
+                actions.html('<a id="' + ids[1] + '" class="btn btn-warning btn-small btn-unpaid-inv" href="' + unpaid_invoices_path + '">Unclosed</a>')
+              else {
+                if (actions.hasClass("DBN"))
+                  actions.html('<a id="' + ids[1] + '" class="btn btn-warning btn-small btn-unpaid-dbn" href="' + unpaid_debit_notes_path + '">Unclosed</a>')
+                else
+                  actions.html('<a id="' + ids[1] + '" class="btn btn-warning btn-small btn-unpaid-note" href="' + unpaid_notes_path + '">Unclosed</a>')
+              }
+
+              date_payment.html(data.date_of_payment);
+              notes.html(data.notes);
+              status.html("Closed");
+
+              $(".close").click();
+              alert(data.message);
+            } else {
+              alert(data.message);
+            }
+          }
+        });
+      });
+
+      $(".btn-unpaid-inv, .btn-unpaid-dbn, .btn-unpaid-note").livequery(function () {
+        $(this).on("click", function () {
+          btn = $(this);
+          split = $(this).attr("id").split("-");
+          $.ajax({
+            url: $(this).prop("href"),
+            type: "POST",
+            data: {id: split[0], no: split[1]},
+            success: function (data) {
+              if (data.success) {
+                var parent = btn.parent().parent();
+                var actions = parent.children('.actions');
+                var date_payment = parent.children('.date-of-payment');
+                var status = parent.children('.status');
+                var notes = parent.children('.notes');
+                var ids = parent.attr("id").split("_");
+
+                if (actions.hasClass("INV"))
+                  actions.html('<a id="' + ids[1] + '" href="#invModal" role="button" class="btn btn-info btn-small btn-invoice" data-toggle="modal">Close Payment</a>')
+                else {
+                  if (actions.hasClass("DBN"))
+                    actions.html('<a id="' + ids[1] + '" href="#dbnModal" role="button" class="btn btn-info btn-small btn-dbn" data-toggle="modal">Close Payment</a>')
+                  else
+                    actions.html('<a id="' + ids[1] + '" href="#noteModal" role="button" class="btn btn-info btn-small btn-note" data-toggle="modal">Close Payment</a>')
+                }
+
+                date_payment.html('');
+                notes.html('');
+                status.html("Open");
+
+                alert(data.message);
+              }
+              else {
+                alert(data.message)
+              }
+            }
+          });
+          return false;
+        });
+      });
+    });
+  </script>
+<% end %>

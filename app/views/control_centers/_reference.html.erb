@@ -1,0 +1,35 @@
+  <tr class="<%= "error" if row.is_canceled? %>">
+    <td>
+      <% if row.invoice_payments.blank? %>
+        <%= link_to "Input", payment_control_centers_path(:invoice_no => row.invoice_no) %>
+      <% else %>
+        <%= link_to "Input", payment_control_centers_path(:invoice_no => row.invoice_no) %>
+        <%= link_to "View", nil %>
+      <% end %>
+    </td>
+    <td><%= row.shipping_instruction.si_no %></td>
+    <td><%= row.customer_ori %></td>
+    <td><%= row.shipping_instruction.shipper_company_name %></td>
+    <td><%= row.shipping_instruction.shipper_reference %></td>
+    <td><%= row.shipping_instruction.master_bl_no %></td>
+    <td><%= row.invoice_no %></td>
+    <td><%= row.invoice_details.map{|p| p.volume}.sum(&:to_f) %></td>
+    <td><%= row.shipping_instruction.final_destination %></td>
+    <td style="text-align:right"><%= "#{money_format(row.total_invoice)}" if row.currency_code == "USD" %></td>
+    <td style="text-align:right"><%= "#{money_format(row.total_invoice)}" if row.currency_code == "IDR" %></td>
+    <td style="text-align:right"><%= "#{money_with_currency_format(row.freight, row.currency_code)}" %></td>
+    <td style="text-align:right"><%= "#{money_with_currency_format(row.vat_10, row.currency_code)}" %></td>
+    <td style="text-align:right"><%= "#{money_with_currency_format(row.vat_1, row.currency_code)}" %></td>
+    <td style="text-align:right"><%= "#{money_with_currency_format(row.pph_23, row.currency_code)}" %></td>
+    <td><%= si_date_format row.etd %></td>
+    <td><%= si_date_format row.due_date %></td>
+    <td><%= si_date_format reference.payment_date %></td>
+    <td><%= row.status_text(row.status_payment) %></td>
+    <td><%= collapse_note(reference.note) %></td>
+    <td class="hidden disable"><%= monthly_format row.first_etd_date %></td>
+    <td class="hidden disable"><%= datepicker_format row.first_etd_date %></td>
+    <td class="hidden disable row_id"><%= row.id %></td>
+    <td class="hidden disable ibl_ref"><%= row.shipping_instruction.ibl_ref %></td>
+    <td class="hidden disable invoice_no"><%= row.invoice_no %></td>
+    <td class="hidden disable head_letter"><%= row.head_letter %></td>
+  </tr>

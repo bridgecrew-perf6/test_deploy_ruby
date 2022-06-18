@@ -1,0 +1,58 @@
+o: ActiveSupport::Cache::Entry:@valueI"ÿ  <tr class="warning ">
+    <td>
+      <a href="/bill_of_ladings/25525?year=2022" title="Show Bill of Lading"><i class="icon-eye-open icon-large"></i></a>
+      &nbsp;
+
+      <a href="/bill_of_ladings/25525/edit?year=2022" title="Edit Bill of Lading"><i class="icon-edit-sign icon-large"></i></a>
+      &nbsp;
+
+            <a data-confirm="Detail sell is empty. Proceed?" href="/bill_of_ladings/calculate_invoice?sid=36307&amp;year=2022" title="Calculate Invoice"><i class="icon-file icon-large"></i></a>
+        &nbsp;
+
+
+      
+      <a href="/cost_revenues/36307/print_cover?year=2022" target="_blank" title="Print"><i class="icon-print icon-large"></i></a>
+      &nbsp;
+      
+    </td>
+    <td>
+      IBL221145
+      
+      
+      
+        <span class="label label-warning">No Status CR</span>
+    </td>
+    <td>AASM014049 DRES220404JA</td>
+    <td>CNC</td>
+    <td>ZHENGZHOU DEREK IMPORT AND EXPORT TRADING COMPANY LIMITED</td>
+    <td>PT BOGA AGRO INDONESIA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+        No Invoice Yet
+    </td>
+    <td>3x40HQ REEFER</td>
+    <td>IMPORT (OCEAN FREIGHT, TRUCKING)</td>
+    <td>
+        <ul>
+            <li><a href="/payments/22204?year=2022">740/IDR/2022</a></li>
+        </ul>
+    </td>
+    <td>QINGDAO, CHINA</td>
+    <td>15-Apr-2022</td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="25525">
+        <option selected="selected" value="Not Yet">Not Yet</option>
+<option value="Done">Done</option>
+      </select>
+    </td>
+    <td class="hidden disable">April 2022</td>
+    <td class="hidden disable">04/15/2022</td>
+    <td class="hidden disable reference_id">25525</td>
+    <td class="hidden disable ibl_ref">IBL221145</td>
+    <td class="hidden disable invoice">No Invoice Yet</td>
+    <td class="hidden disable payment">740/IDR/2022</td>
+    <td class="hidden disable delivery_doc">Not Yet</td>
+  </tr>
+:ET:@created_atf1650203547.7996385:@expires_in0

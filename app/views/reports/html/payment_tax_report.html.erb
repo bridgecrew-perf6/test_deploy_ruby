@@ -1,0 +1,60 @@
+<%= render 'commons/pdf' %>
+<% columns = @report.columns %>
+<% row_ids = @report.row_ids %>
+<% vat_types = @report.vat_types %>
+<% base = [] %>
+<% 10.times{ |i| base.push i.to_s } %>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <table style="width: 100%" border="1">
+    <thead>
+    <tr>
+      <%
+        head = []
+        head.push ""
+        head.push "<th width=\"50\">IBL Ref</th>"
+        head.push "<th width=\"150\">Carrier</th>"
+        head.push "<th width=\"50\">VAT Type</th>"
+        head.push "<th width=\"100\">Amount Tax</th>"
+        head.push "<th width=\"100\">Tax No</th>"
+        head.push "<th width=\"50\">Tax Issued</th>"
+        head.push "<th width=\"50\">Payment Date</th>"
+        head.push "<th width=\"100\">Invoice No</th>"
+        head.push "<th width=\"50\">Paid Status</th>"
+        head.push "<th width=\"50\">Status</th>"
+      %>
+      <% (base-columns).reverse_each{ |column| head.delete_at(column.to_i) } %>
+      <%= head.join("").html_safe %>
+    </tr>
+    </thead>
+    <tbody>
+      <%
+        vat_10 = 0
+        vat_1 = 0
+        pph_23 = 0
+      %>
+      <% row_ids.each_with_index do |reference, index| %>
+        <%
+          tax = @results.find(reference)
+          if vat_types[index] == "VAT 10%"
+            vat_10 += tax.vat_10
+          elsif vat_types[index] == "VAT 1%"
+            vat_1 += tax.vat_1
+          elsif vat_types[index] == "PPH 23"
+            pph_23 += tax.pph_23
+          end
+        %>
+        <tr>
+          <% body = report_list_payment_tax(tax, vat_types[index], "pdf") %>
+          <% (base-columns).reverse_each{ |column| body.delete_at(column.to_i) } unless body.blank? %>
+          <%= body.join("").html_safe unless body.blank? %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <br>
+  <p>TOTAL PPH 23 : <%= money_format(pph_23) %>
+    <br>TOTAL VAT 1% : <%= money_format(vat_1)%>
+    <br>TOTAL VAT 10% : <%= money_format(vat_10) %>
+  </p>
+</div>

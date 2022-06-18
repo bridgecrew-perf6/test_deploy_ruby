@@ -1,0 +1,66 @@
+<%= render 'commons/pdf' %>
+<% columns = @report.columns %>
+<% base = [] %>
+<% 18.times{ |i| base.push i.to_s } %>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <table style="width: 100%" border="1">
+    <thead>
+    <tr>
+      <%
+        head = []
+        head.push ""
+        head.push "<th width=\"50\">Invoice No</th>"
+        head.push "<th width=\"50\">IBL Ref</th>"
+        head.push "<th width=\"50\">Currency</th>"
+        head.push "<th width=\"100\">Amount</th>"
+        head.push "<th>Customer</th>"
+        head.push "<th>Shipper</th>"
+        head.push "<th>POL</th>"
+        head.push "<th width=\"50\">Invoice Status</th>"
+        head.push "<th width=\"85\">VAT 10% No</th>"
+        head.push "<th width=\"100\">VAT 10%</th>"
+        head.push "<th width=\"85\">VAT 1% No</th>"
+        head.push "<th width=\"100\">VAT 1%</th>"
+        head.push "<th width=\"100\">PPH 23 No</th>"
+        head.push "<th width=\"85\">PPH 23</th>"
+        head.push "<th width=\"50\">Tax Status</th>"
+        head.push "<th width=\"85\">Tax Issued</th>"
+        head.push "<th width=\"85\">Paid Month</th>"
+      %>
+      <% (base-columns).reverse_each{ |column| head.delete_at(column.to_i) } %>
+      <%= head.join("").html_safe %>
+    </tr>
+    </thead>
+    <tbody>
+      <% @results.each do |reference| %>
+        <tr>
+          <% body = report_list_invoice(reference, "pdf") %>
+          <% (base-columns).reverse_each{ |column| body.delete_at(column.to_i) } unless body.blank? %>
+          <%= body.join("").html_safe unless body.blank? %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%
+    vat_10 = []
+    vat_10_idr = @results.map{|p| p.vat_10_tax if p.currency_code == "IDR" && p.is_uncanceled?}.sum(&:to_f)
+    vat_10_usd = @results.map{|p| p.vat_10_tax if p.currency_code == "USD" && p.is_uncanceled?}.sum(&:to_f)
+    vat_10.push "#{money_with_currency_format(vat_10_idr, "IDR")}" unless vat_10_idr == 0
+    vat_10.push "#{money_with_currency_format(vat_10_usd, "USD")}" unless vat_10_usd == 0
+    vat_1 = []
+    vat_1_idr = @results.map{|p| p.vat_1_tax if p.currency_code == "IDR" && p.is_uncanceled?}.sum(&:to_f)
+    vat_1_usd = @results.map{|p| p.vat_1_tax if p.currency_code == "USD" && p.is_uncanceled?}.sum(&:to_f)
+    vat_1.push "#{money_with_currency_format(vat_1_idr, "IDR")}" unless vat_1_idr == 0
+    vat_1.push "#{money_with_currency_format(vat_1_usd, "USD")}" unless vat_1_usd == 0
+    pph_23 = []
+    pph_23_idr = @results.map{|p| p.pph_23_tax if p.currency_code == "IDR" && p.is_uncanceled?}.sum(&:to_f)
+    pph_23_usd = @results.map{|p| p.pph_23_tax if p.currency_code == "USD" && p.is_uncanceled?}.sum(&:to_f)
+    pph_23.push "#{money_with_currency_format(pph_23_idr, "IDR")}" unless pph_23_idr == 0
+    pph_23.push "#{money_with_currency_format(pph_23_usd, "USD")}" unless pph_23_usd == 0
+  %>
+  <p>TOTAL VAT 10% : <%= vat_10.join(" ") %>
+    <br>TOTAL VAT 1% : <%= vat_1.join(" ") %>
+    <br>TOTAL PPH 23 : <%= pph_23.join(" ") %>
+  </p>
+</div>

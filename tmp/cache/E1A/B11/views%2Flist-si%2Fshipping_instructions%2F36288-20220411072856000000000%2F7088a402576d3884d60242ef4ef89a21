@@ -1,0 +1,45 @@
+o: ActiveSupport::Cache::Entry:@valueI"µ  <tr class="">
+    <td>
+      <a href="/shipping_instructions/36288?year=2022" title="Show Shipping Instruction"><i class="icon-eye-open icon-large"></i></a>
+
+      <a href="/shipping_instructions/36288/edit?year=2022" title="Edit Shipping Instruction"><i class="icon-edit-sign icon-large"></i></a>
+
+      <a href="/shipping_instructions/36288/email?year=2022" target="_blank" title="Email"><i class="icon icon-envelope"></i></a>
+
+          <div>
+              <a data-confirm="Already update SI data?" href="/createBL/36288">Create BL</a>
+          </div>
+          <div>
+            <a data-confirm="Are you sure?" href="/shipping_instructions/36288/cancel?year=2022">Cancel SI</a>
+          </div>
+    </td>
+    <td>
+      IBL221128
+      
+      
+    </td>
+    <td>2810212006 - 1ST</td>
+    <td>PT. SMART TBK</td>
+    <td>4x20FT FLEXIBAG</td>
+    <td>YANGPU, CHINA</td>
+    <td>25-Apr-2022</td>
+    <td>11-Apr-2022</td>
+    <td>SEALAND</td>
+    <td>TBA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>217726680</td>
+    <td>217726680</td>
+    <td>EXPORT (OCEAN FREIGHT, FLEXI BAG)</td>
+    <td>Edwin</td>
+    <td class="hidden disable">April 2022</td>
+    <td class="hidden disable">04/25/2022</td>
+    <td class="hidden disable row_id">36288</td>
+    <td class="hidden disable ibl_ref">IBL221128</td>
+    <td class="hidden disable status">
+      
+      
+    </td>
+    <td class="hidden disable additional_si">false</td>
+  </tr>
+:ET:@created_atf1649688109.0058992:@expires_in0

@@ -1,0 +1,89 @@
+<div class="page-header">
+  <h3>Shipper : <%= @shipper.company_name %></h3>
+</div>
+
+<% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<style type="text/css">
+  .shipper_field{
+    margin-bottom: 0!important;
+    border: none!important;
+    padding: 0!important;
+    float: left;
+    min-width: 115px;
+    max-width: 134px;
+    width: 100%;
+    text-align: right;
+  }
+  .shipper_field, .shipper_field:focus{
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important; 
+  }
+  .shipper_description{
+    min-width: 170px;
+    max-width: 275px;
+    width: 93%;
+    text-align: left;
+  }
+</style>
+
+<%= form_for(@shipper, url: update_charges_shipper_path(@shipper)) do |f| %>
+  <% if @shipper.errors.any? %>
+  <div class="alert alert-error">
+    <ul class="unstyled">
+      <% @shipper.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+  <% end %>
+  <div id="shipper-description" style="margin-top: 10px">
+    <table border="1">
+      <thead>
+        <tr>
+          <th width="20">NO</th>
+          <th width="300">DESCRIPTION</th>
+          <th style="width:134px">USD</th>
+          <th style="width:134px">IDR</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% count = 1 %>
+        <%= f.fields_for :shipper_items do |builder| %>
+          <%= render 'shipper_item_fields', :f => builder, :count => count %>
+          <% count += 1 %>
+        <% end %>
+      </tbody>
+      <tfoot>
+      </tfoot>
+    </table>
+  </div>
+  <div class="actions" style="margin-top: 20px">
+    <!-- <button type="submit" class="btn btn-primary" name="input"> Input</button> -->
+    <button type="submit" class="btn btn-primary"><i class="icon-save"></i> Save Charges</button>
+    <a class="btn" href="<%= shippers_path %>"><i class="icon-reply"></i> Back</a>
+  </div>
+<% end %>
+
+<script type="text/javascript">
+  // $(document).ready(function(){
+    $(".shipper_description").livequery(function(){
+      $(this).typeahead({
+        source: [
+          <% @details.each do |c| %>
+            "<%= c.description %>",
+          <% end %>
+        ]
+      });
+    });
+
+    $("table tbody tr:not('.hidden'):last td:eq(1) input").livequery(function(){
+      $(this).focusout(function(){      
+        if($("table tbody tr:not('.hidden'):last td:eq(1) input").val() != "")
+          add_shipper_fields();
+      })
+    });
+  // })
+</script>

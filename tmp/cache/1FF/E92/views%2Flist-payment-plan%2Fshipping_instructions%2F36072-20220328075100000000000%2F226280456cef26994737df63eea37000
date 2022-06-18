@@ -1,0 +1,25 @@
+o: ActiveSupport::Cache::Entry:@valueI"    <tr>
+      <td data-no-turbolink="true">
+                <a data-confirm="Detail cost is empty. Proceed?" href="/payments/calculate_invoice?sid=36072&amp;year=2022">Input</a>
+          
+      </td>
+      <td>IBL220953</td>
+      <td></td>
+      <td></td>
+      <td>10x20FT</td>
+      <td>MERATUS LINE</td>
+      <td>PT. ASIANAGRO AGUNGJAYA</td>
+      <td>TG. PRIOK, JAKARTA, INDONESIA</td>
+      <td>QINGDAO </td>
+      <td></td>
+      <td></td>
+      <td>25-Apr-2022</td>
+      <td>No</td>
+      <td>On Going</td>
+      <td class="hidden disable">April 2022</td>
+      <td class="hidden disable">04/25/2022</td>
+      <td class="hidden disable row_id">36072</td>
+      <td class="hidden disable ibl_ref">IBL220953</td>
+      <td class="hidden disable row_ref_id"></td>
+    </tr>
+:ET:@created_atf1648566529.6737075:@expires_in0

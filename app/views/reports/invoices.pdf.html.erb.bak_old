@@ -1,0 +1,72 @@
+<style type="text/css">
+  .clearfix {
+    clear: both;
+  }
+
+  #report-title {
+    font-family: Arial;
+    font-size: 20pt; /*30pt;*/
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  table > thead > tr > th, table > tbody > tr > td, ul > li {
+    font-family: Arial;
+    font-size: 7pt; /*12pt;*/
+  }
+
+  table > thead > tr > th {
+    background: yellow;
+  }
+
+  table > thead > tr > th, table > tbody > tr > td {
+    padding: 5px;
+  }
+</style>
+<div style="width: 100%">
+  <h3 id="report-title"><%= params[:invoice_type] %></h3>
+  <table style="width: 100%" border="1">
+    <thead>
+    <tr>
+      <th>Invoice No</th>
+      <th>IBL Ref</th>
+      <th>Currency</th>
+      <th>Customer</th>
+      <th>Shipper</th>
+      <th>Destination</th>
+      <th>Volume</th>
+      <th width="20%">Order Type</th>
+      <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @invoices.each do |invoice| %>
+      <% cache_if((invoice.is_cancel == 1 || invoice.status == 3), ["report-invoices", invoice]) do %>
+        <tr>
+          <td><%= invoice.try(:no_invoice) || invoice.try(:no_dbn) || invoice.try(:no_note) %></td>
+          <td><%= invoice.ibl_no %></td>
+          <td><%= invoice.currency_code %></td>
+          <td><%= invoice.customer_ori %></td>
+          <td><%= invoice.to_shipper %></td>
+          <td><%= invoice.destination %></td>
+          <td>
+            <%=
+                invoice.shipping_instruction.si_containers.map { |c| (c.container.container_type == "LCL" ?
+                        "#{number_with_precision(c.volum, precision: 3, delimiter: ',')} M3 #{c.container.container_type}" :
+                        "#{c.volum}x#{c.container.container_type}") }.join(" & ")
+            %>
+          </td>
+          <td><%= invoice.shipping_instruction.order_type_text %></td>
+          <td>
+            <% if invoice.is_cancel == 1 %>
+              Cancel
+            <% else %>
+              <%= invoice.status_text(invoice.status) %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,26 @@
+<%= render 'commons/pdf' %>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <table style="width: 100%" border="1">
+    <thead>
+      <tr>
+        <th width="200">Carrier</th>
+        <th width="50">Currency</th>
+        <th width="200">Bank</th>
+        <th width="250">Account Name</th>
+        <th width="150">Account No</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @results.each do |carrier_bank| %>
+        <tr>
+          <td><%= carrier_bank.carrier.name %></td>
+          <td><%= carrier_bank.currency %></td>
+          <td><%= carrier_bank.bank_name %></td>
+          <td><%= carrier_bank.acc_name %></td>
+          <td><%= carrier_bank.acc_no %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

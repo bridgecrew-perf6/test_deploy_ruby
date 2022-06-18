@@ -1,0 +1,45 @@
+o: ActiveSupport::Cache::Entry:@valueI"Ñ  <tr class="">
+    <td>
+      <a href="/shipping_instructions/35945?year=2022" title="Show Shipping Instruction"><i class="icon-eye-open icon-large"></i></a>
+
+      <a href="/shipping_instructions/35945/edit?year=2022" title="Edit Shipping Instruction"><i class="icon-edit-sign icon-large"></i></a>
+
+      <a href="/shipping_instructions/35945/email?year=2022" target="_blank" title="Email"><i class="icon icon-envelope"></i></a>
+
+          <div>
+              <a data-confirm="Already update SI data?" href="/createBL/35945">Create BL</a>
+          </div>
+          <div>
+            <a data-confirm="Are you sure?" href="/shipping_instructions/35945/cancel?year=2022">Cancel SI</a>
+          </div>
+    </td>
+    <td>
+      IBL220849
+      
+      
+    </td>
+    <td>220118/II/SI/CS</td>
+    <td>PT. INTRADITA PROSIMPEX</td>
+    <td>1x40HQ DRY</td>
+    <td>NINGBO, CHINA</td>
+    <td>30-Mar-2022</td>
+    <td>18-Mar-2022</td>
+    <td>GOLD STAR LINE LTD</td>
+    <td>TO ORDER</td>
+    <td>SHENZHEN DAWEI SUPPLY CHAIN MANAGEMENT CO, LTD</td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>GOSUJKT8082277</td>
+    <td></td>
+    <td> (OCEAN FREIGHT)</td>
+    <td>Nadya</td>
+    <td class="hidden disable">March 2022</td>
+    <td class="hidden disable">03/30/2022</td>
+    <td class="hidden disable row_id">35945</td>
+    <td class="hidden disable ibl_ref">IBL220849</td>
+    <td class="hidden disable status">
+      
+      
+    </td>
+    <td class="hidden disable additional_si">false</td>
+  </tr>
+:ET:@created_atf1648209195.6271338:@expires_in0

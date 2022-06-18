@@ -1,0 +1,45 @@
+o: ActiveSupport::Cache::Entry:@valueI"Û  <tr class="">
+    <td>
+      <a href="/shipping_instructions/36289?year=2022" title="Show Shipping Instruction"><i class="icon-eye-open icon-large"></i></a>
+
+      <a href="/shipping_instructions/36289/edit?year=2022" title="Edit Shipping Instruction"><i class="icon-edit-sign icon-large"></i></a>
+
+      <a href="/shipping_instructions/36289/email?year=2022" target="_blank" title="Email"><i class="icon icon-envelope"></i></a>
+
+          <div>
+              <a data-confirm="Already update SI data?" href="/createBL/36289">Create BL</a>
+          </div>
+          <div>
+            <a data-confirm="Are you sure?" href="/shipping_instructions/36289/cancel?year=2022">Cancel SI</a>
+          </div>
+    </td>
+    <td>
+      IBL221129
+      
+      
+    </td>
+    <td>220232/IV/SI/CS</td>
+    <td>PT. INTRADITA PROSIMPEX</td>
+    <td>1x40HQ DRY</td>
+    <td>BRISBANE, AUSTRALIA</td>
+    <td>24-Apr-2022</td>
+    <td>11-Apr-2022</td>
+    <td>ANL CONTAINER LINE</td>
+    <td>GIDEON SERVICES PTY LTD</td>
+    <td>GIDEON SERVICES PTY LTD</td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>KTJ0237245</td>
+    <td>KTJ0237245</td>
+    <td>EXPORT (OCEAN FREIGHT)</td>
+    <td>Nadya</td>
+    <td class="hidden disable">April 2022</td>
+    <td class="hidden disable">04/24/2022</td>
+    <td class="hidden disable row_id">36289</td>
+    <td class="hidden disable ibl_ref">IBL221129</td>
+    <td class="hidden disable status">
+      
+      
+    </td>
+    <td class="hidden disable additional_si">false</td>
+  </tr>
+:ET:@created_atf1649688108.9761906:@expires_in0

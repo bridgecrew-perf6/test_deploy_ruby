@@ -1,0 +1,25 @@
+o: ActiveSupport::Cache::Entry:@valueI"2    <tr>
+      <td data-no-turbolink="true">
+                <a data-confirm="Detail cost is empty. Proceed?" href="/payments/calculate_invoice?sid=36130&amp;year=2022">Input</a>
+          
+      </td>
+      <td>IBL221000</td>
+      <td>6331158440</td>
+      <td></td>
+      <td>1x40HQ DRY</td>
+      <td>PT. OCEAN GLOBAL SHIPPING (COSCO)</td>
+      <td>PT. INTRADITA PROSIMPEX</td>
+      <td>JAKARTA, INDONESIA</td>
+      <td>BRISBANE, AUSTRALIA</td>
+      <td></td>
+      <td></td>
+      <td>04-Apr-2022</td>
+      <td>No</td>
+      <td>On Going</td>
+      <td class="hidden disable">April 2022</td>
+      <td class="hidden disable">04/04/2022</td>
+      <td class="hidden disable row_id">36130</td>
+      <td class="hidden disable ibl_ref">IBL221000</td>
+      <td class="hidden disable row_ref_id"></td>
+    </tr>
+:ET:@created_atf1648734069.8140655:@expires_in0

@@ -1,0 +1,166 @@
+<%= render 'commons/pdf' %>
+<style type="text/css">
+  .btc {
+    border-top-color: white;
+  }
+  .bbc {
+    border-bottom-color: white;
+  }
+  table {
+    border-collapse: collapse;
+  }
+  thead th, tbody td {
+    border: 1px solid black;
+  }
+</style>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <% @results.each do |key, value| %>
+    <%  total_balance = {}
+        total_balance["IDR"] = 0
+        total_balance["USD"] = 0
+        
+        has_idr = false
+        has_usd = false
+    %>
+
+    <table style="width: 100%" border="0">
+      <thead>
+        <tr>
+          <th width="100">Customer</th>
+          <th width="150">IBL Deposit</th>
+          <th width="100">Use Deposit</th>
+          <th width="100">Overpaid</th>
+          <th width="100">Balance</th>
+          <th width="150">IBL Ref</th>
+          <th width="50">Close Ref</th>
+          <th width="100">Date</th>
+          <th width="125">Close Deposit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% carrier = true %>
+        <% ibl_ref_count = value.map{|a| a.count}.sum(&:to_i) %>
+        <% value.each do |reference| %>
+          <% ibl_ref = true %>
+          <%  balance = {}
+              balance["IDR"] = 0
+              balance["USD"] = 0
+          %>
+          
+          <% row_count = reference.count %>
+          <% currency = "IDR" %>
+          <% reference.each_with_index do |row, index| %>
+            <tr>
+              <% if row.kind_of? InvoicePayment %>
+                <% currency = row.currency_2 %>
+                <%
+                  has_idr = true if row.currency_2 == "IDR"
+                  has_usd = true if row.currency_2 == "USD"
+                %>
+                <% balance[row.currency_2] += row.deposit.to_f %>
+                <%  balance_text = []
+                    balance_text.push money_with_currency_format(balance["IDR"], "IDR") unless balance["IDR"] == 0
+                    balance_text.push money_with_currency_format(balance["USD"], "USD") unless balance["USD"] == 0
+                %>
+                
+                <% if carrier %>
+                  <td rowspan="<%= ibl_ref_count %>"><%= key %></td>
+                  <% carrier = false %>
+                <% end %>
+
+                <% if ibl_ref %>
+                  <td rowspan="<%= row_count %>"><%= row.ibl_deposit_invoice_no %></td>
+                  <% ibl_ref = false %>
+                <% end %>
+                <td class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"></td>
+                <td style="text-align:right;" class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"><%= money_with_currency_format(row.deposit, row.currency_2) %></td>
+                <td style="text-align:right;" class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"><%= balance_text.join(" ") %></td>
+                <td class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"></td>
+                <td class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"><%= row.close_ref %></td>
+                <td class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"><%= si_date_format row.payment_date %></td>
+                <td class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"><%=  %></td>
+              
+              <% elsif row.kind_of? InvoiceDeposit %>
+                
+                <% balance[row.currency_2] -= row.amount.to_f %>
+                <%  balance_text = []
+                    balance_text.push money_with_currency_format(balance["IDR"], "IDR") unless balance["IDR"] == 0
+                    balance_text.push money_with_currency_format(balance["USD"], "USD") unless balance["USD"] == 0
+
+                    balance_text.push "0 IDR" if row.currency_2 == "IDR" && balance["IDR"] == 0
+                    balance_text.push "0 USD" if row.currency_2 == "USD" && balance["USD"] == 0
+                %>
+
+                <% if carrier %>
+                  <td rowspan="<%= ibl_ref_count %>"><%= key %></td>
+                  <% carrier = false %>
+                <% end %>
+
+                <% if ibl_ref %>
+                  <td rowspan="<%= reference_count %>"><%= row.ibl_deposit_invoice_no %></td>
+                  <% ibl_ref = false %>
+                <% end %>
+                <td style="text-align:right;" class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"><%= money_with_currency_format(row.amount, row.currency_2) %></td>
+                <td class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"></td>
+                <td style="text-align:right;" class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"><%= balance_text.join(" ") %></td>
+                <td class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"><%= row.ibl_deposit_invoice_no %></td>
+                <td class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"><%= row.close_ref %></td>
+                <td class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"><%= si_date_format row.payment_date %></td>
+                <td class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"><%=  %></td>
+
+              <% elsif row.kind_of? InvoiceCloseDeposit %>
+                
+                <% balance[currency] -= row.amount.to_f %>
+                <%  balance_text = []
+                    balance_text.push money_with_currency_format(balance["IDR"], "IDR") unless balance["IDR"] == 0
+                    balance_text.push money_with_currency_format(balance["USD"], "USD") unless balance["USD"] == 0
+
+                    balance_text.push "0 IDR" if currency == "IDR" && balance["IDR"] == 0
+                    balance_text.push "0 USD" if currency == "USD" && balance["USD"] == 0
+                %>
+
+                <% if carrier %>
+                  <td rowspan="<%= ibl_ref_count %>"><%= key %></td>
+                  <% carrier = false %>
+                <% end %>
+
+                <% if ibl_ref %>
+                  <td rowspan="<%= reference_count %>"><%= [row.ibl_ref, row.invoice_no].join(" - ") %></td>
+                  <% ibl_ref = false %>
+                <% end %>
+                <td style="text-align:right;" class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"><%= money_with_currency_format(row.amount, currency) %></td>
+                <td class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"></td>
+                <td style="text-align:right;" class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"><%= balance_text.join(" ") %></td>
+                <td class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"><%# [row.ibl_ref, row.invoice_no].join(" - ") %></td>
+                <td class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"><%# row.close_ref %></td>
+                <td class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"><%= si_date_format row.payment_date %></td>
+                <td class="<%= (index == row_count-1) ? "btc" : "btc bbc" %>"><pre class="free"><%= row.note %></pre></td>
+
+              <% end %>
+            </tr>
+          <% end %>
+
+          <%  total_balance["IDR"] += balance["IDR"]
+              total_balance["USD"] += balance["USD"]
+          %>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <%  total_balance_text = []
+              total_balance_text.push money_with_currency_format(total_balance["IDR"], "IDR") unless total_balance["IDR"] == 0
+              total_balance_text.push money_with_currency_format(total_balance["USD"], "USD") unless total_balance["USD"] == 0
+
+              total_balance_text.push "0 IDR" if has_idr && total_balance["IDR"] == 0
+              total_balance_text.push "0 USD" if has_usd && total_balance["USD"] == 0
+          %>
+          <td><strong>TOTAL</strong></td>
+          <td style="text-align:right;"><%= total_balance_text.join("<br>").html_safe %></td>
+          <td colspan="5"></td>
+        </tr>
+      </tfoot>
+    </table>
+    <br>
+  <% end %>
+</div>

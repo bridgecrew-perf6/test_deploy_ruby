@@ -1,0 +1,106 @@
+<% columns = @report.columns %>
+<% @invoices.sort_by(&:customer).group_by(&:customer).each do |customer, invoices| %>
+  <%
+    head = []
+    head.push "Payment Date\t"
+    head.push "Invoice No\t"
+    head.push "Customer\t"
+    head.push "Amount\t"
+  %>
+PAID INVOICE <%= customer %>  
+<%= head.join("").html_safe %>
+  <%
+    total_usd = 0
+    total_idr = 0
+  %>
+  <% invoices.sort_by(&:invoice_date).each do |row| %>
+    <% row.invoice_payments.order(payment_date: :asc).each do |reference| %>
+      <%
+        total_usd += reference.amount_paid.to_f + reference.rounding.to_f + reference.bank_charge.to_f + reference.discount.to_f + reference.short_paid.to_f + reference.deposit.to_f if row.currency_code == "USD"
+        total_idr += reference.amount_paid.to_f + reference.rounding.to_f + reference.bank_charge.to_f + reference.discount.to_f + reference.short_paid.to_f + reference.deposit.to_f if row.currency_code == "IDR"
+      %>
+      <% bodys = [] %>
+      <%# cache(["report-list-cc-paid-invoice-xls", row]) do %>
+        <% body = [] %>
+        <%
+          body.push "#{si_date_format reference.payment_date}\t"
+          body.push "#{row.shipping_instruction.ibl_ref} - #{row.invoice_no}\t"
+          body.push "#{customer}\t"
+          body.push "#{money_with_currency_format(reference.amount_paid, row.currency_code)}\t"
+        %>
+        <% bodys << body.join("") unless body.blank? %>
+        <% body = [] %>
+        <% 
+          unless reference.rounding.to_f == 0
+            body.push "#{si_date_format reference.payment_date}\t"
+            body.push "#{row.shipping_instruction.ibl_ref} - ROUNDING\t"
+            body.push "#{customer}\t"
+            body.push "#{money_with_currency_format(reference.rounding, row.currency_code)}\t"
+          end
+        %>
+        <% bodys << body.join("") unless body.blank? %>
+        <% body = [] %>
+        <%
+          unless reference.bank_charge.to_f == 0
+            body.push "#{si_date_format reference.payment_date}\t"
+            body.push "#{row.shipping_instruction.ibl_ref} - BANK CHARGE\t"
+            body.push "#{customer}\t"
+            body.push "#{money_with_currency_format(reference.bank_charge, row.currency_code)}\t"
+          end
+        %>
+        <% bodys << body.join("") unless body.blank? %>
+        <% body = [] %>
+        <%
+          unless reference.discount.to_f == 0
+            body.push "#{si_date_format reference.payment_date}\t"
+            body.push "#{row.shipping_instruction.ibl_ref} - DISCOUNT\t"
+            body.push "#{customer}\t"
+            body.push "#{money_with_currency_format(reference.discount, row.currency_code)}\t"
+          end
+        %>
+        <% bodys << body.join("") unless body.blank? %>
+        <% body = [] %>
+        <%
+          unless reference.short_paid.to_f == 0
+            body.push "#{si_date_format reference.payment_date}\t"
+            body.push "#{row.shipping_instruction.ibl_ref} - SHORT PAID\t"
+            body.push "#{customer}\t"
+            body.push "#{money_with_currency_format(reference.short_paid, row.currency_code)}\t"
+          end
+        %>
+        <% bodys << body.join("") unless body.blank? %>
+        <% body = [] %>
+        <%
+          unless reference.deposit.to_f == 0
+            body.push "#{si_date_format reference.payment_date}\t"
+            body.push "#{row.shipping_instruction.ibl_ref} - DEPOSIT\t"
+            body.push "#{customer}\t"
+            body.push "#{money_with_currency_format(reference.deposit, row.currency_code)}\t"
+          end
+        %>
+        <% bodys << body.join("") unless body.blank? %>
+<%= bodys.join("\r\n").html_safe %>
+      <%# end %>
+    <% end %>
+  <% end %>
+  <% unless total_usd == 0 && total_idr == 0 %>
+    <% index = columns.index("4") %>
+    <%
+      total = []
+      total.push "#{money_with_currency_format(total_usd, 'USD')}" if total_usd != 0
+      total.push "#{money_with_currency_format(total_idr, 'IDR')}" if total_idr != 0
+    %>
+    <%
+      foots = []
+      total.each_with_index do |v, i|
+        foot = []
+        foot.push "#{i==0 ? 'Total' : ''}\t"
+        (2).times{ foot.push "\t" } 
+        foot.push v.html_safe
+        foots.push foot.join("")
+      end
+    %>
+<%= foots.join("\r\n").html_safe %>
+  <% end %>
+
+<% end %>

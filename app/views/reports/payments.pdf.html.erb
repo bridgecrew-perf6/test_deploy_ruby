@@ -1,0 +1,80 @@
+<style type="text/css">
+  .clearfix {
+    clear: both;
+  }
+
+  #report-title {
+    font-family: Arial;
+    font-size: 20pt; /*30pt;*/
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  table > thead > tr > th, table > tbody > tr > td, ul > li {
+    font-family: Arial;
+    font-size: 7pt; /*12pt;*/
+  }
+
+  table > thead > tr > th {
+    background: yellow;
+  }
+
+  table > thead > tr > th, table > tbody > tr > td {
+    padding: 5px;
+  }
+</style>
+<div style="width: 100%">
+  <h3 id="report-title">PAYMENTS</h3>
+  <table style="width: 100%" border="1">
+    <thead>
+    <tr>
+      <th>Payment No</th>
+      <th>IBL Ref</th>
+      <th>Shipper</th>
+      <th>Destination</th>
+      <th>Carrier</th>
+      <th>Amount</th>
+      <th>ETD Vessel</th>
+      <th>Payment Date</th>
+      <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @payments.each do |payment| %>
+      <% cache_if((payment.is_cancel == 1 || payment.status == 1), ["report-payments", payment]) do %>
+        <% payment.payment_references.each do |reference| %>
+          <tr>
+            <td><%= payment.payment_no %></td>
+            <td><%= reference.ibl_ref %></td>
+            <% if reference.shipping_instruction.nil? %>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td align="right"><%= number_with_precision reference.amount, precision: 2, delimiter: ", " %> <%= payment.payment_type %></td>
+              <td>&nbsp;</td>
+            <% else %>
+              <td><%= reference.shipping_instruction.shipper_company_name %></td>
+              <td><%= reference.shipping_instruction.final_destination %></td>
+              <td><%= reference.shipping_instruction.carrier %></td>
+              <td align="right"><%= number_with_precision reference.amount, precision: 2, delimiter: "," %> <%= payment.payment_type %></td>
+              <td>
+                <% if reference.shipping_instruction.vessels.any? %>
+                  <%= si_date_format reference.shipping_instruction.vessels.first.etd_date %>
+                <% end %>
+              </td>
+            <% end %>
+            <td><%= si_date_format payment.payment_date %></td>
+            <td>
+              <% if payment.is_cancel == 1 %>
+                Cancel
+              <% else %>
+                <%= payment.status_text %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    <% end %>
+    </tbody>
+  </table>
+</div>

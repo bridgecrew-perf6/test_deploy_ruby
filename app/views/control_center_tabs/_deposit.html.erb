@@ -1,0 +1,90 @@
+<%= form_for(@report, url: report_control_center_deposits_path, html: { class: "form-inline", target: "_blank"}) do |f| %>
+  <div id="report_params"></div>
+  <div>
+    <button type="submit" class="btn btn-primary">View Report</button>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exFilterExternallyTriggered(controlCenterDepositTable);">Filter</button>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exResetAllFilters(controlCenterDepositTable);">Reset Filter</button>
+    <button type="button" class="btn btn-primary" onclick="controlCenterDepositTable.state.clear();window.location.reload();" style="float: right;">Refresh</button>
+  </div>
+<% end %>
+
+<div class="clearfix"></div>
+
+<% columns = { 
+              customer: "Customer",
+              status: "Status"
+            } 
+  
+  filter = "<table><tr style='vertical-align: top;'><td>Advance Filter :</td>"
+  columns.each_with_index do |(key, value), index|
+    filter+="<td style='vertical-align: top;'><span>#{value}</span><span id=#{key}></span></td>"
+  end
+  filter+="</tr></table>"
+%>
+
+<div>
+  <div class="span3" style="margin-left: 0;">Format :
+    <select name="format" id="format">
+      <option value="pdf">PDF</option>
+      <option value="xls">XLS</option>
+    </select>
+  </div>
+<!--   
+  <div class="span3">Filter By :
+    <span id="monthly"></span>
+  </div>
+
+  <div class="span3">&nbsp;
+    <span id="date_range"></span>
+  </div>
+ -->
+  <div class="clearfix"></div>
+  <br/>
+
+  <%= filter.html_safe %>
+
+  <div class="clearfix"></div>
+  <br/>
+</div>
+
+<div class="clearfix"></div>
+
+<table class="table table-striped table-bordered" id="control_center_deposit_table" width="100%">
+  <thead>
+  <tr>
+    <th width="10%" class="disable">Actions</th>
+    <th>Customer</th>
+    <th>IBL Deposit</th>
+    <th>IDR Balance</th>
+    <th>USD Balance</th>
+    <th class="hidden disable">Filter Monthly</th>
+    <th class="hidden disable">Filter Date</th>
+    <th class="hidden disable">Row Id</th>
+    <th class="hidden disable">IBL Ref</th>
+    <th class="hidden disable">Status</th>
+    <th class="hidden disable">Carrier Id</th>
+    <th class="hidden disable">Payment Type</th>
+  </tr>
+  </thead>
+  <tfoot>
+    <tr>
+      <th colspan="3" style="text-align:left">Total :</th>
+      <th style="text-align:right"></th>
+      <th style="text-align:right"></th>
+      <td colspan="6" class="hidden disable"></td>
+    </tr>
+  </tfoot>
+  <tbody>
+    <% @invoices.group_by(&:ibl_ref).each do |ibl_ref, references| %>
+      <% references.group_by{|a| a.close_payment_histories.last.customer}.each do |customer, refs2| %>
+        <% refs2.group_by{|a| a.close_payment_histories.last.currency_2}.each do |currency, refs3| %>
+          <%= render 'control_center_deposits/row', row: refs3.first, currency: currency, customer: customer %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
+<script type="text/javascript">
+  $(document).on('ready page:change', ready);
+  $(document).on('page:fetch', function() { controlCenterDepositTable.destroy(); });
+</script>

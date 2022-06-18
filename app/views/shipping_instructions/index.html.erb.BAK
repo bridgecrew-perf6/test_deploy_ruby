@@ -1,0 +1,601 @@
+<div class="page-header">
+  <h3>List Shipping Intructions</h3>
+</div>
+<% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<!-- <form action="<%# shipping_instructions_path %>" method="get" class="form-inline" target="_blank" data-turboform> -->
+<!-- <form action="<%= report_shipping_instructions_path %>" method="post" class="form-inline" target="_blank"> -->
+  <!-- <div id="report_params"></div> -->
+  <!-- <div> -->
+    <%# link_to 'New Shipping Instruction', new_shipping_instruction_path, :class => "btn btn-primary" %>
+    <%# link_to 'New Additional SI', new_add_si_shipping_instructions_path, :class => "btn btn-primary", style: "margin-left: 10px", "data-no-turbolink" => true %>
+    <!--<a style="margin-left: 10px" href="#myModal" role="button" class="btn" data-toggle="modal">Show / Hide Columns</a>-->
+
+    <!-- <button type="submit" class="btn btn-primary">View Report</button> -->
+    <!-- <button type="button" class="btn btn-primary" onclick="summary();">View Summary</button> -->
+    <!-- <button type="button" class="btn btn-primary" onclick="yadcf.exResetAllFilters(shippingInstructionsTable);" style="float: right;">Reset all column filters</button> -->
+  <!-- </div> -->
+
+  <!--
+  <fieldset>
+    <div style="margin-top: 15px">
+      <input type="text" name="query" placeholder="Search Keywords" value="<%= params[:query] %>"/>
+      <label class="checkbox">
+        <input type="checkbox" name="closed" value="1" <%# 'checked="checked"' if params[:closed].to_i == 1 %>>
+        Closed
+      </label>
+      <label class="checkbox">
+        <input type="checkbox" name="cancel" value="1" <%# 'checked="checked"' if params[:cancel].to_i == 1 %>>
+        Cancel
+      </label>
+      <button type="submit" class="btn btn-success" data-disable-with="Searching...">Search</button>
+      <%# link_to 'Remove Search', shipping_instructions_path, :class => "btn" %>
+    </div>
+  </fieldset>
+  -->
+<!-- </form> -->
+
+<%= form_for(@report, url: report_shipping_instructions_path, html: { class: "form-inline", target: "_blank"}) do |f| %>
+  <div id="report_params"></div>
+  <div>
+    <%= link_to 'New Shipping Instruction', new_shipping_instruction_path, :class => "btn btn-primary" %>
+    <%= link_to 'New Additional SI', new_add_si_shipping_instructions_path, :class => "btn btn-primary", style: "margin-left: 10px", "data-no-turbolink" => true %>
+    <button type="submit" class="btn btn-primary">View Report</button>
+    <button type="button" class="btn btn-primary" onclick="summary();">View Summary</button>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exResetAllFilters(shippingInstructionsTable);" style="float: right;">Reset all column filters</button>
+  </div>
+<% end %>
+
+<!-- Modal -->
+<!--<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Show / Hide Columns</h3>
+  </div>
+  <div class="modal-body">
+    <ul class="unstyled columns">
+      <li><label><input type="checkbox" id="1" checked/> IBL SI No</label></li>
+      <li><label><input type="checkbox" id="2" checked/> Shipper SI No</label></li>
+      <li><label><input type="checkbox" id="3" checked/> Shipper</label></li>
+      <li><label><input type="checkbox" id="4" checked/> Volume</label></li>
+      <li><label><input type="checkbox" id="5" checked/> Destination</label></li>
+      <li><label><input type="checkbox" id="6" checked/> ETD Vessel</label></li>
+      <li><label><input type="checkbox" id="7" checked/> SI Date</label></li>
+      <li><label><input type="checkbox" id="8" checked/> Carrier</label></li>
+      <li><label><input type="checkbox" id="9"/> Consignee</label></li>
+      <li><label><input type="checkbox" id="10"/> Notify Party</label></li>
+      <li><label><input type="checkbox" id="11"/> POL</label></li>
+      <li><label><input type="checkbox" id="12"/> Booking No</label></li>
+      <li><label><input type="checkbox" id="13"/> MBL No</label></li>
+      <li><label><input type="checkbox" id="14"/> Order Type</label></li>
+    </ul>
+    <style type="text/css">
+      .unstyled li {
+        float: left;
+        width: 50%;
+      }
+    </style>
+  </div>
+</div>
+-->
+<div class="clearfix"></div>
+
+<% columns = { ibl_ref: "IBL SI No",
+              shipper_reference: "Shipper SI No",
+              shipper_name: "Shipper",
+              volume: "Volume",
+              final_destination: "Destination",
+              first_etd_date: "ETD Vessel",
+              si_date: "SI Date",
+              carrier: "Carrier",
+              consignee_name: "Consignee",
+              first_line_notify_party: "Notify Party",
+              port_of_loading: "POL",
+              booking_no: "Booking No",
+              master_bl_no: "MBL No",
+              order_type_text: "Order Type" } 
+  
+  filter = ""
+  columns.each_with_index do |(key, value), index|
+    # filter+="<span>#{value} :</span><span id=#{key}></span>"
+    filter+="<div class=\"span3\"><span>#{value} :</span><span id=#{key}></span></div>"
+    filter+="<div class=\"clearfix\"></div>" if (index+1)%4 == 0
+  end
+%>
+<div>
+  <div class="span3">Format :
+    <span id="si_date_format">
+      <select name="format" id="format">
+        <option value="pdf">PDF</option>
+        <option value="xls">XLS</option>
+      </select>
+    </span>
+  </div>
+  
+  <div class="span3">Filter By :
+    <span id="si_date_month"></span>
+  </div>
+
+  <div class="span3">&nbsp;
+    <span id="si_date_range"></span>
+  </div>
+
+  <div class="clearfix"></div>
+  <br/>
+
+  <%= filter.html_safe %>
+
+  <div class="clearfix"></div>
+  <br/>
+  <div id="externaly_triggered_wrapper-controls" class="text-center">
+    <button type="button" class="btn btn-primary" onclick="yadcf.exFilterExternallyTriggered(shippingInstructionsTable);">Filter</button>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exResetAllFilters(shippingInstructionsTable);">Reset</button>
+  </div>
+</div>
+
+<div class="clearfix"></div>
+
+<%# will_paginate @collection, renderer: BootstrapPagination::Rails %>
+
+<table class="table table-striped table-bordered" id="shipping_instructions_table" width="100%">
+  <thead>
+  <tr>
+    <th width="10%" class="disable">Actions</th>
+    <th>IBL SI No</th>
+    <th>Shipper SI No</th>
+    <th>Shipper</th>
+    <th>Volume</th>
+    <th>Destination</th>
+    <th>ETD Vessel</th>
+    <th>SI Date</th>
+    <th>Carrier</th>
+    <th>Consignee</th>
+    <th>Notify Party</th>
+    <th>POL</th>
+    <th>Booking No</th>
+    <th>MBL No</th>
+    <th>Order Type</th>
+    <th class="hidden disable">Filter Monthly</th>
+    <th class="hidden disable">Filter Date</th>
+    <th class="hidden disable">Row Id</th>
+    <th class="hidden disable">IBL Ref</th>
+    <th class="hidden disable">Status</th>
+    <th class="hidden disable">Handle By</th>
+  </tr>
+  </thead>
+  <tbody>
+  <%= render partial: "row", collection: @shipping_instructions %>
+  </tbody>
+</table>
+
+<%= render "commons/summary" %>
+
+<%# will_paginate @collection, renderer: BootstrapPagination::Rails %>
+<script type="text/javascript">
+  var ready;
+  ready = function() {
+    'use strict';
+
+    if(typeof dataTable === 'undefined'){
+      shippingInstructionsTable = $('#shipping_instructions_table').DataTable({
+        order: [[ 1, 'desc' ]],
+        buttons: [
+          'pageLength',
+          {
+            extend: 'colvis',
+            collectionLayout: 'fixed two-column',
+            // columns: ':not(:nth-child(1))',
+            columns: ':not(.disable)',
+            postfixButtons: [ { 
+              text: 'Restore visibility',
+              action: function ( e, dt, node, config ) {
+                dt.columns().visible( true, false );
+                dt.columns( [ 9, 10, 11, 12, 13, 14 ] ).visible(false, false);
+                dt.columns.adjust().draw( false );
+              }
+            } ]
+          },
+          // 'copy', 'csv', 'excel', 'pdf', 'print'
+        ],
+        columnDefs: [
+          { targets: [ 0 ], orderable: false, searchable: false },
+          { targets: [ 9, 10, 11, 12, 13, 14 ], visible: false }, // Consignee, Notify Party, POL, Booking No, MBL No, Order Type
+          // { targets: [ 15, 16, 17, 18, 19 ], visible: false }
+        ]
+      });
+      // shippingInstructionsTable.clear().draw();
+      yadcf.init(shippingInstructionsTable, [
+        // {column_number : 1, filter_container_id: "si_no", filter_type: "auto_complete"},
+        {column_number : 2, filter_container_id: "shipper_reference", filter_type: "auto_complete"},
+        {column_number : 3, filter_container_id: "shipper_name", filter_type: "auto_complete"},
+        {column_number : 4, filter_container_id: "volume", filter_type: "auto_complete", text_data_delimiter: " &amp; "},
+        {column_number : 5, filter_container_id: "final_destination", filter_type: "auto_complete"},
+        {column_number : 6, filter_container_id: "first_etd_date", filter_type: "date", date_format: "dd-M-yy"},
+        {column_number : 7, filter_container_id: "si_date", filter_type: "date", date_format: "dd-M-yy"},
+        {column_number : 8, filter_container_id: "carrier", filter_type: "auto_complete"},
+        {column_number : 9, filter_container_id: "consignee_name", filter_type: "auto_complete"},
+        {column_number : 10, filter_container_id: "first_line_notify_party", filter_type: "auto_complete"},
+        {column_number : 11, filter_container_id: "port_of_loading", filter_type: "auto_complete"},
+        {column_number : 12, filter_container_id: "booking_no", filter_type: "auto_complete"},
+        {column_number : 13, filter_container_id: "master_bl_no", filter_type: "auto_complete"},
+        {column_number : 14, filter_container_id: "order_type_text", filter_type: "auto_complete"},
+        {column_number : 15, filter_container_id: "si_date_month", filter_type: 'select', filter_default_label: "Select a month"},
+        {column_number : 16, filter_container_id: "si_date_range", filter_type: "range_date"},
+        // {column_number : 18, filter_container_id: "status", filter_type: "auto_complete"},
+        {column_number : 18, filter_container_id: "ibl_ref", filter_type: "auto_complete"}
+        // {column_number : 20, filter_container_id: "handle_by", filter_type: "auto_complete"}
+      ], { externally_triggered: true });
+    // }else shippingInstructionsTable.fnClearTable();
+    }else{ shippingInstructionsTable.destroy(); }
+    // shippingInstructionsTable.table().state.clear();
+  }
+</script>
+<script type="text/javascript">
+  var shippingInstructionsTable;
+
+  $(document).ready(ready);
+  // $(document).on('page:load', ready);
+  $(document).on('page:fetch', function() { shippingInstructionsTable.destroy(); });
+  // $(document).on('page:change', ready);
+
+  // var columns = { si_no: "IBL SI No",
+  //                 shipper_reference: "Shipper SI No",
+  //                 shipper_name: "Shipper",
+  //                 volume: "Volume",
+  //                 final_destination: "Destination",
+  //                 first_etd_date: "ETD Vessel",
+  //                 si_date: "SI Date",
+  //                 carrier: "Carrier",
+  //                 consignee_name: "Consignee",
+  //                 first_line_notify_party: "Notify Party",
+  //                 port_of_loading: "POL",
+  //                 booking_no: "Booking No",
+  //                 master_bl_no: "MBL No",
+  //                 order_type_text: "Order Type" };
+  // var filter = $("#filter");
+  // $.each(columns, function(key, value) {
+  //   filter.append('<span>'+value+' :</span><span id="'+key+'"></span>');
+  // });
+
+  // $(document).ready(function(){
+  // $(document).on('page:fetch', function () {
+    // 'use strict';
+     
+    // if ( $.fn.dataTable.isDataTable( '#shipping_instructions_table' ) == false) {
+    //   console.log("datatable false");
+    // } 
+    // shippingInstructionsTable = $('#shipping_instructions_table').DataTable({
+    //   order: [[ 1, 'desc' ]],
+    //   buttons: [
+    //     'pageLength',
+    //     {
+    //       extend: 'colvis',
+    //       collectionLayout: 'fixed two-column',
+    //       columns: ':not(:nth-child(1))',
+    //       postfixButtons: [ { 
+    //         text: 'Restore visibility',
+    //         action: function ( e, dt, node, config ) {
+    //           dt.columns().visible( true, false );
+    //           dt.columns( [ 9, 10, 11, 12, 13, 14 ] ).visible(false, false);
+    //           dt.columns.adjust().draw( false );
+    //         }
+    //       } ]
+    //     },
+    //   ],
+    //   columnDefs: [
+    //     { targets: [ 0 ], orderable: false, searchable: false },
+    //     { targets: [ 9, 10, 11, 12, 13, 14 ], visible: false } // Consignee, Notify Party, POL, Booking No, MBL No, Order Type
+    //   ],
+    //   // initComplete: function () {
+    //   //   $.each(columns, function(key, value) {
+    //   //     filter.append('<span>'+value+' :</span><span id="'+key+'"></span>');
+    //   //   });
+    //   // },
+    //   // footerCallback: function ( row, data, start, end, display ) {
+    //   //       var api = this.api(), data;
+
+    //   //       // // Total over all pages
+    //   //       // total = api
+    //   //       //     .column( 4 )
+    //   //       //     .data()
+    //   //       //     .reduce( function (a, b) {
+    //   //       //         return intVal(a) + intVal(b);
+    //   //       //     }, 0 );
+ 
+    //   //       // // Total over this page
+    //   //       // pageTotal = api
+    //   //       //     .column( 4, { page: 'current'} )
+    //   //       //     .data()
+    //   //       //     .reduce( function (a, b) {
+    //   //       //         return intVal(a) + intVal(b);
+    //   //       //     }, 0 );
+ 
+    //   //       // Update footer
+    //   //       // $( api.column( 4 ).footer() ).html(
+    //   //       //     '$'+pageTotal +' ( $'+ total +' total)'
+    //   //       // );
+    //   //       // alert(api.rows().data());
+    //   //       api.rows({search:'applied'}).every( function ( rowIdx, tableLoop, rowLoop ) {
+    //   //         var rowNode = this.node();
+    //   //         $('#summary').html(api.column( 4 ).data());
+
+    //   //         // $(rowNode).find("td:visible").each(function (){
+    //   //         //   var cellData = $(this).text();
+    //   //         // });
+    //   //       }); 
+    //   //   }
+    // });
+
+    // if ( $.fn.dataTable.isDataTable( '#shipping_instructions_table' ) ) {
+    //   console.log("datatable true");
+    // }  
+
+    // yadcf.init(shippingInstructionsTable, [
+    // // {column_number : 0},
+    // // {column_number : 1, filter_type: "range_number_slider", filter_container_id: "external_filter_container"},
+    // // {column_number : 2, data: ["Yes", "No"], filter_default_label: "Select Yes/No"},
+    // // {column_number : 3, filter_container_id: "shipper_reference", filter_type: "auto_complete", text_data_delimiter: ","},
+    // // {column_number : 4, column_data_type: "html", html_data_type: "text", filter_default_label: "Select tag"}
+    // {column_number : 1, filter_container_id: "si_no", filter_type: "auto_complete"},
+    // {column_number : 2, filter_container_id: "shipper_reference", filter_type: "auto_complete"},
+    // {column_number : 3, filter_container_id: "shipper_name", filter_type: "auto_complete"},
+    // {column_number : 4, filter_container_id: "volume", filter_type: "auto_complete", text_data_delimiter: " &amp; "},
+    // {column_number : 5, filter_container_id: "final_destination", filter_type: "auto_complete"},
+    // {column_number : 6, filter_container_id: "first_etd_date", filter_type: "date", date_format: "dd-M-yy"},
+    // {column_number : 7, filter_container_id: "si_date", filter_type: "date", date_format: "dd-M-yy"},
+    // {column_number : 8, filter_container_id: "carrier", filter_type: "auto_complete"},
+    // {column_number : 9, filter_container_id: "consignee_name", filter_type: "auto_complete"},
+    // {column_number : 10, filter_container_id: "first_line_notify_party", filter_type: "auto_complete"},
+    // {column_number : 11, filter_container_id: "port_of_loading", filter_type: "auto_complete"},
+    // {column_number : 12, filter_container_id: "booking_no", filter_type: "auto_complete"},
+    // {column_number : 13, filter_container_id: "master_bl_no", filter_type: "auto_complete"},
+    // {column_number : 14, filter_container_id: "order_type_text", filter_type: "auto_complete"},
+    // // {column_number : 15, filter_container_id: "si_date_monthly", filter_type: "auto_complete", filter_default_label: "Select a month"},
+    // {column_number : 15, filter_container_id: "si_date_monthly",
+    //   data: [ { value: '1', label: 'January'}, 
+    //           { value: '2', label: 'February'}, 
+    //           { value: '3', label: 'March'}, 
+    //           { value: '4', label: 'April'}, 
+    //           { value: '5', label: 'May'}, 
+    //           { value: '6', label: 'June'}, 
+    //           { value: '7', label: 'July'}, 
+    //           { value: '8', label: 'August'}, 
+    //           { value: '9', label: 'September'}, 
+    //           { value: '10', label: 'October'}, 
+    //           { value: '11', label: 'November'}, 
+    //           { value: '12', label: 'December'}
+    //         ],
+    //   // data: ["January","February","March","April","May","June","July","August","September","October","November","December"],  
+    //   filter_default_label: "Select a month"},
+    // {column_number : 16, filter_container_id: "si_date_range", filter_type: "range_date"},
+    // {column_number : 17, filter_container_id: "status", filter_type: "auto_complete"},
+    // {column_number : 18, filter_container_id: "handle_by", filter_type: "auto_complete"}
+    
+    // ], { externally_triggered: true });
+
+  // });
+
+  // $(document).on( 'preInit.dt', function (e, settings) {
+  //   $.each(columns, function(key, value) {
+  //     filter.append('<span>'+value+' :</span><span id="'+key+'"></span>');
+  //   });
+  // });
+  function summary() {
+    var tmp = "";
+    var tableSummary = [];
+    var si = {};
+    var cancel_si = {};
+    // shippingInstructionsTable.draw(false);
+    shippingInstructionsTable.rows({search:'applied'}).every( function ( rowIdx, tableLoop, rowLoop ) {
+      var rowNode = this.node();
+      var rowSummary = {};
+
+      // console.log(rowNode);
+      // tmp = "";
+      // $(rowNode).find("td:nth-child(2)").each(function (){
+        // tmp += $(this).text()+" <br/>";
+        // rowSummary["si_no"] = $(this).text();
+        // rowSummary["si"] = 1;
+        // if($(this).text().contains("Cancel")){
+        //   rowSummary["cancel_si"] = 1;
+        // }
+        // else{
+        //   rowSummary["cancel_si"] = 0;
+        // }
+
+        // rowSummary["shipment"] = $(this).text();
+        // rowSummary["handle_by"] = $(this).text();
+        // summary[""] = 
+        // $('#summary').append(cellData);
+        //do something with the cell data.
+      // });
+      var index = "undefined";
+      $(rowNode).find("td.handle_by").each(function (){
+        rowSummary["handle_by"] = $(this).text().trim();
+        if($(this).text().trim() != '')
+          index = $(this).text().trim();
+      });
+      $(rowNode).find("td.status").each(function (){
+        rowSummary["si"] = 1;
+        // si[index] = si[index] == '' ? 0 : si[index];
+        if(isNaN(si[index])) {
+          si[index] = 0;
+        }
+        si[index] = si[index] +1;
+
+        // cancel_si[index] = cancel_si[index] == '' ? 0 : cancel_si[index];
+        if(isNaN(cancel_si[index])) {
+          cancel_si[index] = 0;
+        }
+        if($(this).text().contains("Cancel")){
+          rowSummary["cancel_si"] = 1;
+          cancel_si[index] = cancel_si[index] + 1;
+        }
+        else{
+          rowSummary["cancel_si"] = 0;
+        }
+      });
+      // console.log(si);
+      // console.log(cancel_si);
+      tableSummary[rowIdx] = rowSummary;
+    }); 
+
+    tmp = '' +
+    '<table width="100%" border="1">' +
+      '<thead>' +
+        '<tr>' +
+          '<th>SI</th>' +
+          '<th>Cancel SI</th>' +
+          '<th>Shipment</th>' +
+          '<th>Handle By</th>' +       
+        '</tr>' +
+      '</thead>' +
+      '<tbody>';
+      // $.each(tableSummary, function(i, row){
+      // tmp += '' +
+      //   '<tr>' +
+      //     '<td>' + row.si + '</td>' +
+      //     '<td>' + row.cancel_si + '</td>' +
+      //     '<td></td>' +
+      //     '<td>' + row.handle_by + '</td>' +       
+      //   '</tr>';
+      // });
+      $.each(si, function(i, row){
+      tmp += '' +
+        '<tr>' +
+          '<td>'+si[i]+'</td>' +
+          '<td>'+cancel_si[i]+'</td>' +
+          '<td>'+(si[i] - cancel_si[i])+'</td>' +
+          '<td>'+i+'</td>' +       
+        '</tr>';
+      });
+      console.log(si);
+      console.log(cancel_si);
+      // var sum_si = $.sum(si);
+      // var sum_cancel_si = $.sum(cancel_si);
+      var sum_si = 0;
+      var sum_cancel_si = 0;
+      $.each(si,function(){sum_si+=parseInt(this) || 0; });
+      $.each(cancel_si,function(){sum_cancel_si+=parseInt(this) || 0; });
+      tmp += '' +
+      '</tbody>' +
+      '<tfoot>' +
+        '<tr>' +
+          '<td>'+sum_si+'</td>' +
+          '<td>'+sum_cancel_si+'</td>' +
+          '<td>'+(sum_si - sum_cancel_si)+'</td>' +
+          '<td>Total</td>' +       
+        '</tr>' +
+      '</tfoot>' +
+    '</table>';
+
+    $('#viewSummaryModal .modal-body').html(tmp);
+    $('#viewSummaryModal').modal('show');
+  }
+
+  function report() {
+    var row_id = [];    
+    var form = "";
+    // var columns = { si_no: "IBL SI No",
+    //               shipper_reference: "Shipper SI No",
+    //               shipper_name: "Shipper",
+    //               volume: "Volume",
+    //               final_destination: "Destination",
+    //               first_etd_date: "ETD Vessel",
+    //               si_date: "SI Date",
+    //               carrier: "Carrier",
+    //               consignee_name: "Consignee",
+    //               first_line_notify_party: "Notify Party",
+    //               port_of_loading: "POL",
+    //               booking_no: "Booking No",
+    //               master_bl_no: "MBL No",
+    //               order_type_text: "Order Type" };
+    
+    shippingInstructionsTable.rows({search:'applied'}).every( function ( rowIdx, tableLoop, rowLoop ) {
+      var rowNode = this.node();
+
+      $(rowNode).find("td.row_id").each(function (){
+        row_id.push( $(this).text().trim() );
+        // form += '<input type="hidden" name="row_id['+rowIdx+']" value="'+$(this).text().trim()+'">';
+      });
+    });
+
+    console.log(row_id);
+
+    $.each(row_id, function(key, value){
+      form += '<input type="hidden" name="si_report[row_ids][]" value="'+value+'">';
+    });
+    // form += '<input type="hidden" name="si_report[row_id]" value="'+row_id+'">';
+
+    var columns = [];
+    shippingInstructionsTable.columns(':not(.disable)').every( function ( rowIdx, tableLoop, rowLoop ) {
+      // alert( 'Column index 0 is '+ (table.column( 0 ).visible() === true ? 'visible' : 'not visible')
+      if(this.visible() === true){
+        // console.log(rowIdx);
+        columns.push(rowIdx);
+      }
+    } );
+
+    console.log(columns);
+
+    $.each(columns, function(key, value){
+      form += '<input type="hidden" name="si_report[columns][]" value="'+value+'">';
+    });
+    // form += '<input type="hidden" name="si_report[column]" value="'+columns+'">';
+
+    form += '<input type="hidden" name="si_report[format]" value="'+$('#format').val()+'">';
+    var monthly = $('#yadcf-filter--shipping_instructions_table-15.inuse').val();
+    if(monthly != undefined)
+      form += '<input type="hidden" name="si_report[monthly]" value="'+monthly+'">';
+
+    var from = $('#yadcf-filter--shipping_instructions_table-from-date-16.inuse').val();
+    if(from != undefined)
+      form += '<input type="hidden" name="si_report[from]" value="'+from+'">';
+
+    var to = $('#yadcf-filter--shipping_instructions_table-to-date-16.inuse').val();
+    if(to != undefined)
+      form += '<input type="hidden" name="si_report[to]" value="'+to+'">';
+
+    $('#report_params').html(form);
+    // $("form").submit();
+    // $.redirect('demo.php', {'arg1': 'value1', 'arg2': 'value2'});
+    // $.redirect('<%= shipping_instructions_url %>', {'row_id': row_id});
+    // $.ajax({
+    //   type: "GET",
+    //   url: '<%= list_si_reports_path %>',
+    //   data: {format: 'pdf', filter_si_by: 'monthly', filter_si_monthly: 'May 2016'},
+    //   success: function(data){
+    //   }
+    // });
+    // $.redirectGet('<%= list_si_reports_path %>', {format: 'pdf', filter_si_by: 'monthly', filter_si_monthly: 'May 2016'});
+    // $.redirectGet('<%= shipping_instructions_path %>', {'row_id': row_id});
+  }
+
+  // jquery extend function
+  // $.extend(
+  // {
+  //     redirectGet: function(location, args)
+  //     {
+  //         var form = '';
+  //         $.each( args, function( key, value ) {
+  //             value = value.split('"').join('\"')
+  //             form += '<input type="hidden" name="'+key+'" value="'+value+'">';
+  //         });
+  //         $('<form action="' + location + '" method="GET">' + form + '</form>').appendTo($(document.body)).submit();
+  //     }
+  // });
+
+  $("form").submit(function(){
+    report();
+  });
+
+  $.sum = function(arr) {
+    var r = 0;
+    $.each(arr, function(i, v) {
+        r += parseInt(v);
+    });
+    return r;
+  }
+</script>

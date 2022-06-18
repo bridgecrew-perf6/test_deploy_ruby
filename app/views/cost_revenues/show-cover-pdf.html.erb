@@ -1,0 +1,74 @@
+<table width="100%">
+  <tbody>
+    <tr>
+      <td width="50%" style="padding-right: 20px;">
+        <table width="100%" style="text-align: left;">
+          <thead>
+            <tr>
+              <th width="178">IBL REF</th>
+              <th>: <%= @cost_revenue.ibl_ref %></th>
+            </tr>
+            <tr>
+              <th>MBL NO</th>
+              <th>: <%= @cost_revenue.master_bl_no %></th>
+            </tr>
+            <tr>
+              <th>SHIPPER REF</th>
+              <th>: <%= @cost_revenue.shipper_reference %></th>
+            </tr>
+            <tr>
+              <th>CARRIER</th>
+              <th>: <%= @cost_revenue.carrier %></th>
+            </tr>
+            <tr>
+              <th>SHIPPER</th>
+              <th>: <%= @cost_revenue.shipper_company_name %></th>
+            </tr>
+            <tr>
+              <th>CONSIGNEE</th>
+              <th>: <%= @cost_revenue.consignee_company_name %></th>
+            </tr>
+            <tr>
+              <th>TRADE</th>
+              <th>: <%= @cost_revenue.trade %></th>
+            </tr>
+          </thead>
+        </table>
+      </td>
+      <td width="50%" style="padding-right: 20px;">
+        <table width="100%" style="text-align: left;">
+          <thead>
+            <tr>
+              <th width="178">OWNER</th>
+              <th>: <%= @cost_revenue.owner_name %></th>
+            </tr>
+            <tr>
+              <th>VESSEL</th>
+              <th>: <%= @cost_revenue.vessel_name %></th>
+            </tr>
+            <tr>
+              <th>ETD</th>
+              <th>: <%= normal_date_format(@cost_revenue.etd_date) %></th>
+            </tr>
+            <tr>
+              <th>POL</th>
+              <th>: <%= @cost_revenue.port_of_loading %></th>
+            </tr>
+            <tr>
+              <th>POD</th>
+              <th>: <%= @cost_revenue.port_of_discharge %></th>
+            </tr>
+            <tr>
+              <th>DESTINATION</th>
+              <th>: <%= @cost_revenue.final_destination %></th>
+            </tr>
+            <tr>
+              <th>VOLUME</th>
+              <th>: <%= @cost_revenue.volume %></th>
+            </tr>
+          </thead>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>

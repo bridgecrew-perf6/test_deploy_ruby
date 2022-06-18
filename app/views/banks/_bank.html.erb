@@ -1,0 +1,9 @@
+<div>
+	<%= bank.bank_name %><br/>
+	<%= bank.bank_address %><br/>
+	<%= bank.acc_name %><br/>
+	ACC NO. <%= bank.acc_no %><br/>
+	<% if !bank.swift_code.blank? %>
+	<%= ("SWIFT CODE " + bank.swift_code) %>
+	<% end %>
+</div><br/>

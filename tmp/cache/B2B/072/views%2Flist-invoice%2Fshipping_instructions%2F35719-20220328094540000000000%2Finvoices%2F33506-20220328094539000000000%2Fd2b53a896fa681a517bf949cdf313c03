@@ -1,0 +1,42 @@
+o: ActiveSupport::Cache::Entry:@valueI"å  <tr class="">
+    <td>
+      <a href="/invoices/33506?year=2022" title="Show Invoice"><i class="icon-eye-open icon-large"></i></a>
+
+      <a href="#invModal" role="button" class="btn btn-info btn-small btn-invoice" data-toggle="modal">Tax</a>
+    </td>
+    <td>
+      IBLINV220893
+      
+    </td>
+    <td>
+      IBL220664
+      
+      
+    </td>
+    <td>IDR</td>
+    <td style="text-align:right">841,500</td>
+    <td>PT. INDESSO CULINAROMA INTERNASIONAL  (SHIPPER)</td>
+    <td>PT. INDESSO CULINAROMA INTERNASIONAL </td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>Printed</td>
+    <td></td>
+    <td style="text-align:right"></td>
+    <td></td>
+    <td style="text-align:right">8,500</td>
+    <td></td>
+    <td style="text-align:right">(17,000)</td>
+    <td>Open</td>
+    <td></td>
+    <td></td>
+    <td class="hidden disable">March 2022</td>
+    <td class="hidden disable">03/08/2022</td>
+    <td class="hidden disable row_id">33506</td>
+    <td class="hidden disable ibl_ref">IBL220664</td>
+    <td class="hidden disable invoice_no">IBLINV220893</td>
+    <td class="hidden disable head_letter">INVOICE</td>
+    <td class="hidden disable">1</td>
+    <td class="hidden disable"></td>
+    <td class="hidden disable"></td>
+    <td>28-Mar-2022</td>
+  </tr>
+:ET:@created_atf1648476548.382821:@expires_in0

@@ -1,0 +1,19 @@
+"IBL REF"<%= "\t" %>"SHIPPER"<%= "\t" %>"CUSTOMER"<%= "\t" %>"INV REF"<%= "\t" %>"USD"<%= "\t" %>"IDR"<%= "\t" %>"ETD DATE"<%= "\t" %>"DUE DATE"
+<% 
+repeat_number = false
+last_bl = 0
+%>
+<% @invoices.each do |invoice| %>
+<%
+if last_bl != 0 && last_bl == invoice.ibl_no
+	repeat_number = true
+else
+	repeat_number = false
+	last_bl = invoice.ibl_no
+end
+%>
+<% cache ["report-outstanding-xls", invoice] do %>
+<% vessel = invoice.shipping_instruction.vessels.first %>
+<%= (repeat_number ? "" : invoice.ibl_no) %><%= "\t" %><%= invoice.customer %><%= "\t" %><%= invoice.customer_ori %><%= "\t" %><%= invoice.try(:no_invoice) || invoice.try(:no_dbn) || invoice.try(:no_note) %><%= "\t" %><% if invoice.currency_code == "USD" %><%= number_with_precision(invoice.total_invoice, precision: 2, delimiter: ',') %><%= "\t" %>""<%= "\t" %><% else %>""<%= "\t" %><%= number_with_precision(invoice.total_invoice, precision: 2, delimiter: ',') %><%= "\t" %><% end %><%= si_date_format vessel.etd_date unless vessel.nil? %><%= "\t" %><%= si_date_format invoice.due_date %>
+<% end %>
+<% end %>

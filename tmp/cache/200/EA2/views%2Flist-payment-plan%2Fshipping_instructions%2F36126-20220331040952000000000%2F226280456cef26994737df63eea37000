@@ -1,0 +1,25 @@
+o: ActiveSupport::Cache::Entry:@valueI"    <tr>
+      <td data-no-turbolink="true">
+                <a data-confirm="Detail cost is empty. Proceed?" href="/payments/calculate_invoice?sid=36126&amp;year=2022">Input</a>
+          
+      </td>
+      <td>IBL220996</td>
+      <td>JKTC42324600 </td>
+      <td></td>
+      <td>1x20FT</td>
+      <td>ONE LINE</td>
+      <td>PT PRIMAPLAST INDONESIA</td>
+      <td>JAKARTA, INDONESIA</td>
+      <td>YOKOHAMA, JAPAN</td>
+      <td></td>
+      <td></td>
+      <td>09-Apr-2022</td>
+      <td>No</td>
+      <td>On Going</td>
+      <td class="hidden disable">April 2022</td>
+      <td class="hidden disable">04/09/2022</td>
+      <td class="hidden disable row_id">36126</td>
+      <td class="hidden disable ibl_ref">IBL220996</td>
+      <td class="hidden disable row_ref_id"></td>
+    </tr>
+:ET:@created_atf1648734069.931722:@expires_in0

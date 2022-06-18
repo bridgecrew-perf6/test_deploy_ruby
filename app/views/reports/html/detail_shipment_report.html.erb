@@ -1,0 +1,228 @@
+<style type="text/css">
+  .clearfix {
+    clear: both;
+  }
+
+  #report-title {
+    font-family: Arial;
+    font-size: 20pt; /*30pt;*/
+    text-align: center;
+    margin-bottom: 80px;
+  }
+
+  .columns {
+    float: left;
+    width: 50%;
+  }
+
+  .field-group {
+    clear: both;
+    width: 100%;
+    min-height: 20px;
+  }
+
+  .field-group > .field-label {
+    float: left;
+    width: 180px;
+    font-family: Arial;
+    font-weight: 700;
+    font-size: 7pt; /*12pt*/
+  }
+
+  .field-group > .field-value {
+    margin-left: 190px;
+    font-family: Arial;
+    font-size: 7pt; /*12pt*/
+  }
+
+  .field-value > pre.free, pre.free, table > thead > tr > td, table > tbody > tr > td, ul > li {
+    font-family: Arial;
+    font-size: 7pt; /*12pt*/
+  }
+
+  ul {
+    padding-left: 20px;
+    margin: 0;
+  }
+
+  table > thead > tr > td, table > tbody > tr > td, table > tfoot > tr > th {
+    padding: 5px;
+    vertical-align: top;
+  }
+</style>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <% unless @results.blank? %>
+    <% 
+      bill_of_lading = @results.bill_of_lading 
+      shipment_tracking = @results.shipment_tracking
+    %>
+    <%# cache(["report-detail-shipment", @results]) do %>
+      <div class="columns">
+        <div style="padding: 0 10px;">
+          <div class="field-group">
+            <label class="field-label">IBL Ref <span class="pull-right">:</span></label>
+
+            <div class="field-value"><%= @results.si_no %></div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Shipper <span class="pull-right">:</span></label>
+
+            <div class="field-value"><%= @results.shipper_company_name %></div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Consignee <span class="pull-right">:</span></label>
+
+            <div class="field-value"><%= @results.consignee_company_name %></div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Notify Party <span class="pull-right">:</span></label>
+
+            <div class="field-value"><%= @results.first_line_notify_party %></div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">POL <span class="pull-right">:</span></label>
+
+            <div class="field-value"><%= @results.port_of_loading %></div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Destination <span class="pull-right">:</span></label>
+
+            <div class="field-value"><%= @results.final_destination %></div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Volume <span class="pull-right">:</span></label>
+
+            <div class="field-value"><%= @results.volume %></div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Order Type <span class="pull-right">:</span></label>
+
+            <div class="field-value"><%= @results.order_type_text %></div>
+          </div>
+          <br/><br/>
+          <table style="width: 100%">
+            <thead>
+            <tr>
+              <td style="width: 33.33%"><strong>Schedule</strong></td>
+              <td style="width: 33.33%"><strong>Estimate</strong></td>
+              <td style="width: 33.33%"><strong>Actual</strong></td>
+            </tr>
+            </thead>
+            <tbody>
+            <% unless shipment_tracking.blank? %>
+              <% shipment_tracking.actual_vessels.each do |actual| %>
+                <tr>
+                  <td colspan="3"><strong><%= actual.vessel.vessel_name %></strong></td>
+                </tr>
+                <tr>
+                  <td>Etd <%= actual.vessel.etd_no %></td>
+                  <td><%= si_date_format actual.vessel.etd_date %></td>
+                  <td><%= si_date_format actual.actual_etd_date %></td>
+                </tr>
+                <tr>
+                  <td>Eta <%= actual.vessel.eta_no %></td>
+                  <td><%= si_date_format actual.vessel.eta_date %></td>
+                  <td><%= si_date_format actual.actual_eta_date %></td>
+                </tr>
+              <% end %>
+            <% end %>
+            </tbody>
+          </table>
+          <br/>
+
+          <div class="field-group">
+            <label class="field-label">Notes <span class="pull-right">:</span></label>
+
+            <div class="clearfix"></div>
+            <% unless shipment_tracking.blank? %>
+              <pre class="free" style="word-wrap: break-word"><%= shipment_tracking.notes %></pre>
+            <% end %>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+      <div class="columns">
+        <div style="padding: 0 10px;">
+          <div class="field-group">
+            <label class="field-label">Carrier <span class="pull-right">:</span></label>
+
+            <div class="field-value"><%= @results.carrier %></div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Booking No <span class="pull-right">:</span></label>
+
+            <div class="field-value"><%= @results.booking_no %></div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">MBL No <span class="pull-right">:</span></label>
+
+            <div class="field-value"><%= @results.master_bl_no %></div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">FT Approval <span class="pull-right">:</span></label>
+            <% unless shipment_tracking.blank? %>
+              <div class="field-value"><%= shipment_tracking.free_approval %></div>
+            <% end %>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Agent at Destination <span class="pull-right">:</span></label>
+            <% unless bill_of_lading.blank? %>
+              <div class="field-value"><%= bill_of_lading.agent_name.lines.first unless bill_of_lading.agent_name.blank? %></div>
+            <% end %>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Payments No <span class="pull-right">:</span></label>
+
+            <div class="clearfix"></div>
+            <%
+               payments = Payment.includes(:payment_references).where(payment_references: {ibl_ref: @results.si_no}).references(:payment_references)
+            %>
+            <ul style="list-style: square">
+              <% payments.each do |payment| %>
+                <li><%= payment.payment_no %></li>
+              <% end %>
+            </ul>
+          </div>
+          <br/>
+
+          <div class="field-group">
+            <label class="field-label">Invoices No <span class="pull-right">:</span></label>
+
+            <div class="clearfix"></div>
+            <ul style="list-style: square">
+              <% unless bill_of_lading.blank? %>
+                <% bill_of_lading.invoices.each do |inv| %>
+                  <% if inv.is_cancel == 0 %>
+                    <li><%= inv.no_invoice %></li>
+                  <% end %>
+                <% end %>
+              <% end %>
+              <% unless bill_of_lading.blank? %>
+                <% bill_of_lading.debit_notes.each do |dbn| %>
+                  <% if dbn.is_cancel == 0 %>
+                    <li><%= dbn.no_dbn %></li>
+                  <% end %>
+                <% end %>
+              <% end %>
+              <% unless bill_of_lading.blank? %>
+                <% bill_of_lading.notes.each do |note| %>
+                  <% if note.is_cancel == 0 %>
+                    <li><%= note.no_note %></li>
+                  <% end %>
+                <% end %>
+              <% end %>
+            </ul>
+          </div>
+          <br/>
+
+          <div class="field-group">
+            <label class="field-label">Handle by <span class="pull-right">:</span></label>
+
+            <div class="field-value"><%= @results.handler_name %></div>
+          </div>
+        </div>
+      </div>
+    <%# end %>
+  <% end %>
+</div>

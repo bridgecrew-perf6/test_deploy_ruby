@@ -1,0 +1,50 @@
+<%= render 'commons/pdf' %>
+<% columns = @report.columns %>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <table style="width: 100%" border="1">
+    <thead>
+    <tr>
+      <%= "<th>IBL Ref</th>".html_safe if columns.include? "1" %>
+      <%= "<th>Shipper</th>".html_safe if columns.include? "2" %>
+      <%= "<th>Carrier</th>".html_safe if columns.include? "3" %>
+      <%= "<th>Feeder</th>".html_safe if columns.include? "4" %>
+      <%= "<th>ETD Feeder</th>".html_safe if columns.include? "5" %>
+      <%= "<th>POL</th>".html_safe if columns.include? "6" %>
+      <%= "<th>Dest.</th>".html_safe if columns.include? "7" %>
+      <%= "<th>ETA Dest.</th>".html_safe if columns.include? "8" %>
+      <%= "<th>Shipper Ref</th>".html_safe if columns.include? "9" %>
+      <%= "<th>Booking No</th>".html_safe if columns.include? "10" %>
+      <%= "<th>MBL</th>".html_safe if columns.include? "11" %>
+      <%= "<th>Transit Time</th>".html_safe if columns.include? "12" %>
+      <%= "<th>Free Time Status</th>".html_safe if columns.include? "13" %>
+      <%= "<th>Notes</th>".html_safe if columns.include? "14" %>
+      <%= "<th>FU Date</th>".html_safe if columns.include? "15" %>
+    </tr>
+    </thead>
+    <tbody>
+      <% @shipments.each do |shipment_tracking| %>
+        <% row = shipment_tracking.shipping_instruction %>
+      <%# cache(["si_report", row]) do %>
+        <tr>
+          <%= "<td>#{shipment_tracking.ibl_ref_with_status}</td>".html_safe if columns.include? "1" %>
+          <%= "<td>#{row.shipper_company_name}</td>".html_safe if columns.include? "2" %>
+          <%= "<td>#{row.carrier}</td>".html_safe if columns.include? "3" %>
+          <%= "<td>#{row.feeder_vessel}</td>".html_safe if columns.include? "4" %>
+          <%= "<td>#{si_date_format row.feeder.try(:etd_date)}</td>".html_safe if columns.include? "5" %>
+          <%= "<td>#{row.port_of_loading}</td>".html_safe if columns.include? "6" %>
+          <%= "<td>#{row.final_destination}</td>".html_safe if columns.include? "7" %>
+          <%= "<td>#{row.si_date_format row.destination.try(:eta_date)}</td>".html_safe if columns.include? "8" %>
+          <%= "<td>#{row.shipper_reference}</td>".html_safe if columns.include? "9" %>
+          <%= "<td>#{row.booking_no}</td>".html_safe if columns.include? "10" %>
+          <%= "<td>#{row.master_bl_no}</td>".html_safe if columns.include? "11" %>
+          <%= "<td>#{transit_time_format(row.transit_time)}</td>".html_safe if columns.include? "12" %>
+          <%= "<td>#{shipment_tracking.status_free_time}</td>".html_safe if columns.include? "13" %>
+          <%= "<td>#{simple_format shipment_tracking.notes.to_s}</td>".html_safe if columns.include? "14" %>
+          <%= "<td>#{si_date_format(shipment_tracking.fu_date.presence || row.feeder.try(:etd_date))}</td>".html_safe if columns.include? "15" %>
+        </tr>
+      <%# end %>
+    <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,84 @@
+<%= render 'commons/pdf' %>
+<% columns = @report.columns %>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <table style="width: 100%" border="1">
+    <thead>
+    <tr>
+      <%= "<th rowspan=\"2\">IBL Ref</th>".html_safe if columns.include? "1" %>
+      <%= "<th rowspan=\"2\">MBL No</th>".html_safe if columns.include? "2" %>
+      <%= "<th rowspan=\"2\">Carrier</th>".html_safe if columns.include? "3" %>
+      <%= "<th rowspan=\"2\">Shipper Ref</th>".html_safe if columns.include? "4" %>
+      <%= "<th rowspan=\"2\">Shipper</th>".html_safe if columns.include? "5" %>
+      <%= "<th rowspan=\"2\">Consignee</th>".html_safe if columns.include? "6" %>
+      <%= "<th rowspan=\"2\">Vessel</th>".html_safe if columns.include? "7" %>
+      <%= "<th rowspan=\"2\">ETD</th>".html_safe if columns.include? "8" %>
+      <%= "<th rowspan=\"2\">POL</th>".html_safe if columns.include? "9" %>
+      <%= "<th rowspan=\"2\">POD</th>".html_safe if columns.include? "10" %>
+      <%= "<th rowspan=\"2\">Destination</th>".html_safe if columns.include? "11" %>
+      <%= "<th rowspan=\"2\">Volume</th>".html_safe if columns.include? "12" %>
+      <%= "<th rowspan=\"2\">Owner</th>".html_safe if columns.include? "13" %>
+      <%= "<th rowspan=\"2\">Status</th>".html_safe if columns.include? "14" %>
+      <%= "<th rowspan=\"2\">Trade</th>".html_safe if columns.include? "15" %>
+      <%= "<th colspan=\"2\">Sell</th>".html_safe if (columns.include? "16") || (columns.include? "17") %>
+      <%= "<th colspan=\"2\">Cost</th>".html_safe if (columns.include? "18") || (columns.include? "19") %>
+    </tr>
+    <tr>
+      <%= "<th>USD</th>".html_safe if columns.include? "16" %>
+      <%= "<th>IDR</th>".html_safe if columns.include? "17" %>
+      <%= "<th>USD</th>".html_safe if columns.include? "18" %>
+      <%= "<th>IDR</th>".html_safe if columns.include? "19" %>
+    </tr>
+    </thead>
+    <tbody>
+      <% @shipping_instructions.each do |row| %>
+        <% if row.cost_revenue.blank? %>
+          <tr>
+            <%= "<td>#{row.ibl_ref}</td>".html_safe if columns.include? "1" %>
+            <%= "<td>#{row.master_bl_no}</td>".html_safe if columns.include? "2" %>
+            <%= "<td>#{row.carrier}</td>".html_safe if columns.include? "3" %>
+            <%= "<td>#{row.shipper_reference}</td>".html_safe if columns.include? "4" %>
+            <%= "<td>#{row.shipper_company_name}</td>".html_safe if columns.include? "5" %>
+            <%= "<td>#{row.consignee_company_name}</td>".html_safe if columns.include? "6" %>
+            <%= "<td>#{}</td>".html_safe if columns.include? "7" %>
+            <%= "<td>#{si_date_format row.first_etd_date}</td>".html_safe if columns.include? "8" %>
+            <%= "<td>#{row.port_of_loading}</td>".html_safe if columns.include? "9" %>
+            <%= "<td>#{row.port_of_discharge}</td>".html_safe if columns.include? "10" %>
+            <%= "<td>#{row.final_destination}</td>".html_safe if columns.include? "11" %>
+            <%= "<td>#{row.volume}</td>".html_safe if columns.include? "12" %>
+            <%= "<td>#{}</td>".html_safe if columns.include? "13" %>
+            <%= "<td>No Status</td>".html_safe if columns.include? "14" %>
+            <%= "<td>#{row.trade}</td>".html_safe if columns.include? "15" %>
+            <%= "<td style=\"text-align:right\">#{}</td>".html_safe if columns.include? "16" %>
+            <%= "<td style=\"text-align:right\">#{}</td>".html_safe if columns.include? "17" %>
+            <%= "<td style=\"text-align:right\">#{}</td>".html_safe if columns.include? "18" %>
+            <%= "<td style=\"text-align:right\">#{}</td>".html_safe if columns.include? "19" %>
+          </tr>
+        <% else %>
+          <% cost_revenue = row.cost_revenue %>
+          <tr>
+            <%= "<td>#{cost_revenue.ibl_ref}</td>".html_safe if columns.include? "1" %>
+            <%= "<td>#{cost_revenue.master_bl_no}</td>".html_safe if columns.include? "2" %>
+            <%= "<td>#{cost_revenue.carrier}</td>".html_safe if columns.include? "3" %>
+            <%= "<td>#{cost_revenue.shipper_reference}</td>".html_safe if columns.include? "4" %>
+            <%= "<td>#{cost_revenue.shipper_company_name}</td>".html_safe if columns.include? "5" %>
+            <%= "<td>#{cost_revenue.consignee_company_name}</td>".html_safe if columns.include? "6" %>
+            <%= "<td>#{}</td>".html_safe if columns.include? "7" %>
+            <%= "<td>#{si_date_format cost_revenue.first_etd_date}</td>".html_safe if columns.include? "8" %>
+            <%= "<td>#{cost_revenue.port_of_loading}</td>".html_safe if columns.include? "9" %>
+            <%= "<td>#{cost_revenue.port_of_discharge}</td>".html_safe if columns.include? "10" %>
+            <%= "<td>#{cost_revenue.final_destination}</td>".html_safe if columns.include? "11" %>
+            <%= "<td>#{cost_revenue.volume}</td>".html_safe if columns.include? "12" %>
+            <%= "<td>#{cost_revenue.owner}</td>".html_safe if columns.include? "13" %>
+            <%= "<td>#{cost_revenue.status_text.join("<br>").html_safe}</td>".html_safe if columns.include? "14" %>
+            <%= "<td>#{cost_revenue.trade}</td>".html_safe if columns.include? "15" %>
+            <%= "<td style=\"text-align:right\">#{}</td>".html_safe if columns.include? "16" %>
+            <%= "<td style=\"text-align:right\">#{}</td>".html_safe if columns.include? "17" %>
+            <%= "<td style=\"text-align:right\">#{}</td>".html_safe if columns.include? "18" %>
+            <%= "<td style=\"text-align:right\">#{}</td>".html_safe if columns.include? "19" %>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,160 @@
+<div class="page-header">
+  <h3>Payment # <%= @payment.payment_no %></h3>
+</div>
+<% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+<% if @payment.carrier_bank_id > 0 %>
+  <% carrier_name = @payment.carrier_bank.carrier.name %>
+<% elsif @payment.carrier_bank_id == 0 %>
+  <% carrier_name = "By Cash: " + @payment.carrier_name %>
+<% else %>
+  <% carrier_name = "By Deposit: " + @payment.carrier_name %>
+<% end %>
+<div class="btn-group" style="margin-bottom: 20px">
+  <% if @payment.is_open? && @payment.is_cancel == 0 %>
+    <a href="<%= edit_payment_path(@payment) %>" class="btn btn-small" title="Edit: <%= @payment.payment_no %>"><i class="icon-edit-sign"></i> Edit</a>
+    <a href="<%= email_payment_path(@payment) %>" target="_blank" class="btn btn-small" title="View on Mail Client"><i class="icon-envelope"></i> E-Mail</a>
+  <% end %>
+  <a href="<%= payment_inquiries_path %>" class="btn btn-small" title="Back to Lists"><i class="icon-reply"></i> Back</a>
+</div>
+<div class="clearfix"></div>
+
+<%= form_for @payment, url: update_status_payment_inquiries_path(inquiry_id: @payment.id), html: { class: "form-horizontal"} do |f| %>
+  <div class="row-fluid">
+    <div class="span6">
+      <div class="control-group">
+        <label for="" class="control-label">Status</label>
+        <div class="controls">:
+          <%= select_tag "status", options_for_select([["Open", "0"], ["Sent", "1"]], @payment.status.to_s), style: "margin-bottom: 0; width: 100px" %>
+          <%= f.submit "Update Status", class: "btn btn-info" %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<div class="form-horizontal">
+  <div class="row-fluid">
+    <div class="span6">
+      <div class="control-group">
+        <label for="" class="control-label">Payment Type</label>
+        <div class="controls padding"><%= @payment.payment_type %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Payment No</label>
+        <div class="controls padding"><%= @payment.payment_no %></div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Payment Date</label>
+        <div class="controls padding"><%= si_date_format @payment.payment_date %></div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Carrier</label>
+        <div class="controls padding"><%= @payment.carrier_name %></div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Payment Method</label>
+        <div class="controls padding">
+          <% if @payment.carrier_bank_id > 0 %>
+            <pre class="free"><%= @payment.carrier_bank.acc_name %>
+<%= @payment.carrier_bank.bank_name %>
+<%= @payment.carrier_bank.branch %>
+<%= @payment.carrier_bank.bank_address %>
+A/C : <%= @payment.carrier_bank.acc_no %>
+            <% if @payment.payment_type == "USD" %>
+Swift Code : <%= @payment.carrier_bank.swift_code %>
+            <% end %>
+          </pre>
+          <% else %>
+            <%= @payment.carrier_name_with_payment_method %>
+          <% end %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Amount</label>
+        <div class="controls padding"><%= money_with_currency_format(@payment.amount, @payment.payment_type) %></div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Notes</label>
+        <div class="controls padding"><pre class="free"><%= @payment.notes %></pre></div>
+      </div>
+    </div>
+    <div class="span6">
+    </div>
+  </div>
+  <div class="row-fluid">
+    <div class="span12" style="margin-left: 0;">
+      <% unless @payment.payment_references.blank? %>
+        <table class="table table-condensed table-bordered" style="width: 897px !important">
+          <caption style="text-align: left; font-weight: bold;">PAYMENT REF</caption>
+          <thead>
+            <tr>
+              <th style="width: 100px;">IBL REF</th>
+              <th style="width: 150px;">MBL</th>
+              <th style="width: 100px;">PAYMENT</th>
+              <th style="width: 100px;">USE DEPOSIT</th>
+              <th style="width: 100px;">MISC</th>
+              <th style="width: 100px;">OVERPAID</th>
+              <th style="width: 100px;">INVOICE</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% @payment.payment_references.each do |ref| %>
+            <tr>
+              <td><%= ref.ibl_ref %></td>
+              <td><%= ref.master_bl_no %></td>
+              <td style="text-align: right;"><%= money_with_currency_format(ref.amount, @payment.currency) %></td>
+              <td style="text-align: right;"><%= money_with_currency_format(ref.amount_use_deposit, @payment.currency) %></td>
+              <td style="text-align: right;"><%= money_with_currency_format(ref.amount_misc, @payment.currency) %></td>
+              <td style="text-align: right;"><%= money_with_currency_format(ref.amount_overpaid, @payment.currency) %></td>
+              <td style="text-align: right;"><%= money_with_currency_format(ref.amount_invoice, @payment.currency) %></td>
+            <tr>
+          <% end %>
+          </tbody>
+        </table>
+      <% end %>
+      <% unless @payment.payment_deposits.blank? %>
+        <table class="table table-condensed table-bordered" style="width: 534px">
+          <caption style="text-align: left; font-weight: bold;">USE DEPOSIT</caption>
+          <thead>
+            <tr>
+              <th style="width: 100px">IBL DEPOSIT</th>
+              <th style="width: 150px;">MBL</th>
+              <th style="width: 100px;">USE DEPOSIT</th>
+              <th style="width: 100px;">IBL REF</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% @payment.payment_deposits.each do |deposit| %>
+            <tr>
+              <td><%= deposit.ibl_deposit %></td>
+              <td><%= deposit.master_bl_no %></td>
+              <td style="text-align: right;"><%= money_with_currency_format(deposit.amount, @payment.currency) %></td>
+              <td><%= deposit.ibl_ref %></td>
+            <tr>
+          <% end %>
+          </tbody>
+        </table>
+      <% end %>
+    </div>
+  </div>
+</div>
+<style type="text/css">
+  .padding {
+    padding: 5px 0;
+    font-weight: normal;
+  }
+  .form-horizontal .control-group {
+    margin-bottom: 0;
+  }
+  .form-horizontal .control-group label {
+    text-align: left;
+    font-weight: 700;
+  }
+  tfoot td {
+    font-weight: bold;
+    text-align: left;
+  }
+</style>

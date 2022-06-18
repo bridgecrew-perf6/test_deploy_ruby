@@ -1,0 +1,60 @@
+o: ActiveSupport::Cache::Entry:@valueI"k  <tr class="success ">
+    <td>
+      <a href="/bill_of_ladings/20469?year=2020" title="Show Bill of Lading"><i class="icon-eye-open icon-large"></i></a>
+      &nbsp;
+
+      
+      &nbsp;
+
+          <a href="/bill_of_ladings/view_calculate_invoice?sid=29165&amp;year=2020" title="Calculate Invoice"><i class="icon-file icon-large"></i></a>
+        &nbsp;
+
+
+      
+      <a href="/cost_revenues/29165/print_cover?year=2020" target="_blank" title="Print"><i class="icon-print icon-large"></i></a>
+      &nbsp;
+      
+    </td>
+    <td>
+      IBL204653
+      
+      
+      <span class="label label-error">Closed CR</span>
+        
+    </td>
+    <td>IBL204345/4347/4348/45474493</td>
+    <td>GLOBAL BENUA LOGISTIK</td>
+    <td>PT. INDESSO AROMA</td>
+    <td>TBA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>MBP</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+        <ul>
+            <li><a href="/invoices/27285?year=2020">IBLINV205105</a></li>
+        </ul>
+    </td>
+    <td>23.969 M3 LCL</td>
+    <td> (TRUCKING)</td>
+    <td>
+        <ul>
+            <li><a href="/payments/17887?year=2020">3736/IDR/2020</a></li>
+        </ul>
+    </td>
+    <td>TG. PRIOK, JAKARTA, INDONESIA</td>
+    <td>16-Dec-2020</td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="20469">
+        <option value="Not Yet">Not Yet</option>
+<option selected="selected" value="Done">Done</option>
+      </select>
+    </td>
+    <td class="hidden disable">December 2020</td>
+    <td class="hidden disable">12/16/2020</td>
+    <td class="hidden disable reference_id">20469</td>
+    <td class="hidden disable ibl_ref">IBL204653</td>
+    <td class="hidden disable invoice">IBLINV205105</td>
+    <td class="hidden disable payment">3736/IDR/2020</td>
+    <td class="hidden disable delivery_doc">Done</td>
+  </tr>
+:ET:@created_atf1649082870.9103272:@expires_in0

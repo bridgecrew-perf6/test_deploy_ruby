@@ -1,0 +1,87 @@
+<%= form_for(@report, url: report_payment_plans_path, html: { class: "form-inline", target: "_blank"}) do |f| %>
+  <div id="report_params"></div>
+  <div>
+    <button type="submit" class="btn btn-primary">View Report</button>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exFilterExternallyTriggered(paymentsPlanTable);">Filter</button>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exResetAllFilters(paymentsPlanTable);">Reset Filter</button><button type="button" class="btn btn-primary" onclick="paymentsPlanTable.state.clear();window.location.reload();" style="float: right;">Refresh</button>
+  </div>
+<% end %>
+
+<div class="clearfix"></div>
+
+<% columns = { 
+              carrier: "Carrier",
+              shipper: "Shipper",
+              pol: "POL",
+              destination: "Destination",
+              payment_date: "Payment Date",
+              bl_status: "BL Status"
+            } 
+  
+  filter = "<table><tr style='vertical-align: top;'><td>Advance Filter :</td>"
+  columns.each_with_index do |(key, value), index|
+    filter+="<td style='vertical-align: top;'><span>#{value}</span><span id=#{key}></span></td>"
+  end
+  filter+="</tr></table>"
+%>
+
+<div>
+  <div class="span3" style="margin-left: 0;">Format :
+    <select name="format" id="format">
+      <option value="pdf">PDF</option>
+      <option value="xls">XLS</option>
+    </select>
+  </div>
+  
+  <div class="span3">Filter By :
+    <span id="monthly"></span>
+  </div>
+
+  <div class="span3">&nbsp;
+    <span id="date_range"></span>
+  </div>
+
+  <div class="clearfix"></div>
+  <br/>
+
+  <%= filter.html_safe %>
+
+  <div class="clearfix"></div>
+  <br/>
+</div>
+
+<div class="clearfix"></div>
+
+<table class="table table-striped table-bordered" id="payments_plan_table" width="100%">
+  <thead>
+  <tr>
+    <th width="10%" class="disable">Actions</th>
+    <th>IBL REF</th>
+    <th>Booking No</th>
+    <th>MBL No</th>
+    <th>Volume</th>
+    <th>Carrier</th>
+    <th>Shipper</th>
+    <th>POL</th>
+    <th>Destination</th>
+    <th>Amount</th>
+    <th>Payment Date</th>
+    <th>ETD Vessel</th>
+    <th>Paid Status</th>
+    <th>BL Status</th>
+    <th class="hidden disable">Filter Monthly</th>
+    <th class="hidden disable">Filter Date</th>
+    <th class="hidden disable">Row Id</th>
+    <th class="hidden disable">IBL Ref</th>
+    <th class="hidden disable">Row Ref Id</th>
+  </tr>
+  </thead>
+  <tbody>
+    <%= render partial: 'payment_plans/row', :collection => @shipping_instructions %>
+  </tbody>
+</table>
+
+<script type="text/javascript">
+  $(document).on('ready page:change', ready);
+  $(document).on('page:fetch', function() { paymentsPlanTable.destroy(); });
+</script>

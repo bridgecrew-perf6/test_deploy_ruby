@@ -1,0 +1,98 @@
+<%# raise @balance.inspect %>
+<style type="text/css">
+  .row_field{
+    margin-bottom: 0!important;
+    border: none!important;
+    padding: 0!important;
+    float: left;
+    text-align: right;
+  }
+  .row_field, .row_field:focus{
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important; 
+  }
+  .row_description{
+    max-width: 200px;
+    width: 93%;
+    text-align: left;
+  }
+  .amount_usd, .amount_idr, .rate, .total, .total_invoice{
+    float: right;
+    max-width: 150px;
+  }
+  .money_text{
+    /*background-color: #FFF;*/
+  }
+  input:disabled{
+    border-radius: 0;
+  }
+</style>
+<div class="row-fluid">
+    <h3>BALANCE</h3>
+  
+    <p>DATE : <%= si_date_format Date.today %></p>
+
+    <table border="1" id="balance_report">
+      <thead>
+        <tr>
+          <th></th>
+          <th width="150">USD</th>
+          <th width="150">IDR</th>
+          <th width="150">RATE</th>
+          <th width="150">TOTAL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% total_invoice = 0 %>
+        <% @balance.rows.each_with_index do |row, index| %>
+        <%
+          rate = row[1][:rate].to_f == 0 ? 1 : row[1][:rate].to_f
+          total = (row[1][:amount_usd].to_f * rate.to_f) + row[1][:amount_idr].to_f
+          total_invoice += total
+        %>
+        <tr>
+          <td><%= row[1][:description] %></td>
+          <td style="text-align: right;"><%= money_cra_format row[1][:amount_usd] %></td>
+          <td style="text-align: right;"><%= money_cra_format row[1][:amount_idr] %></td>
+          <td style="text-align: right;"><%= money_cra_format row[1][:rate] %></td>
+          <!-- <td style="text-align: right;"><%# money_cra_format total %></td> -->
+          <td style="text-align: right;"><%=  %></td>
+        </tr>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="4" style="text-align: left;">TOTAL</th>
+          <!-- <th style="text-align: right;"><%# money_cra_format total_invoice %></th> -->
+          <th style="text-align: right;"><%=  %></th>
+        </tr>
+      </tfoot>
+    </table>
+
+    <br>
+    
+    <h4>PAYMENT PLAN</h4>
+    <table border="1" id="payment_plan">
+      <thead>
+        <th width="290">PAYMENT DATE</th>
+        <th width="150">AMOUNT</th>
+      </thead>
+      <tbody>
+        <% total = 0 %>
+        <% Constant.years_range.each do |year| %>
+          <% payment_invoices = PaymentInvoice.includes(:payment_items).with_filter({year: year}) %>
+          <% total += payment_invoices.map{|p| p.total_invoice if p.shipping_instruction.is_uncanceled?}.sum(&:to_f).round(2) %>
+          <% payment_invoices.group_by(&:payment_date).each do |payment_date, invoices| %>
+          <tr>
+            <td><%= fu_date_format(payment_date) %></td>
+            <td style="text-align: right;"><%= money_cra_format invoices.map{|p| p.total_invoice if p.shipping_instruction.is_uncanceled?}.sum(&:to_f).round(2) %></td>
+          </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <th>TOTAL</th>
+        <th style="text-align: right;"><%= money_cra_format total %></th>
+      </tfoot>
+    </table>
+</div>

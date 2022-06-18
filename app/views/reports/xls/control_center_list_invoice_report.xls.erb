@@ -1,0 +1,109 @@
+<% columns = @report.columns %>
+<% base = [] %>
+<% 20.times{ |i| base.push i.to_s } %>
+<% @invoices.sort_by(&:customer).group_by(&:customer).each do |customer, invoices| %>
+  <%
+    head = []
+    head.push ""
+    head.push "IBL Ref\t"
+    head.push "Customer\t"
+    head.push "Shipper\t"
+    head.push "Shipper Ref\t"
+    head.push "MBL\t"
+    head.push "Invoice No\t"
+    head.push "Qty\t"
+    head.push "Destination\t"
+    head.push "USD\t"
+    head.push "IDR\t"
+    head.push "Freight\t"
+    head.push "VAT 10%\t"
+    head.push "VAT 1%\t"
+    head.push "PPH 23\t"
+    head.push "ETD Date\t"
+    head.push "Due Date\t"
+    head.push "Date Payment\t"
+    head.push "Status\t"
+    head.push "Note\t"
+  %>
+LIST INVOICE <%= customer %>
+  <% (base-columns).reverse_each{ |column| head.delete_at(column.to_i) } %>
+<%= head.join("").html_safe %>
+  <%
+    total_usd = 0
+    total_idr = 0
+    total_freight_usd = 0
+    total_vat_10_usd = 0
+    total_vat_1_usd = 0
+    total_pph_23_usd = 0
+
+    total_freight_idr = 0
+    total_vat_10_idr = 0
+    total_vat_1_idr = 0
+    total_pph_23_idr = 0
+  %>
+  <% invoices.sort_by(&:invoice_date).each do |reference| %>
+    <%
+      if reference.currency_code == "USD"
+        total_usd += reference.total_invoice.to_f
+        total_freight_usd += reference.freight.to_f
+        total_vat_10_usd += reference.vat_10.to_f
+        total_vat_1_usd += reference.vat_1.to_f
+        total_pph_23_usd += reference.pph_23.to_f
+      elsif reference.currency_code == "IDR"
+        total_idr += reference.total_invoice.to_f
+        total_freight_idr += reference.freight.to_f
+        total_vat_10_idr += reference.vat_10.to_f
+        total_vat_1_idr += reference.vat_1.to_f
+        total_pph_23_idr += reference.pph_23.to_f
+      end
+    %>
+  <% body = report_list_cc_list_invoice(reference, "xls") %>
+  <% (base-columns).reverse_each{ |column| body.delete_at(column.to_i) } unless body.blank? %>
+<%= body.join("").html_safe unless body.blank? %>
+  <% end %>
+  <% index = columns.index("9") %>
+  <%
+    total_freight = []
+    total_freight.push "#{money_with_currency_format(total_freight_usd, 'USD')}" if total_freight_usd != 0
+    total_freight.push "#{money_with_currency_format(total_freight_idr, 'IDR')}" if total_freight_idr != 0
+
+    total_vat_10 = []
+    total_vat_10.push "#{money_with_currency_format(total_vat_10_usd, 'USD')}" if total_vat_10_usd != 0
+    total_vat_10.push "#{money_with_currency_format(total_vat_10_idr, 'IDR')}" if total_vat_10_idr != 0
+    
+    total_vat_1 = []
+    total_vat_1.push "#{money_with_currency_format(total_vat_1_usd, 'USD')}" if total_vat_1_usd != 0
+    total_vat_1.push "#{money_with_currency_format(total_vat_1_idr, 'IDR')}" if total_vat_1_idr != 0
+    
+    total_pph_23 = []
+    total_pph_23.push "#{money_with_currency_format(total_pph_23_usd, 'USD')}" if total_pph_23_usd != 0
+    total_pph_23.push "#{money_with_currency_format(total_pph_23_idr, 'IDR')}" if total_pph_23_idr != 0
+
+    foot = []
+    foot.push "Total\t"
+    (index.to_i-1).times{ foot.push "\t" }
+    foot.push "#{money_format(total_usd)}\t" if columns.include? "9"
+    foot.push "#{money_format(total_idr)}\t" if columns.include? "10"
+    foot.push "#{total_freight[0]}\t" if columns.include? "11"
+    foot.push "#{total_vat_10[0]}\t" if columns.include? "12"
+    foot.push "#{total_vat_1[0]}\t" if columns.include? "13"
+    foot.push "#{total_pph_23[0]}\t" if columns.include? "14"
+  %>
+<%= foot.join("").html_safe %>
+  <% unless total_freight[1].blank? || total_vat_10[1].blank? || total_vat_1[1].blank? || total_pph_23[1].blank? %>
+  <%
+    foot = []
+    foot.push "\t"
+    (index.to_i-1).times{ foot.push "\t" }
+    foot.push "\t" if columns.include? "9"
+    foot.push "\t" if columns.include? "10"
+    
+    foot.push "#{total_freight[1]}\t" if columns.include? "11"
+    foot.push "#{total_vat_10[1]}\t" if columns.include? "12"
+    foot.push "#{total_vat_1[1]}\t" if columns.include? "13"
+    foot.push "#{total_pph_23[1]}\t" if columns.include? "14"
+  %>
+<%= foot.join("").html_safe %>
+  <% end %>
+
+<% end %>

@@ -1,0 +1,589 @@
+<div class="page-header">
+  <h3>List Invoices</h3>
+</div>
+<% if !notice.nil? %>
+  <p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<%= form_for(@report, url: report_invoices_path, html: { class: "form-inline", target: "_blank"}) do |f| %>
+  <div id="report_params"></div>
+
+  <div>
+    Tax Issued :
+      <span id="tax_issued" style="display: inline-block;width: 215px;"></span>
+    Sort Data :
+      <span id="head_letter" style="display: inline-block;width: 215px;"></span>
+    <button type="button" class="btn" onclick="yadcf.exFilterExternallyTriggered(invoicesTable);">Submit</button>
+    <button type="submit" class="btn btn-primary">View Report</button>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exResetAllFilters(invoicesTable);" style="float: right;">Reset all column filters</button>
+  </div>
+<% end %>
+
+<div class="clearfix"></div>
+
+<% columns = { 
+              invoice_no: "Invoice No",
+              ibl_ref: "IBL Ref",
+              currency: "Currency",
+              total: "Total",
+              customer: "Customer",
+              shipper: "Shipper",
+              invoice_status: "Invoice Status",
+              # tax_issued: "Tax Issued",
+              vat_10: "VAT 10%",
+              vat_10_no: "VAT 10% No",
+              vat_1: "VAT 1%",
+              vat_1_no: "VAT 1% No",
+              pph_23: "PPH 23",
+              pph_23_no: "PPH 23 No",
+              tax_status: "Tax Status",
+              paid_month: "Paid Month" } 
+  
+  filter = ""
+  columns.each_with_index do |(key, value), index|
+    # filter+="<span>#{value} :</span><span id=#{key}></span>"
+    filter+="<div class=\"span3\"><span>#{value} :</span><span id=#{key}></span></div>"
+    filter+="<div class=\"clearfix\"></div>" if (index+1)%4 == 0
+  end
+%>
+
+<div>
+  <div class="span3">Sort Data :
+    <span id="si_date_format">
+      <select name="format" id="format">
+        <option value="pdf">PDF</option>
+        <option value="xls">XLS</option>
+      </select>
+    </span>
+  </div>
+  
+  <div class="span3">Sort Data :
+    <span id="si_date_month"></span>
+  </div>
+
+  <div class="span3">&nbsp;
+    <span id="si_date_range"></span>
+  </div>
+
+  <div class="clearfix"></div>
+  <br/>
+
+  <%= filter.html_safe %>
+
+  <div class="clearfix"></div>
+  <br/>
+  <div id="externaly_triggered_wrapper-controls" class="text-center">
+    <button type="button" class="btn btn-primary" onclick="yadcf.exFilterExternallyTriggered(invoicesTable);">Filter</button>
+    <button type="button" class="btn btn-primary" onclick="yadcf.exResetAllFilters(invoicesTable);">Reset</button>
+  </div>
+</div>
+
+<div class="clearfix"></div>
+
+
+<!-- # Revisi 1 Dec 2015 -->
+<table class="table table-striped table-bordered skip_checkbox" id="list-ivn-dbn">
+  <thead>
+  <tr>
+    <th width="10%" class="disable">Actions</th>
+    <th>Invoice No</th>
+    <th>IBL Ref</th>
+    <th>Currency</th>
+    <th>Total</th>
+    <th>Customer</th>
+    <th>Shipper</th>
+    <th>Invoice Status</th>
+    <th>Tax Issued</th>
+    <th>VAT 10%</th>
+    <th>VAT 10% No</th>
+    <th>VAT 1%</th>
+    <th>VAT 1% No</th>
+    <th>PPH 23</th>
+    <th>PPH 23 No</th>
+    <th>Tax Status</th>
+    <th>Paid Month</th>
+    <th class="hidden disable">Filter Monthly</th>
+    <th class="hidden disable">Filter Date</th>
+    <th class="hidden disable">Row Id</th>
+    <th class="hidden disable">IBL Ref</th>
+    <th class="hidden disable">Status</th>
+    <th class="hidden disable">Head Letter</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @invoices.each do |invoice| %>
+    <%# cache invoice do %>
+      <%= render 'invoices/row', invoice: invoice %>
+    <%# end %>
+  <% end %>
+  </tbody>
+</table>
+
+<div id="invModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="invModalTitle"></h3>
+  </div>
+  <div class="modal-body">
+    <form action="/invoices/tax" id="invoices-form" class="form-horizontal">
+      <div class="control-group">
+        <label for="" class="control-label">Tax Issued : </label>
+
+        <div class="controls">
+          <input type="text" name="tax_issued" class="dtpicker"/>
+        </div>
+      </div>
+      <div class="control-group" style="margin-bottom: 0px;">
+        <label for="" class="control-label">VAT 10% : </label>
+
+        <div class="controls vat_10">
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">No : </label>
+
+        <div class="controls">
+          <input type="text" name="vat_10_no"/>
+        </div>
+      </div>
+      <div class="control-group" style="margin-bottom: 0px;">
+        <label for="" class="control-label">VAT 1% : </label>
+
+        <div class="controls vat_1">
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">No : </label>
+
+        <div class="controls">
+          <input type="text" name="vat_1_no"/>
+        </div>
+      </div>
+      <div class="control-group" style="margin-bottom: 0px;">
+        <label for="" class="control-label">PPH 23 : </label>
+
+        <div class="controls pph_23">
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">No : </label>
+
+        <div class="controls">
+          <input type="text" name="pph_23_no"/>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Tax Status : </label>
+
+        <div class="controls">
+          <%= select_tag 'status_tax', options_for_select(Invoice.status_taxes.collect { |s| [s[0].humanize, s[0]] }) %>
+        </div>
+      </div>
+      <div class="control-group">
+        <input type="hidden" name="id" value="" id="inv-id">
+
+        <div class="controls">
+          <button id="invoices" type="button" class="btn-submit btn btn-primary">Update</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div id="dbnModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="dbnModalTitle"></h3>
+  </div>
+  <div class="modal-body">
+    <form action="/debit_notes/tax" id="debit-notes-form" class="form-horizontal">
+      <div class="control-group">
+        <label for="" class="control-label">Tax Issued : </label>
+
+        <div class="controls">
+          <input type="text" name="tax_issued" class="dtpicker"/>
+        </div>
+      </div>
+      <div class="control-group" style="margin-bottom: 0px;">
+        <label for="" class="control-label">VAT 10% : </label>
+
+        <div class="controls vat_10">
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">No : </label>
+
+        <div class="controls">
+          <input type="text" name="vat_10_no"/>
+        </div>
+      </div>
+      <div class="control-group" style="margin-bottom: 0px;">
+        <label for="" class="control-label">VAT 1% : </label>
+
+        <div class="controls vat_1">
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">No : </label>
+
+        <div class="controls">
+          <input type="text" name="vat_1_no"/>
+        </div>
+      </div>
+      <div class="control-group" style="margin-bottom: 0px;">
+        <label for="" class="control-label">PPH 23 : </label>
+
+        <div class="controls pph_23">
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">No : </label>
+
+        <div class="controls">
+          <input type="text" name="pph_23_no"/>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Tax Status : </label>
+
+        <div class="controls">
+          <%= select_tag 'status_tax', options_for_select(Invoice.status_taxes.collect { |s| [s[0].humanize, s[0]] }) %>
+        </div>
+      </div>
+      <div class="control-group">
+        <input type="hidden" name="id" value="" id="inv-id">
+
+        <div class="controls">
+          <button id="debit-notes" type="button" class="btn-submit btn btn-primary">Update</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div id="noteModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="noteModalTitle"></h3>
+  </div>
+  <div class="modal-body">
+    <form action="/notes/tax" id="notes-form" class="form-horizontal">
+      <div class="control-group">
+        <label for="" class="control-label">Tax Issued : </label>
+
+        <div class="controls">
+          <input type="text" name="tax_issued" class="dtpicker"/>
+        </div>
+      </div>
+      <div class="control-group" style="margin-bottom: 0px;">
+        <label for="" class="control-label">VAT 10% : </label>
+
+        <div class="controls vat_10">            
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">No : </label>
+
+        <div class="controls">
+          <input type="text" name="vat_10_no"/>
+        </div>
+      </div>
+      <div class="control-group" style="margin-bottom: 0px;">
+        <label for="" class="control-label">VAT 1% : </label>
+
+        <div class="controls vat_1">
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">No : </label>
+
+        <div class="controls">
+          <input type="text" name="vat_1_no"/>
+        </div>
+      </div>
+      <div class="control-group" style="margin-bottom: 0px;">
+        <label for="" class="control-label">PPH 23 : </label>
+
+        <div class="controls pph_23">
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">No : </label>
+
+        <div class="controls">
+          <input type="text" name="pph_23_no"/>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Tax Status : </label>
+
+        <div class="controls">
+          <%= select_tag 'status_tax', options_for_select(Invoice.status_taxes.collect { |s| [s[0].humanize, s[0]] }) %>
+        </div>
+      </div>
+      <div class="control-group">
+        <input type="hidden" name="id" value="" id="inv-id">
+
+        <div class="controls">
+          <button id="notes" type="button" class="btn-submit btn btn-primary">Update</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+/*  .ui-datepicker-calendar {
+    display: none;
+  }
+  .color_blue {
+    color: blue;
+  }
+  .vat_10, .vat_1, .pph_23 {
+    padding-top: 5px;
+  }*/
+</style>
+
+<script type="text/javascript">
+  var row;
+  $('#list-ivn-dbn tbody').on( 'click', 'tr', function () {
+   row = invoicesTable.row( this );
+   console.log(row.data());
+  });
+</script>
+<script type="text/javascript">
+  var ready;
+  ready = function() {
+    'use strict';
+
+    if(typeof dataTable === 'undefined'){
+      invoicesTable = $('#list-ivn-dbn').DataTable({
+        order: [[ 1, 'desc' ]],
+        buttons: [
+          'pageLength',
+          {
+            extend: 'colvis',
+            collectionLayout: 'fixed two-column',
+            columns: ':not(.disable)',
+            postfixButtons: [ { 
+              text: 'Restore visibility',
+              action: function ( e, dt, node, config ) {
+                dt.columns().visible( true, false );
+                dt.columns.adjust().draw( false );
+              }
+            } ]
+          },
+        ],
+        columnDefs: [
+          { targets: [ 0 ], orderable: false, searchable: false }
+        ]
+      });
+      yadcf.init(invoicesTable, [
+        {column_number : 1, filter_container_id: "invoice_no", filter_type: "auto_complete"},
+        {column_number : 2, filter_container_id: "ibl_ref", filter_type: "auto_complete"},
+        {column_number : 3, filter_container_id: "currency", filter_type: "auto_complete"},
+        {column_number : 4, filter_container_id: "total", filter_type: "auto_complete"},
+        {column_number : 5, filter_container_id: "customer", filter_type: "auto_complete"},
+        {column_number : 6, filter_container_id: "shipper", filter_type: "auto_complete"},
+        {column_number : 7, filter_container_id: "invoice_status", filter_type: "auto_complete"},
+        {column_number : 8, filter_container_id: "tax_issued", filter_type: "date", date_format: "dd-M-yy"},
+        {column_number : 9, filter_container_id: "vat_10", filter_type: "auto_complete"},
+        {column_number : 10, filter_container_id: "vat_10_no", filter_type: "auto_complete"},
+        {column_number : 11, filter_container_id: "vat_1", filter_type: "auto_complete"},
+        {column_number : 12, filter_container_id: "vat_1_no", filter_type: "auto_complete"},
+        {column_number : 13, filter_container_id: "pph_23", filter_type: "auto_complete"},
+        {column_number : 14, filter_container_id: "pph_23_no", filter_type: "auto_complete"},
+        {column_number : 15, filter_container_id: "tax_status", filter_type: "auto_complete"},
+        {column_number : 16, filter_container_id: "paid_month", filter_type: "auto_complete"},
+        {column_number : 17, filter_container_id: "si_date_month", filter_type: "select", filter_default_label: "Select a month"},
+        {column_number : 18, filter_container_id: "si_date_range", filter_type: "range_date"},
+        {column_number : 20, filter_container_id: "ibl_ref", filter_type: "auto_complete"},
+        {column_number : 22, filter_container_id: "head_letter", filter_type: "select", filter_default_label: "All"},
+        // {column_number : 22, filter_container_id: "head_letter",
+        //   // data: [ { value: "Invoice", label: "Invoice"}, 
+        //   //         { value: "Credit Note", label: "Credit Note"}, 
+        //   //         { value: "Reimbursement Cost", label: "Reimbursement Cost"}, 
+        //   //         { value: "Debit Note", label: "Debit Note"} ],  
+        //   data: ["Invoice","Credit Note","Reimbursement Cost", "Debit Note"],
+        //   filter_default_label: "All" },
+      ], { externally_triggered: true });
+    }else{ invoicesTable.destroy(); }
+  }
+</script>
+<script type="text/javascript">
+  var invoicesTable;
+
+  $(document).ready(ready);
+  $(document).on('page:fetch', function() { invoicesTable.destroy(); });
+
+  function report() {
+    var row_id = [];    
+    var form = "";
+    invoicesTable.rows({search:'applied'}).every( function ( rowIdx, tableLoop, rowLoop ) {
+      var rowNode = this.node();
+
+      $(rowNode).find("td.row_id").each(function (){
+        row_id.push( $(this).text().trim() );
+      });
+    });
+
+    console.log(row_id);
+
+    $.each(row_id, function(key, value){
+      form += '<input type="hidden" name="invoice_report[row_ids][]" value="'+value+'">';
+    });
+
+    var columns = [];
+    invoicesTable.columns(':not(.disable)').every( function ( rowIdx, tableLoop, rowLoop ) {
+      if(this.visible() === true){
+        columns.push(rowIdx);
+      }
+    } );
+
+    console.log(columns);
+
+    $.each(columns, function(key, value){
+      form += '<input type="hidden" name="invoice_report[columns][]" value="'+value+'">';
+    });
+
+    form += '<input type="hidden" name="invoice_report[format]" value="'+$('#format').val()+'">';
+    var monthly = $('#yadcf-filter--shipping-instructions-15.inuse').val();
+    if(monthly != undefined)
+      form += '<input type="hidden" name="invoice_report[monthly]" value="'+monthly+'">';
+
+    var from = $('#yadcf-filter--shipping-instructions-from-date-16.inuse').val();
+    if(from != undefined)
+      form += '<input type="hidden" name="invoice_report[from]" value="'+from+'">';
+
+    var to = $('#yadcf-filter--shipping-instructions-to-date-16.inuse').val();
+    if(to != undefined)
+      form += '<input type="hidden" name="invoice_report[to]" value="'+to+'">';
+
+    $('#report_params').html(form);
+  }
+
+  $("form").submit(function(){
+    report();
+  });
+</script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    var btn;
+    var unpaid_invoices_path = '<%= unpaid_invoices_path %>';
+    var unpaid_debit_notes_path = '<%= unpaid_debit_notes_path %>';
+    var unpaid_notes_path = '<%= unpaid_notes_path %>';
+
+    $(".btn-invoice").livequery(function () {
+      $(this).click(function () {
+        split = $(this).attr("id").split("-");
+        $("#invModalTitle").text("Invoice: " + split[1]);
+        $("#inv-id").val(split[0]);
+        btn = $(this);
+
+        if ($(this).data('tax_issued') != "")
+          $('#invoices-form input[name=tax_issued]').val($.datepicker.formatDate("MM yy", new Date($(this).data('tax_issued'))));
+        $('#invoices-form input[name=vat_10_no]').val($(this).data('vat_10_no'));
+        $('#invoices-form input[name=vat_1_no]').val($(this).data('vat_1_no'));
+        $('#invoices-form input[name="pph_23_no"]').val($(this).data('pph_23_no'));
+        $('#invoices-form #status_tax').val($(this).data('status_tax'));
+        
+        var vat_10 = $.trim($(this).parent().parent().children('.vat_10_column').children('.color_blue').text());
+        var vat_1 = $.trim($(this).parent().parent().children('.vat_1_column').children('.color_blue').text());
+        var pph_23 = $.trim($(this).parent().parent().children('.pph_23_column').children('.color_blue').text());
+        var currency_code = $.trim($(this).parent().parent().children('.currency_code').text());
+        if (vat_10 != "")
+          $('#invoices-form .vat_10').html(vat_10+' '+currency_code);
+        if (vat_1 != "")
+          $('#invoices-form .vat_1').html(vat_1+' '+currency_code);
+        if (pph_23 != "")
+          $('#invoices-form .pph_23').html(pph_23+' '+currency_code);
+      });
+    });
+
+    $(".btn-dbn").livequery(function () {
+      $(this).click(function () {
+        split = $(this).attr("id").split("-");
+        $("#dbnModalTitle").text("Debit Note: " + split[1]);
+        $("#dbn-id").val(split[0]);
+        btn = $(this);
+
+        if ($(this).data('tax_issued') != "")
+          $('#debit-notes-form input[name=tax_issued]').val($.datepicker.formatDate("MM yy", new Date($(this).data('tax_issued'))));
+        $('#debit-notes-form input[name=vat_10_no]').val($(this).data('vat_10_no'));
+        $('#debit-notes-form input[name=vat_1_no]').val($(this).data('vat_1_no'));
+        $('#debit-notes-form input[name="pph_23_no"]').val($(this).data('pph_23_no'));
+        $('#debit-notes-form #status_tax').val($(this).data('status_tax'));
+        
+        var vat_10 = $.trim($(this).parent().parent().children('.vat_10_column').children('.color_blue').text());
+        var vat_1 = $.trim($(this).parent().parent().children('.vat_1_column').children('.color_blue').text());
+        var pph_23 = $.trim($(this).parent().parent().children('.pph_23_column').children('.color_blue').text());
+        var currency_code = $.trim($(this).parent().parent().children('.currency_code').text());
+        if (vat_10 != "")
+          $('#debit-notes-form .vat_10').html(vat_10+' '+currency_code);
+        if (vat_1 != "")
+          $('#debit-notes-form .vat_1').html(vat_1+' '+currency_code);
+        if (pph_23 != "")
+          $('#debit-notes-form .pph_23').html(pph_23+' '+currency_code);
+      });
+    });
+
+    $(".btn-note").livequery(function () {
+      $(this).click(function () {
+        split = $(this).attr("id").split("-");
+        $("#noteModalTitle").text("Note: " + split[1]);
+        $("#note-id").val(split[0]);
+        btn = $(this);
+
+        if ($(this).data('tax_issued') != "")
+          $('#notes-form input[name=tax_issued]').val($.datepicker.formatDate("MM yy", new Date($(this).data('tax_issued'))));
+        $('#notes-form input[name=vat_10_no]').val($(this).data('vat_10_no'));
+        $('#notes-form input[name=vat_1_no]').val($(this).data('vat_1_no'));
+        $('#notes-form input[name="pph_23_no"]').val($(this).data('pph_23_no'));
+        $('#notes-form #status_tax').val($(this).data('status_tax'));
+        
+        var vat_10 = $.trim($(this).parent().parent().children('.vat_10_column').children('.color_blue').text());
+        var vat_1 = $.trim($(this).parent().parent().children('.vat_1_column').children('.color_blue').text());
+        var pph_23 = $.trim($(this).parent().parent().children('.pph_23_column').children('.color_blue').text());
+        var currency_code = $.trim($(this).parent().parent().children('.currency_code').text());
+        if (vat_10 != "")
+          $('#notes-form .vat_10').html(vat_10+' '+currency_code);
+        if (vat_1 != "")
+          $('#notes-form .vat_1').html(vat_1+' '+currency_code);
+        if (pph_23 != "")
+          $('#notes-form .pph_23').html(pph_23+' '+currency_code);
+      });
+    });
+
+    // when using turbolinks, trigger multiple ajax click submit form
+    $(".btn-submit").on("click", function (e) {
+      e.preventDefault();
+      $.ajax({
+        url: $("#" + this.id + "-form").attr("action"),
+        type: "POST",
+        data: $("#" + this.id + "-form").serialize(),
+        success: function (data) {
+          if (data.success) {
+            var parent = btn.parent().parent();
+            var actions = parent.children('.actions');
+
+            btn.data('tax_issued', data.tax_issued);
+            btn.data('vat_10_no', data.vat_10_no);
+            btn.data('vat_1_no', data.vat_1_no);
+            btn.data('pph_23_no', data.pph_23_no);
+            btn.data('status_tax', data.status_tax);
+
+            invoicesTable.cell(row, 8).data(data.tax_issued).draw();
+            invoicesTable.cell(row, 10).data(data.vat_10_no).draw();
+            invoicesTable.cell(row, 12).data(data.vat_1_no).draw();
+            invoicesTable.cell(row, 14).data(data.pph_23_no).draw();
+            invoicesTable.cell(row, 15).data(data.status_tax).draw();
+
+            $(".close").click();
+            alert(data.message);
+          } else {
+            alert(data.message);
+          }
+        }
+      });
+      return false;
+    });
+  });
+</script>

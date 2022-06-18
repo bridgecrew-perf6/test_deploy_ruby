@@ -1,0 +1,19 @@
+"IBL REF"<%= "\t" %>"SHIPPER"<%= "\t" %>"CUSTOMER"<%= "\t" %>"INV REF"<%= "\t" %>"USD"<%= "\t" %>"IDR"<%= "\t" %>"ETD DATE"<%= "\t" %>"DUE DATE"
+<%
+   repeat_number = false
+   last_bl = 0
+%>
+<% @invoices.each do |inv| %>
+  <% cache(["report-unpaid-invoices-xls", inv]) do %>
+    <%
+       vessel = inv.bill_of_lading.shipping_instruction.vessels.first
+       if last_bl != 0 && last_bl == inv.bill_of_lading_id
+         repeat_number = true
+       else
+         repeat_number = false
+         last_bl = inv.bill_of_lading_id
+       end
+    %>
+    <%= (repeat_number ? "" : inv.bill_of_lading.shipping_instruction.si_no) %><%= "\t" %><%= inv.bill_of_lading.shipping_instruction.shipper_company_name %><%= "\t" %><%= inv.customer_ori %><%= "\t" %><%= inv.try(:no_invoice) || inv.try(:no_dbn) || inv.try(:no_note) %><%= "\t" %><% if inv.currency_code == "USD" %><%= number_with_precision(inv.total_invoice, precision: 2, delimiter: ',') %><%= "\t" %>""<%= "\t" %><% else %>""<%= "\t" %><%= number_with_precision(inv.total_invoice, precision: 2, delimiter: ',') %><%= "\t" %><% end %><%= si_date_format vessel.etd_date unless vessel.nil? %><%= "\t" %><%= si_date_format inv.due_date %>
+  <% end %>
+<% end %>

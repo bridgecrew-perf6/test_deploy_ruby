@@ -1,0 +1,27 @@
+""<%= "\t" %>""<%= "\t" %>""<%= "\t" %>"DETAIL SHIPMENT"
+
+<% unless @shipping_instruction.nil? %>
+<% cache(["report-detail-shipment-xls", @shipping_instruction]) do %>
+"IBL REF"<%= "\t" %>":"<%= "\t" %><%= @shipping_instruction.si_no %><%= "\t" %>""<%= "\t" %>"Carrier"<%= "\t" %>":"<%= "\t" %><%= @shipping_instruction.carrier %>
+"Shipper"<%= "\t" %>":"<%= "\t" %><%= @shipping_instruction.shipper_company_name %><%= "\t" %>""<%= "\t" %>"Booking No"<%= "\t" %>":"<%= "\t" %><%= @shipping_instruction.booking_no %>
+"Consignee"<%= "\t" %>":"<%= "\t" %><%= @shipping_instruction.consignee_company_name %><%= "\t" %>""<%= "\t" %>"MBL No"<%= "\t" %>":"<%= "\t" %><%= @shipping_instruction.master_bl_no %>
+"Notify Party"<%= "\t" %>":"<%= "\t" %><%= @shipping_instruction.first_line_notify_party %><%= "\t" %>""<%= "\t" %>"FT Approval"<%= "\t" %>":"<%= "\t" %><% unless @shipping_instruction.shipment_tracking.nil? %><%= @shipping_instruction.shipment_tracking.free_approval %><% end %>
+"POL"<%= "\t" %>":"<%= "\t" %><%= @shipping_instruction.port_of_loading %><%= "\t" %>""<%= "\t" %>"Agent at Destination"<%= "\t" %>":"<%= "\t" %><% unless @shipping_instruction.bill_of_lading.nil? %><%= @shipping_instruction.bill_of_lading.agent_name.lines.first unless @shipping_instruction.bill_of_lading.agent_name.nil? %><% end %>
+"Destination"<%= "\t" %>":"<%= "\t" %><%= @shipping_instruction.final_destination %><%= "\t" %>""<%= "\t" %>"Payment No."<%= "\t" %>":"
+<% payments = Payment.includes(:payment_references).where(payment_references: {ibl_ref: @shipping_instruction.si_no}).references(:payment_references) %><% payments.each do |payment| %>""<%= "\t" %>""<%= "\t" %>""<%= "\t" %>""<%= "\t" %><%= payment.payment_no + "\n" %><% end %>
+"Volume"<%= "\t" %>":"<%= "\t" %><%= @shipping_instruction.si_containers.map {|c| (c.container.container_type == "LCL" ? "#{number_with_precision(c.volum, precision: 3, delimiter: ',')} M3 #{c.container.container_type}" : "#{c.volum}x#{c.container.container_type}") }.join(" & ") %><%= "\t" %>""<%= "\t" %>"Invoices No"<%= "\t" %>":"
+<% unless @shipping_instruction.bill_of_lading.nil? %><% @shipping_instruction.bill_of_lading.invoices.each do |inv| %><% if inv.is_cancel == 0 %>""<%= "\t" %>""<%= "\t" %>""<%= "\t" %>""<%= "\t" %><%= inv.no_invoice %>
+<% end %><% end %><% end %>
+<% unless @shipping_instruction.bill_of_lading.nil? %><% @shipping_instruction.bill_of_lading.debit_notes.each do |dbn| %><% if dbn.is_cancel == 0 %>""<%= "\t" %>""<%= "\t" %>""<%= "\t" %>""<%= "\t" %><%= dbn.no_dbn %>
+<% end %><% end %><% end %>
+<% unless @shipping_instruction.bill_of_lading.nil? %><% @shipping_instruction.bill_of_lading.notes.each do |note| %><% if note.is_cancel == 0 %>""<%= "\t" %>""<%= "\t" %>""<%= "\t" %>""<%= "\t" %><%= note.no_note %>
+<% end %><% end %><% end %>
+"Order Type"<%= "\t" %>":"<%= "\t" %><%= @shipping_instruction.order_type_text %><%= "\t" %>""<%= "\t" %>"Created By"<%= "\t" %>":"<%= "\t" %><%= @shipping_instruction.author.username unless @shipping_instruction.author.nil? %>
+"Schedule"<%= "\t" %>"Estimate"<%= "\t" %>"Actual"
+<% unless @shipping_instruction.shipment_tracking.nil? %><% @shipping_instruction.shipment_tracking.actual_vessels.each do |actual| %><%= actual.vessel.vessel_name %>
+"Etd <%= actual.vessel.etd_no %>"<%= "\t" %><%= si_date_format actual.vessel.etd_date %><%= "\t" %><%= si_date_format actual.actual_etd_date %>
+"Eta <%= actual.vessel.eta_no %>"<%= "\t" %><%= si_date_format actual.vessel.eta_date %><%= "\t" %><%= si_date_format actual.actual_eta_date %><% end %><% end %>
+"Notes"<%= "\t" %>":"
+<% unless @shipping_instruction.shipment_tracking.nil? %><%= @shipping_instruction.shipment_tracking.notes %><% end %>
+<% end %>
+<% end %>

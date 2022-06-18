@@ -1,0 +1,280 @@
+<div class="page-header">
+	<h3>Shipment Tracking: <%= @shipping_instruction.si_no %></h3>
+</div>
+
+<style type="text/css">
+	.row-details label{
+		font-weight: 700;
+	}
+	.row-details{
+		margin-bottom: 10px;
+	}
+	#tracking-details .detail-group{
+		clear: both;
+	}
+	#tracking-details .detail-group > label{
+		float: left;
+		width: 120px;
+		min-width: 1px;
+	}
+	#tracking-details .detail-group > .detail{
+		margin-left: 130px;
+		min-width: 1px;
+	}
+	#success-update.fixed-top{
+		position: fixed;
+		top: 20px;
+		right: 20px;
+	}
+</style>
+
+<%= form_for(@shipment, html: {style: "width: 754px"}) do |f| %>
+<div id="tracking-details">
+	<div id="shipping-instruction-details" class="row-details">
+		<div class="detail-group">
+			<label>IBL REF <span class="pull-right">:</span></label>
+			<div class="detail"><%= @shipping_instruction.si_no %></div>
+		</div>
+		<div class="detail-group">
+			<label>Shipper REF <span class="pull-right">:</span></label>
+			<div class="detail"><%= @shipping_instruction.shipper_reference %></div>
+		</div>
+		<div class="detail-group">
+			<label>Shipper <span class="pull-right">:</span></label>
+			<div class="detail"><%= @shipping_instruction.shipper_company_name %></div>
+		</div>
+		<div class="detail-group">
+			<label>Consignee <span class="pull-right">:</span></label>
+			<div class="detail"><%= @shipping_instruction.consignee_company_name %></div>
+		</div>
+		<div class="detail-group">
+			<label>Carrier <span class="pull-right">:</span></label>
+			<div class="detail"><%= @shipping_instruction.carrier %></div>
+		</div>
+		<div class="detail-group">
+			<label>Booking No. <span class="pull-right">:</span></label>
+			<div class="detail"><%= @shipping_instruction.booking_no %></div>
+		</div>
+		<div class="detail-group">
+			<label>MBL No. <span class="pull-right">:</span></label>
+			<div class="detail"><%= @shipping_instruction.master_bl_no %></div>
+		</div>
+		<div class="detail-group">
+			<label>Volume <span class="pull-right">:</span></label>
+			<div class="detail"><%= @shipping_instruction.volume %></div>
+		</div>
+		<div class="detail-group">
+			<label>Cont No. <span class="pull-right">:</span></label>
+			<div class="detail">
+				<div class="row-fluid">
+					<div class="span4"><pre class="free"><%= @shipping_instruction.container_no %></pre></div>
+					<div class="span4"><pre class="free"><%= @shipping_instruction.container_no_2 %></pre></div>
+				</div>
+			</div>
+		</div>
+		<div class="detail-group">
+			<label>Transit Time <span class="pull-right">:</span></label>
+			<div class="detail"><%= transit_time_format(@shipping_instruction.transit_time) %></div>
+		</div>
+		<div class="detail-group">
+			<label>POL <span class="pull-right">:</span></label>
+			<div class="detail"><%= @shipping_instruction.port_of_loading %></div>
+		</div>
+	</div>
+	<div id="vessel-details" class="row-details">
+		<table class="table" style="width: 754px">
+			<thead>
+				<tr>
+					<th>Vessel</th>
+					<th width="75px">Estimate</th>
+					<th width="135px">Actual</th>
+					<th width="220px">Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% @shipment.actual_vessels.each do |actual| %>
+				<tr>
+					<td colspan="4">
+						<%= actual.vessel.vessel_name %>
+					</td>
+				</tr>
+				<tr id="etd_<%= actual.id %>">
+					<td><%= actual.vessel.etd_no %></td>
+					<td><%= si_date_format actual.vessel.etd_date %></td>
+					<td class="vessel_date">
+						<input type="text" class="actual_etd_date datepicker" style="width: 135px" value="<%= si_date_format actual.actual_etd_date %>"/>
+						<input type="hidden" class="actual_vessel_id" value="<%= actual.id %>">
+					</td>
+					<td class="vessel_status">
+						<select style="width: 130px; margin-bottom: 0" class="status_etd">
+							<option value="0" <%= 'selected' if actual.status_etd == ActualVessel::ESTIMATE %>>Estimate</option>
+							<option value="1" <%= 'selected' if actual.status_etd == ActualVessel::CONFIRM %>>Confirm</option>
+							<option value="2" <%= 'selected' if actual.status_etd == ActualVessel::DELAY %>>Delay</option>
+							<option value="3" <%= 'selected' if actual.status_etd == ActualVessel::SWITCH %>>Switch</option>
+							<option value="4" <%= 'selected' if actual.status_etd == ActualVessel::OTHERS %>>Others</option>
+						</select>
+						<input type="hidden" class="actual_vessel_id" value="<%= actual.id %>">
+						<textarea placeholder="The Reason..." class="reason_etd <%= 'hidden' if actual.status_etd < ActualVessel::DELAY %>"><%= actual.reason_etd %></textarea>
+						<input type="hidden" class="actual_vessel_id" value="<%= actual.id %>">
+						<a target="_blank" href="<%= etd_email_shipment_tracking_path(actual) %>" class="btn btn-default"><i class="icon icon-envelope"></i> E-Mail</a>
+					</td>
+				</tr>
+				<tr id="eta_<%= actual.id %>">
+					<td><%= actual.vessel.eta_no %></td>
+					<td><%= si_date_format actual.vessel.eta_date %></td>
+					<td class="vessel_date">
+						<input type="text" class="actual_eta_date datepicker" style="width: 135px" value="<%= si_date_format actual.actual_eta_date %>" />
+						<input type="hidden" class="actual_vessel_id" value="<%= actual.id %>">
+					</td>
+					<td class="vessel_status">
+						<select style="width: 130px; margin-bottom: 0" class="status_eta">
+							<option value="0" <%= 'selected' if actual.status_eta == ActualVessel::ESTIMATE %>>Estimate</option>
+							<option value="1" <%= 'selected' if actual.status_eta == ActualVessel::CONFIRM %>>Confirm</option>
+							<option value="2" <%= 'selected' if actual.status_eta == ActualVessel::DELAY %>>Delay</option>
+							<!-- <option value="3" <%= 'selected' if actual.status_eta == ActualVessel::SWITCH %>>Switch</option>
+							<option value="4" <%= 'selected' if actual.status_eta == ActualVessel::OTHERS %>>Others</option> -->
+						</select>
+						<input type="hidden" class="actual_vessel_id" value="<%= actual.id %>">
+						<textarea placeholder="The Reason..." class="reason_eta <%= 'hidden' if actual.status_eta < ActualVessel::DELAY %>"><%= actual.reason_eta %></textarea>
+						<input type="hidden" class="actual_vessel_id" value="<%= actual.id %>">
+						<a target="_blank" href="<%= eta_email_shipment_tracking_path(actual) %>" class="btn btn-default"><i class="icon icon-envelope"></i> E-Mail</a>
+					</td>
+				</tr>
+				<% end %>
+			</tbody>
+		</table>
+	</div>
+	<div id="notes-details" class="row-details">
+		<label>Notes :</label>
+		<div>
+			<%= f.text_area :notes, style: "width: 742px; height: 100px" %>
+		</div>
+	</div>
+	</div>
+	<div id="fu-date-details" class="row-details">
+		<label>FU Date :</label>
+		<div>
+			<%= f.text_field :fu_date, class: 'fu-datepicker', value: fu_date_format(@shipment.fu_date) %>
+		</div>
+	</div>
+	<div id="free-time-details" class="row-details">
+		<label>Free Time :</label>
+		<table class="table" style="width: 754px">
+			<thead>
+				<tr>
+					<th style="width: 33.33%">Request</th>
+					<th style="width: 33.33%">Approval</th>
+					<th style="width: 33.33%">Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><%= f.text_field :free_request %></td>
+					<td><%= f.text_field :free_approval %></td>
+					<td>
+						<%= f.select :free_status, [["Request", 0],["Approval", 1],["No Request", 2]], {:style => "width: 145px; margin-bottom: 0"} %>
+						<a href="<%= ft_email_shipment_tracking_path(@shipment) %>" target="_blank" class="btn btn-default"><i class="icon icon-envelope"></i> E-Mail</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<%= f.hidden_field :id %>
+<a href="<%= shipment_trackings_path %>" class="btn btn-default"><i class="icon icon-reply"></i> Back to Shipments Tracking</a>
+<% end %>
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		var upd_shipment_path = '<%= update_shipment_shipment_trackings_path %>';
+		var upd_actual_shipment_path = '<%= update_actual_shipment_shipment_trackings_path %>';
+
+		jQuery("#shipment_tracking_free_status").on("change", function(){
+			AjaxUpdateShipment();
+		});
+		jQuery("#shipment_tracking_notes,#shipment_tracking_fu_date,#shipment_tracking_free_request,#shipment_tracking_free_approval")
+		.on("focusout change", function(){
+			AjaxUpdateShipment();
+		});
+
+		jQuery(".status_etd, .status_eta").on("change", function(){
+			if(jQuery(this).val() > 1)
+				jQuery(this).next().next().removeClass("hidden");
+			else
+			{
+				jQuery(this).next().next().addClass("hidden").val('');
+			}
+		});
+
+		jQuery(".status_etd, .actual_etd_date, .reason_etd").on("change focusout", function(){
+			var selectorId = "#etd_" + jQuery(this).next().val();
+			var id = jQuery(this).next().val();
+			var status = jQuery(selectorId).find(".status_etd").val();
+			var actual_date = jQuery(selectorId).find(".actual_etd_date").val();
+			var reason = jQuery(selectorId).find(".reason_etd").val();
+
+			data = {
+				id: id,
+				actual_vessel: {
+					status_etd: status,
+					actual_etd_date: actual_date,
+					reason_etd: reason
+				}
+			}
+			AjaxUpdateActualShipment(data);
+		});
+		jQuery(".status_eta, .actual_eta_date, .reason_eta").on("change focusout", function(){
+			var selectorId = "#eta_" + jQuery(this).next().val();
+			var id = jQuery(this).next().val();
+			var status = jQuery(selectorId).find(".status_eta").val();
+			var actual_date = jQuery(selectorId).find(".actual_eta_date").val();
+			var reason = jQuery(selectorId).find(".reason_eta").val();
+
+			data = {
+				id: id,
+				actual_vessel: {
+					status_eta: status,
+					actual_eta_date: actual_date,
+					reason_eta: reason
+				}
+			}
+			AjaxUpdateActualShipment(data);
+		});
+
+		function AjaxUpdateShipment(){
+			jQuery.ajax({
+				url: upd_shipment_path,
+				type: "POST",
+				data: {
+					id: jQuery("#shipment_tracking_id").val(),
+					shipment_tracking: {
+						notes: jQuery("#shipment_tracking_notes").val(),
+						fu_date: jQuery("#shipment_tracking_fu_date").val(),
+						free_request: jQuery("#shipment_tracking_free_request").val(),
+						free_approval: jQuery("#shipment_tracking_free_approval").val(),
+						free_status: jQuery("#shipment_tracking_free_status").val()
+					}
+				},
+				success: function(data){
+					createAutoClosingAlert(2000);
+				}
+			})
+		}
+
+		function AjaxUpdateActualShipment(dataSend){
+			jQuery.ajax({
+				url: upd_actual_shipment_path,
+				type: "POST",
+				data: dataSend,
+				success: function(data){
+					createAutoClosingAlert(2000);
+				}
+			})
+		}
+
+		function createAutoClosingAlert(delay) {
+			jQuery(".container-fluid").append('<div id="success-update" class="alert alert-success fixed-top"><i class="icon icon-check"></i> Changes has been updated</div>');
+			var alert = jQuery(".alert").alert();
+			window.setTimeout(function() { alert.alert('close') }, delay);
+		}
+	})
+</script>

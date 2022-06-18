@@ -1,0 +1,28 @@
+<%= render 'commons/pdf' %>
+<div style="width: 100%">
+  <h3 id="report-title"><%= @report.title %></h3>
+  <table style="width: 100%" border="1">
+    <thead>
+      <tr>
+        <th width="200">Owner</th>
+        <th width="350">Address</th>
+        <th width="100">Phone</th>
+        <th width="100">Fax</th>
+        <th width="150">Email</th>
+        <th width="100">Reference</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @results.each do |owner| %>
+        <tr>
+          <td><%= owner.name %></td>
+          <td><pre class="free"><%= owner.custom_attribute('address') %></pre></td>
+          <td><%= owner.custom_attribute('phone') %></td>
+          <td><%= owner.custom_attribute('fax') %></td>
+          <td><%= owner.custom_attribute('email') %></td>
+          <td><%= owner.reference %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

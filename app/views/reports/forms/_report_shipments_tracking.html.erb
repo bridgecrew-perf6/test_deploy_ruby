@@ -1,0 +1,86 @@
+<div class="row-fluid">
+  <form id="form-shipments-tracking" method="get" action="<%= shipments_tracking_reports_path %>" class="form-horizontal span6" target="_blank">
+    <fieldset>
+      <legend>Report Shipments Tracking</legend>
+      <div class="control-group">
+        <label for="" class="control-label">Format</label>
+        <div class="controls">
+          <select name="format" id="format">
+            <option value="pdf">PDF</option>
+            <option value="xls">XLS</option>
+          </select>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Filter by</label>
+        <div class="controls">
+          <select id="filter_shipments_by" name="filter_shipments_by">
+            <%= options_for_select(Constant::SORTED_BY) %>
+          </select>
+          <!-- <div class="controls"><input type="text" id="filter_shipments" class="filter_my" name="filter_shipments"> -->
+        </div>
+      </div>
+      <div class="control-group" id="sort-data-shipments-tracking">
+        <label for="" class="control-label">Filter Data</label>
+        <div class="controls">
+          <select id="filter_shipments_yearly" name="filter_shipments_yearly">
+            <option value="">Select a Year...</option>
+            <%= options_for_select(Constant.years_range) %>
+          </select>
+          <input type="text" id="filter_shipments_monthly" class="filter_my hidden" name="filter_shipments_monthly">
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">&nbsp;</label>
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">View Report</button>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+</div>
+<script type="text/javascript">
+  jQuery(document).ready(function () {
+    $("#filter_shipments_by").on("change", function(){
+      var value = $(this).val();
+      $("#sort-data-shipments-tracking").removeClass("hidden");
+      $("#filter_shipments_yearly").val("");
+      $("#filter_shipments_monthly").val("");
+
+      if(value == "all")
+      {
+        $("#sort-data-shipments-tracking").addClass("hidden");
+      } 
+      else if(value == "monthly")
+      {
+        $("#filter_shipments_monthly").removeClass("hidden");
+        $("#filter_shipments_yearly").addClass("hidden");
+      }
+      else if(value == "yearly")
+      {
+        $("#filter_shipments_monthly").addClass("hidden");
+        $("#filter_shipments_yearly").removeClass("hidden");
+      }
+    });
+
+    jQuery("#form-shipments-tracking").on("submit", function () {
+      var filter_by = $("#filter_shipments_by").val();
+      if (filter_by == "yearly")
+      {
+        if ($("#filter_shipments_yearly").val() == "")
+        {
+          alert("Filter Data Yearly can't empty!");
+          return false;
+        }
+      }
+      else if(filter_by == "monthly")
+      {
+        if ($("#filter_shipments_monthly").val() == "")
+        {
+          alert("Filter Data Monthly can't empty!");
+          return false;
+        }
+      }
+    })
+  })
+</script>

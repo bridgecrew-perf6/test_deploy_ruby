@@ -1,0 +1,56 @@
+o: ActiveSupport::Cache::Entry:@valueI"•  <tr class="warning ">
+    <td>
+      <a href="/bill_of_ladings/25476?year=2022" title="Show Bill of Lading"><i class="icon-eye-open icon-large"></i></a>
+      &nbsp;
+
+      <a href="/bill_of_ladings/25476/edit?year=2022" title="Edit Bill of Lading"><i class="icon-edit-sign icon-large"></i></a>
+      &nbsp;
+
+            <a data-confirm="Detail sell is empty. Proceed?" href="/bill_of_ladings/calculate_invoice?sid=36242&amp;year=2022" title="Calculate Invoice"><i class="icon-file icon-large"></i></a>
+        &nbsp;
+
+
+      
+      <a href="/cost_revenues/36242/print_cover?year=2022" target="_blank" title="Print"><i class="icon-print icon-large"></i></a>
+      &nbsp;
+      
+    </td>
+    <td>
+      IBL221087
+      
+      
+      
+        <span class="label label-warning">No Status CR</span>
+    </td>
+    <td>LLLJKT22406131</td>
+    <td>GWL INTERNATIONAL LOGISTICS</td>
+    <td>MIDGOLD SILICONE CO.,LTD</td>
+    <td>SANTO</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>TG. PRIOK, JAKARTA, INDONESIA</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+        No Invoice Yet
+    </td>
+    <td>7.932 M3 LCL</td>
+    <td>IMPORT (OCEAN FREIGHT, TRUCKING)</td>
+    <td>
+        No Payment Yet
+    </td>
+    <td>HONG KONG</td>
+    <td>13-Apr-2022</td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="25476">
+        <option selected="selected" value="Not Yet">Not Yet</option>
+<option value="Done">Done</option>
+      </select>
+    </td>
+    <td class="hidden disable">April 2022</td>
+    <td class="hidden disable">04/13/2022</td>
+    <td class="hidden disable reference_id">25476</td>
+    <td class="hidden disable ibl_ref">IBL221087</td>
+    <td class="hidden disable invoice">No Invoice Yet</td>
+    <td class="hidden disable payment">No Payment Yet</td>
+    <td class="hidden disable delivery_doc">Not Yet</td>
+  </tr>
+:ET:@created_atf1649612694.429499:@expires_in0

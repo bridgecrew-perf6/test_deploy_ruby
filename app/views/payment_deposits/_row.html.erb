@@ -1,0 +1,41 @@
+<% if currency == "IDR" %>
+<%
+  idr_balance = Payment.idr_balance(row.carrier_id, row.ibl_ref)
+  status = (idr_balance.to_f == 0) ? "Settle" : "Outstanding"
+%>
+<tr>
+  <td><%= link_to "View", view_payment_deposits_path(carrier_id: row.payment.carrier_id, ibl_ref: row.ibl_ref, payment_type: "IDR") %></td>
+  <td><%= row.carrier_name %></td>
+  <td><%= "#{row.ibl_ref} - #{row.master_bl_no}" %></td>
+  <td style="text-align:right"><%= money_format(idr_balance) %></td>
+  <td style="text-align:right"><%=  %></td>
+  <td class="hidden disable"><%= monthly_format row.first_etd_date %></td>
+  <td class="hidden disable"><%= datepicker_format row.first_etd_date %></td>
+  <td class="hidden disable row_id"><%= row.ibl_ref %></td>
+  <td class="hidden disable ibl_ref"><%= row.ibl_ref %></td>
+  <td class="hidden disable"><%= status %></td>
+  <td class="hidden disable carrier_id"><%= row.payment.carrier_id %></td>
+  <td class="hidden disable payment_type"><%= row.payment_type %></td>
+</tr>
+<% end %>
+
+<% if currency == "USD" %>
+<%
+  usd_balance = Payment.usd_balance(row.carrier_id, row.ibl_ref)
+  status = (usd_balance.to_f == 0) ? "Settle" : "Outstanding"
+%>
+<tr>
+  <td><%= link_to "View", view_payment_deposits_path(carrier_id: row.payment.carrier_id, ibl_ref: row.ibl_ref, payment_type: "USD") %></td>
+  <td><%= row.carrier_name %></td>
+  <td><%= "#{row.ibl_ref} - #{row.master_bl_no} - #{row.currency}" %></td>
+  <td style="text-align:right"><%=  %></td>
+  <td style="text-align:right"><%= money_format(usd_balance) %></td>
+  <td class="hidden disable"><%= monthly_format row.first_etd_date %></td>
+  <td class="hidden disable"><%= datepicker_format row.first_etd_date %></td>
+  <td class="hidden disable row_id"><%= row.ibl_ref %></td>
+  <td class="hidden disable ibl_ref"><%= row.ibl_ref %></td>
+  <td class="hidden disable"><%= status %></td>
+  <td class="hidden disable carrier_id"><%= row.payment.carrier_id %></td>
+  <td class="hidden disable payment_type"><%= row.payment_type %></td>
+</tr>
+<% end %>

@@ -1,0 +1,60 @@
+o: ActiveSupport::Cache::Entry:@valueI"`  <tr class="success ">
+    <td>
+      <a href="/bill_of_ladings/20492?year=2020" title="Show Bill of Lading"><i class="icon-eye-open icon-large"></i></a>
+      &nbsp;
+
+      
+      &nbsp;
+
+          <a href="/bill_of_ladings/view_calculate_invoice?sid=29198&amp;year=2020" title="Calculate Invoice"><i class="icon-file icon-large"></i></a>
+        &nbsp;
+
+
+      
+      <a href="/cost_revenues/29198/print_cover?year=2020" target="_blank" title="Print"><i class="icon-print icon-large"></i></a>
+      &nbsp;
+      
+    </td>
+    <td>
+      IBL204654
+      
+      
+      <span class="label label-error">Closed CR</span>
+        
+    </td>
+    <td>IBL204559/4560</td>
+    <td>GLOBAL BENUA LOGISTIK</td>
+    <td>PT. INDESSO AROMA</td>
+    <td>TBA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>MKT</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+        <ul>
+            <li><a href="/invoices/27343?year=2020">IBLINV205163</a></li>
+        </ul>
+    </td>
+    <td>16.151 M3 LCL</td>
+    <td> (TRUCKING)</td>
+    <td>
+        <ul>
+            <li><a href="/payments/17887?year=2020">3736/IDR/2020</a></li>
+        </ul>
+    </td>
+    <td>TG. PRIOK, JAKARTA, INDONESIA</td>
+    <td>18-Dec-2020</td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="20492">
+        <option selected="selected" value="Not Yet">Not Yet</option>
+<option value="Done">Done</option>
+      </select>
+    </td>
+    <td class="hidden disable">December 2020</td>
+    <td class="hidden disable">12/18/2020</td>
+    <td class="hidden disable reference_id">20492</td>
+    <td class="hidden disable ibl_ref">IBL204654</td>
+    <td class="hidden disable invoice">IBLINV205163</td>
+    <td class="hidden disable payment">3736/IDR/2020</td>
+    <td class="hidden disable delivery_doc">Not Yet</td>
+  </tr>
+:ET:@created_atf1649082870.7510283:@expires_in0

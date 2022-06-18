@@ -1,0 +1,160 @@
+<style type="text/css">
+  .row_field{
+    margin-bottom: 0!important;
+    border: none!important;
+    padding: 0!important;
+    float: left;
+    text-align: right;
+  }
+  .row_field, .row_field:focus{
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important; 
+  }
+  .row_description{
+    max-width: 200px;
+    width: 93%;
+    text-align: left;
+  }
+  .amount_usd, .amount_idr, .rate, .total, .total_invoice{
+    float: right;
+    max-width: 150px;
+  }
+  .money_text{
+    /*background-color: #FFF;*/
+  }
+  input:disabled{
+    border-radius: 0;
+  }
+</style>
+<div class="row-fluid">
+  <%= form_for(@balance_report, url: balance_reports_path, html: { class: "form-horizontal", target: "_blank"}) do |f| %>
+
+    <fieldset>
+      <legend>BALANCE</legend>
+    
+      <p>DATE : <%= si_date_format Date.today %></p>
+
+      <table border="1" id="balance_report">
+        <thead>
+          <tr>
+            <th></th>
+            <th>USD</th>
+            <th>IDR</th>
+            <th>RATE</th>
+            <th>TOTAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @balance_report.rows.each_with_index do |row, index| %>
+          <tr>
+            <td>
+              <%= row[:description] %>
+              <input type="hidden" name="balance_report[rows][<%= index %>][description]" value="<%= row[:description] %>">
+            </td>
+            <% if row[:disabled] %>
+              <td style="text-align: right;">
+                <%= money_format row[:amount_usd] %>
+                <input type="hidden" name="balance_report[rows][<%= index %>][amount_usd]" class="row_field money_text amount_usd" value="<%= row[:amount_usd] %>" autocomplete="off">
+              </td>
+              <td style="text-align: right;">
+                <%= money_format row[:amount_idr] %>
+                <input type="hidden" name="balance_report[rows][<%= index %>][amount_idr]" class="row_field money_text amount_idr" value="<%= row[:amount_idr] %>" autocomplete="off">
+              </td>
+            <% else %>
+              <td><input type="text" name="balance_report[rows][<%= index %>][amount_usd]" class="row_field money_text amount_usd" value="<%= money_format row[:amount_usd] %>" autocomplete="off"></td>
+              <td><input type="text" name="balance_report[rows][<%= index %>][amount_idr]" class="row_field money_text amount_idr" value="<%= money_format row[:amount_idr] %>" autocomplete="off"></td>
+            <% end %>
+            <td><input type="text" name="balance_report[rows][<%= index %>][rate]" class="row_field money_text rate" value="<%= money_format row[:rate] %>" autocomplete="off"></td>
+            <td><input type="text" name="balance_report[rows][<%= index %>][total]" class="row_field money_text total" disabled="disabled" autocomplete="off"></td>
+          </tr>
+          <% end unless @balance_report.rows.blank? %>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="4" style="text-align: left;">TOTAL</th>
+            <th><input type="text" name="balance_report[total_invoice]" class="row_field money_text total_invoice" disabled="disabled"></th>
+          </tr>
+        </tfoot>
+      </table>
+
+      <br>
+
+      <h4>PAYMENT PLAN</h4>
+      <table border="1" id="payment_plan">
+        <thead>
+          <th width="290">PAYMENT DATE</th>
+          <th width="150">AMOUNT</th>
+        </thead>
+        <tbody>
+          <% total = 0 %>
+          <% Constant.years_range.each do |year| %>
+            <% payment_invoices = PaymentInvoice.includes(:payment_items).with_filter({year: year}) %>
+            <% total += payment_invoices.map{|p| p.total_invoice if p.shipping_instruction.is_uncanceled?}.sum(&:to_f).round(2) %>
+            <% payment_invoices.group_by(&:payment_date).each do |payment_date, invoices| %>
+            <tr>
+              <td><%= fu_date_format(payment_date) %></td>
+              <td style="text-align: right;"><%= money_with_decimal_format invoices.map{|p| p.total_invoice if p.shipping_instruction.is_uncanceled?}.sum(&:to_f).round(2) %></td>
+            </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+        <tfoot>
+          <th>TOTAL</th>
+          <th style="text-align: right;"><%= money_with_decimal_format total %></th>
+        </tfoot>
+      </table>
+
+      <br>
+
+      <div class="control-group">
+        <label for="" class="control-label">Format</label>
+
+        <div class="controls">
+          <%= f.select :format, options_for_select(Constant::FORMAT), :class => 'format' %>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label for="" class="control-label">&nbsp;</label>
+
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">View Report</button>
+        </div>
+      </div>
+    </fieldset>
+  <% end %>
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".money_text, .volume_text").livequery(function(){
+      $(this).focusout(function(){
+        // calculate();
+      });
+    });
+  });
+</script>
+<script type="text/javascript">
+  // calculate();
+  function calculate(){
+    var table = $("#balance_report");
+    var tbody = table.find("tbody");
+    var rows = tbody.find("tr:not('.hidden')");
+    var tfoot = table.find("tfoot");
+    var total_invoice = 0;
+    
+    rows.each(function(){
+      var parent = $(this);
+      var amount_usd = accounting.unformat(parent.find(".amount_usd").val(), "");
+      var amount_idr = accounting.unformat(parent.find(".amount_idr").val(), "");
+      var rate = accounting.unformat(parent.find(".rate").val(), "");
+      rate = rate == 0 ? 1 : rate;
+
+      var total = 0;
+      total += (amount_usd * rate) + amount_idr;
+      parent.find(".total").val(accounting.formatMoney(total, "", 2, ",", "."));
+      total_invoice += accounting.unformat(parent.find(".total").val(), "");
+    });
+
+    tfoot.find(".total_invoice").val(accounting.formatMoney(total_invoice, "", 2, ",", "."));
+  }
+</script>

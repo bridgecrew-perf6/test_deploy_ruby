@@ -1,0 +1,45 @@
+o: ActiveSupport::Cache::Entry:@valueI"¾  <tr class="">
+    <td>
+      <a href="/shipping_instructions/36475?year=2022" title="Show Shipping Instruction"><i class="icon-eye-open icon-large"></i></a>
+
+      <a href="/shipping_instructions/36475/edit?year=2022" title="Edit Shipping Instruction"><i class="icon-edit-sign icon-large"></i></a>
+
+      <a href="/shipping_instructions/36475/email?year=2022" target="_blank" title="Email"><i class="icon icon-envelope"></i></a>
+
+          <div>
+              <a data-confirm="Already update SI data?" href="/createBL/36475">Create BL</a>
+          </div>
+          <div>
+            <a data-confirm="Are you sure?" href="/shipping_instructions/36475/cancel?year=2022">Cancel SI</a>
+          </div>
+    </td>
+    <td>
+      IBL221267
+      
+      
+    </td>
+    <td></td>
+    <td>PT. ASIANAGRO AGUNGJAYA</td>
+    <td>10x20FT</td>
+    <td>HUANGPU, CHINA</td>
+    <td>12-May-2022</td>
+    <td>22-Apr-2022</td>
+    <td>OOCL</td>
+    <td>TBA</td>
+    <td>EXCELIC INTERNATIONAL TRADING (NANJING) CO., LTD</td>
+    <td>TANJUNG PRIOK, JAKARTA, INDONESIA</td>
+    <td>8890909420 </td>
+    <td></td>
+    <td>EXPORT (OCEAN FREIGHT)</td>
+    <td>Dewi</td>
+    <td class="hidden disable">May 2022</td>
+    <td class="hidden disable">05/12/2022</td>
+    <td class="hidden disable row_id">36475</td>
+    <td class="hidden disable ibl_ref">IBL221267</td>
+    <td class="hidden disable status">
+      
+      
+    </td>
+    <td class="hidden disable additional_si">false</td>
+  </tr>
+:ET:@created_atf1651329347.1281903:@expires_in0

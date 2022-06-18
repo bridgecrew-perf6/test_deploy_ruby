@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  shipping_instruction_id: 1
+  shipment_tracking_id: 1
+  hbl_no: MyString
+  mbl_no: MyString
+  shipment_date: 2015-05-20
+
+two:
+  shipping_instruction_id: 1
+  shipment_tracking_id: 1
+  hbl_no: MyString
+  mbl_no: MyString
+  shipment_date: 2015-05-20

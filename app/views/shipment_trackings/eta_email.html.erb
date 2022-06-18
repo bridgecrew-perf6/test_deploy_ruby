@@ -1,0 +1,55 @@
+<% si = @actual.shipment_tracking.shipping_instruction %>
+<% 
+message = '<style type="text/css"> body {font-family: "Comic Sans MS" !important; font-size: 10pt;} </style>'
+message += "Dear All,\n\n"
+message += "Good day,\n\n"
+message += "Please find update status for below shipment:\n"
+message += "SI NO : #{si.shipper_reference}\n"
+message += "BL NO : #{si.master_bl_no}\n\n"
+
+message += '<table border="1">'
+message += "<tr>"
+message += '<th width="200px">Shipment Schedule</th><th width="100px">Estimate</th><th width="100px">Actual</th>'
+message += "</tr>"
+
+@actual.shipment_tracking.actual_vessels.each do |actual|
+	message += "<tr>"
+	message += '<td colspan="3">' + actual.vessel.vessel_name + '</td>'
+	message += "</tr>"
+	message += "<tr>"
+	message += "<td>Etd #{actual.vessel.etd_no}</td>"
+	message += "<td>#{si_date_format actual.vessel.etd_date}</td>"
+	message += "<td>#{si_date_format actual.actual_etd_date}</td>"
+	message += "</tr>"
+	message += "<tr>"
+	message += "<td>Eta #{actual.vessel.eta_no}</td>"
+	message += "<td>#{si_date_format actual.vessel.eta_date}</td>"
+	message += "<td>#{si_date_format actual.actual_eta_date}</td>"
+	message += "</tr>"
+end
+message += "</table>\n"
+
+if @actual.status_eta == ActualVessel::CONFIRM || @actual.status_eta == ActualVessel::DELAY
+	message += "Fyi, vessel #{@actual.vessel.vessel_name} arrived #{@actual.vessel.eta_no} on #{si_date_format @actual.actual_eta_date}\n\n"
+	message += "Thank you"
+end
+
+subject = "Update status shipment #{si.final_destination} #{si.ibl_ref} | #{si.shipper_reference} | #{si.master_bl_no}"
+%>
+
+<% unless @actual.status_eta == ActualVessel::ESTIMATE %>
+<a id="open-link" href="mailto:?subject=<%= CGI.escape(subject).gsub("+", "%20") %>&html-body=<%= CGI.escape(message).gsub("+", "%20") %>">Open in E-Mail Client</a>
+
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		jQuery("#open-link")[0].click();
+		window.setTimeout(function() { window.close() }, 2000);
+	})
+</script>
+<% else %>
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		window.close();
+	})
+</script>
+<% end %>

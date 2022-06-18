@@ -1,0 +1,15 @@
+"IBL Ref"<%= "\t" %>Profit<%= "\t" %>""<%= "\t" %>ETD Vessel
+""<%= "\t" %>"USD"<%= "\t" %>"IDR"
+<% total_idr = total_usd = 0 %>
+<% cache(["report-cost-revenues-table-xls", @cost_revenues.size]) do %>
+<% @cost_revenues.each do |cost_revenue| %>
+<%
+total_usd += cost_revenue.total_profit_usd
+total_idr += cost_revenue.total_profit_idr
+%>
+<% cache(["report-cost-revenues-xls", cost_revenue]) do %>
+"<%= cost_revenue.shipping_instruction.si_no %> <%= "(Cancel)" if cost_revenue.shipping_instruction.is_cancel == 1 %>"<%= "\t" %><%= number_with_precision(cost_revenue.total_profit_usd, precision: 2, delimiter: ",") + " USD" unless cost_revenue.nil? %><%= "\t" %><%= number_with_precision(cost_revenue.total_profit_idr, precision: 2, delimiter: ",") + " IDR" unless cost_revenue.nil? %><%= "\t" %><%= si_date_format cost_revenue.shipping_instruction.vessels.first.try(:etd_date) unless cost_revenue.shipping_instruction.vessels.nil? %>
+<% end %>
+<% end %>
+"TOTAL"<%= "\t" %><%= number_with_precision(total_usd, precision: 2, delimiter: ",") + " USD" %><%= "\t" %><%= number_with_precision(total_idr, precision: 2, delimiter: ",") + " IDR" %>
+<% end %>

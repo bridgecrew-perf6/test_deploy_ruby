@@ -1,0 +1,98 @@
+<div class="row-fluid">
+  <%= form_for(@cost_revenue_analysis_report, url: cost_revenue_analysis_reports_path, html: { class: "form-horizontal span6", id: "form-cost-revenue-analysis", target: "_blank"}) do |f| %>
+    <fieldset>
+      <legend>Report Cost & Revenue Analysis</legend>
+      <div class="control-group">
+        <label for="" class="control-label">Format</label>
+
+        <div class="controls">
+          <%= f.select :format, options_for_select(Constant::FORMAT), :class => 'format' %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Filter by</label>
+        <div class="controls">
+          <%= f.select :filter_by, options_for_select(Constant::FILTER_BY), { }, { class: "filter_by" } %>
+        </div>
+      </div>
+      <div class="control-group filter_data_group">
+        <label for="" class="control-label">Filter Data</label>
+        <div class="controls">
+          <%= f.select :yearly, options_for_select(Constant.years_range), { }, { class: "filter_yearly" } %>
+          <%= f.text_field :monthly, class: "filter_monthly", autocomplete: "off", style: "display:none;" %>
+          <%= f.text_field :from, class: "filter_from", autocomplete: "off", placeholder: "FROM", style: "display:none;" %>
+          <%= f.text_field :to, class: "filter_to", autocomplete: "off", placeholder: "TO", style: "display:none;" %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">&nbsp;</label>
+
+        <div class="controls">
+          <button type="submit" class="btn btn-primary">View Report</button>
+        </div>
+      </div>
+    </fieldset>
+  <% end %>
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#form-cost-revenue-analysis .filter_by").on("change", function(){
+      var base = $("#form-cost-revenue-analysis");
+      var filter_data = base.find(".filter_data_group");
+      var value = $(this).val();
+      console.log(value);
+
+      filter_data.css("display", "block");
+      filter_data.find(".filter_yearly").val("");
+      filter_data.find(".filter_monthly").val("");
+      filter_data.find(".filter_from").val("");
+      filter_data.find(".filter_to").val("");
+
+      if(value == "yearly")
+      {
+        filter_data.find(".filter_yearly").css("display", "block");
+        filter_data.find(".filter_monthly").css("display", "none");
+        filter_data.find(".filter_from").css("display", "none");
+        filter_data.find(".filter_to").css("display", "none");
+      }
+      else if(value == "monthly")
+      {
+        filter_data.find(".filter_yearly").css("display", "none");
+        filter_data.find(".filter_monthly").css("display", "block");
+        filter_data.find(".filter_from").css("display", "none");
+        filter_data.find(".filter_to").css("display", "none");
+      }
+      else if(value == "date")
+      {
+        filter_data.find(".filter_yearly").css("display", "none");
+        filter_data.find(".filter_monthly").css("display", "none");
+        filter_data.find(".filter_from").css("display", "block");
+        filter_data.find(".filter_to").css("display", "block");
+      }
+      else if(value == "all")
+      {
+        filter_data.css("display", "none");
+      } 
+    });
+
+    $("#form-cra").on("submit", function(e){
+      var filter_by = filter_data.find("#filter_by").val();
+      if (filter_by == "yearly")
+      {
+        if (filter_data.find(".filter_yearly").val() == "")
+        {
+          alert("Filter Data Yearly can't empty!");
+          return false;
+        }
+      }
+      else if(filter_by == "monthly")
+      {
+        if (filter_data.find(".filter_monthly").val() == "")
+        {
+          alert("Filter Data Monthly can't empty!");
+          return false;
+        }
+      }
+    })
+  })
+</script>

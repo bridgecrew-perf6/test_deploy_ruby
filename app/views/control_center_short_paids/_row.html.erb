@@ -1,0 +1,3 @@
+  <% unless row.invoice_references.blank? %>
+    <%= render partial: 'control_center_short_paids/reference', collection: row.invoice_references, as: :reference, locals: { row: row } %>
+  <% end %>

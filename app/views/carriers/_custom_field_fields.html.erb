@@ -1,0 +1,17 @@
+<div class="control-group">
+	<label class="control-label"><%= f.text_field :field_name, style: "width: 90%" %></label>
+	<div class="controls">
+		<% if f.object.field_key == "address" %>
+			<%= f.text_area :field_value, class: "span11" %>
+		<% elsif f.object.field_key == "email" %>
+			<%= f.email_field :field_value, class: "span11" %>
+		<% elsif f.object.field_key == "url" %>
+			<%= f.url_field :field_value, class: "span11" %>
+		<% else %>
+			<%= f.text_field :field_value, class: "span11" %>
+		<% end %>
+		<%= f.hidden_field :field_key %>
+		<%= f.hidden_field :_destroy %>
+		<a title="Remove" href="#" onclick="remove_custom_field(this); return false;"><i class="icon-remove-sign"></i></a>
+	</div>
+</div>

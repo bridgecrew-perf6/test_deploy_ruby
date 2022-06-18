@@ -1,0 +1,60 @@
+o: ActiveSupport::Cache::Entry:@valueI"f  <tr class="success ">
+    <td>
+      <a href="/bill_of_ladings/24635?year=2021" title="Show Bill of Lading"><i class="icon-eye-open icon-large"></i></a>
+      &nbsp;
+
+      
+      &nbsp;
+
+          <a href="/bill_of_ladings/view_calculate_invoice?sid=35054&amp;year=2021" title="Calculate Invoice"><i class="icon-file icon-large"></i></a>
+        &nbsp;
+
+
+      
+      <a href="/cost_revenues/35054/print_cover?year=2021" target="_blank" title="Print"><i class="icon-print icon-large"></i></a>
+      &nbsp;
+      
+    </td>
+    <td>
+      IBL214732
+      
+      
+      <span class="label label-error">Closed CR</span>
+        
+    </td>
+    <td>IBL214691/4692</td>
+    <td>PT. MENTARI FREIGHT SERVICES</td>
+    <td>PT. INDESSO AROMA</td>
+    <td>TBA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>MBP</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+        <ul>
+            <li><a href="/invoices/32547?year=2021">IBLINV215098</a></li>
+        </ul>
+    </td>
+    <td>8.050 M3 LCL</td>
+    <td> (TRUCKING)</td>
+    <td>
+        <ul>
+            <li><a href="/payments/21481?year=2021">3574/IDR/2021</a></li>
+        </ul>
+    </td>
+    <td>TG. PRIOK, JAKARTA, INDONESIA</td>
+    <td>22-Dec-2021</td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="24635">
+        <option selected="selected" value="Not Yet">Not Yet</option>
+<option value="Done">Done</option>
+      </select>
+    </td>
+    <td class="hidden disable">December 2021</td>
+    <td class="hidden disable">12/22/2021</td>
+    <td class="hidden disable reference_id">24635</td>
+    <td class="hidden disable ibl_ref">IBL214732</td>
+    <td class="hidden disable invoice">IBLINV215098</td>
+    <td class="hidden disable payment">3574/IDR/2021</td>
+    <td class="hidden disable delivery_doc">Not Yet</td>
+  </tr>
+:ET:@created_atf1649082884.169651:@expires_in0

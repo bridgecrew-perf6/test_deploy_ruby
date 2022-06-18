@@ -1,0 +1,14 @@
+<tr<%= ' class=hidden' if f.object._destroy == 1 %>>
+	<td><%= f.text_field :description, class: "span12 invoice_description", autocomplete: "off" %>
+    <%= f.hidden_field :item_type, class: "span12" %></td>
+	<td><%= f.text_field :volume, class: "span12 invoice_volume volume_text", autocomplete: "off" %></td>
+	<td><%= f.text_field :amount, class: "span12 invoice_amount money_text", autocomplete: "off" %>
+		<%= f.hidden_field :default_amount, class: "span12 invoice_default_amount money_text", autocomplete: "off" %>
+	</td>
+	<td><!-- <span class="invoice_subtotal"><%= money_format(f.object.subtotal.to_f) %></span> --><%= f.text_field :subtotal, class: "span12 invoice_subtotal money_text", autocomplete: "off", disabled: "disabled", value: f.object.subtotal.to_f %></td>
+	<td><!-- <span class="invoice_subtotal"><%= money_format(f.object.subtotal.to_f) %></span> --><%= f.text_field :default_amount, class: "span12 invoice_default_amount money_text", autocomplete: "off", disabled: "disabled" %></td>
+	<td>
+		<%= f.hidden_field :_destroy, class: "span12" %>
+		<a class="remove_invoice_description" onclick="remove_invoice_fields(this); return false;" tabindex="-1" href="#" title="Remove"><i class="icon-remove-sign"></i></a>
+	</td>
+</tr>

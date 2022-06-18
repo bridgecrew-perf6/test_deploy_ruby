@@ -1,0 +1,56 @@
+o: ActiveSupport::Cache::Entry:@valueI"o  <tr class="warning ">
+    <td>
+      <a href="/bill_of_ladings/25331?year=2022" title="Show Bill of Lading"><i class="icon-eye-open icon-large"></i></a>
+      &nbsp;
+
+      <a href="/bill_of_ladings/25331/edit?year=2022" title="Edit Bill of Lading"><i class="icon-edit-sign icon-large"></i></a>
+      &nbsp;
+
+            <a data-confirm="Detail sell is empty. Proceed?" href="/bill_of_ladings/calculate_invoice?sid=35988&amp;year=2022" title="Calculate Invoice"><i class="icon-file icon-large"></i></a>
+        &nbsp;
+
+
+      
+      <a href="/cost_revenues/35988/print_cover?year=2022" target="_blank" title="Print"><i class="icon-print icon-large"></i></a>
+      &nbsp;
+      
+    </td>
+    <td>
+      IBL220887
+      
+      
+      
+        <span class="label label-warning">No Status CR</span>
+    </td>
+    <td>ONEYJKTC38554900</td>
+    <td>ONE LINE</td>
+    <td>PT. SMART TBK</td>
+    <td>TBA</td>
+    <td>FOOD LINKS INTERNATIONAL</td>
+    <td>KARACHI, PAKISTAN</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+        No Invoice Yet
+    </td>
+    <td>3x20FT DRY</td>
+    <td>EXPORT (OCEAN FREIGHT)</td>
+    <td>
+        No Payment Yet
+    </td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>30-Mar-2022</td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="25331">
+        <option selected="selected" value="Not Yet">Not Yet</option>
+<option value="Done">Done</option>
+      </select>
+    </td>
+    <td class="hidden disable">March 2022</td>
+    <td class="hidden disable">03/30/2022</td>
+    <td class="hidden disable reference_id">25331</td>
+    <td class="hidden disable ibl_ref">IBL220887</td>
+    <td class="hidden disable invoice">No Invoice Yet</td>
+    <td class="hidden disable payment">No Payment Yet</td>
+    <td class="hidden disable delivery_doc">Not Yet</td>
+  </tr>
+:ET:@created_atf1648485064.174551:@expires_in0

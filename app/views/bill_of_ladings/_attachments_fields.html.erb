@@ -1,0 +1,8 @@
+<div class="row-fluid">
+	<div class="span6">
+		<%= f.text_field :name, placeholder: "Attachment Name", autocomplete: "off" %>
+		<%= f.hidden_field :_destroy, class: "span12" %>
+		<a style="text-decoration: none" onclick="remove_attachment_fields(this); return false;" tabindex="-1" href="#" title="Remove"><i class="icon-remove-sign"></i></a>
+	</div>
+	<div class="span6"><%= f.file_field :asset %></div>
+</div>

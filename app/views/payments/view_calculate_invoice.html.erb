@@ -1,0 +1,332 @@
+<div class="page-header">
+  <h3>Payment Plan: <%= @shipping_instruction.ibl_ref %></h3>
+</div>
+<% if !notice.nil? %>
+<p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<div class="btn-group" style="margin-bottom: 20px">
+  <% unless @shipping_instruction.is_cr_completed? %>
+    <a href="<%= calculate_invoice_payments_path(sid: @shipping_instruction.id) %>" class="btn btn-small" data-no-turbolink="true" title="Edit Payment Plan: <%= @shipping_instruction.ibl_ref %>"><i class="icon-edit-sign"></i> Input</a>
+  <% end %>
+  <a href="<%= payment_plans_path %>" class="btn btn-small" title="Back to Lists"><i class="icon-reply"></i> Back</a>
+</div>
+
+<div class="clearfix"></div>
+
+<style type="text/css">
+  .padding {
+    padding: 5px 0;
+    font-weight: normal;
+  }
+  .form-horizontal .control-group {
+    margin-bottom: 0;
+  }
+  .form-horizontal .control-group label {
+    text-align: left;
+    font-weight: 700;
+  }
+  tfoot td {
+    font-weight: bold;
+    text-align: left;
+  }
+</style>
+<div class="form-horizontal">
+  <div class="row-fluid">
+    <div class="span6">
+    <% unless @cost_revenue.blank? %>
+      <div class="control-group">
+        <label for="" class="control-label">IBL REF</label>
+        <div class="controls padding">:
+          <%= @cost_revenue.ibl_ref %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">BL NO</label>
+        <div class="controls padding">:
+          <%= @cost_revenue.master_bl_no %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Carrier</label>
+        <div class="controls padding">:
+          <%= @cost_revenue.carrier %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Shipper</label>
+        <div class="controls padding">:
+          <%= @cost_revenue.shipper_company_name %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">POL</label>
+        <div class="controls padding">:
+          <%= @cost_revenue.port_of_loading %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Destination</label>
+        <div class="controls padding">:
+          <%= @cost_revenue.final_destination %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">ETD Vessel</label>
+        <div class="controls padding">:
+          <%= normal_date_format @cost_revenue.etd_date %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Volume</label>
+        <div class="controls padding">:
+          <%= @cost_revenue.volume %>
+        </div>
+      </div>
+    <% end %>
+    </div>
+    <div class="span6">
+      <div class="control-group">
+        <label for="" class="control-label">IBL REF</label>
+        <div class="controls padding">:
+          <%= @shipping_instruction.ibl_ref %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">BL NO</label>
+        <div class="controls padding">:
+          <%= @shipping_instruction.master_bl_no %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Carrier</label>
+        <div class="controls padding">:
+          <%= @shipping_instruction.carrier %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Shipper</label>
+        <div class="controls padding">:
+          <%= @shipping_instruction.shipper_company_name %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">POL</label>
+        <div class="controls padding">:
+          <%= @shipping_instruction.port_of_loading %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Destination</label>
+        <div class="controls padding">:
+          <%= @shipping_instruction.final_destination %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">ETD Vessel</label>
+        <div class="controls padding">:
+          <%= normal_date_format @shipping_instruction.first_etd_date %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Volume</label>
+        <div class="controls padding">:
+          <%= @shipping_instruction.volume %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Booking NO</label>
+        <div class="controls padding">:
+          <%= @shipping_instruction.booking_no %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">BL Status</label>
+        <div class="controls padding">:
+          <%= @shipping_instruction.bl_status %>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="" class="control-label">Total Payment</label>
+        <div class="controls padding">:
+          <strong><%= money_format(@shipping_instruction.total_payment_invoices) %></strong>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="row-fluid">
+    <div class="span6">
+      <div style="height: 90px;"></div>
+      <div class="span12" style="margin-left: 0;">
+        <table width="100%" border="1">
+          <thead>
+            <tr>
+              <th colspan="7">COST</th>
+            </tr>
+            <tr style="height:43px;">
+              <td class="hidden"></td>
+              <th>DESCRIPTION</th>
+              <th width="45">QTY</th>
+              <th width="100">AMOUNT USD</th>
+              <th width="100">AMOUNT IDR</th>
+              <th width="100">TOTAL</th>
+              <th width="100" class="hidden">TOTAL AFTER TAX</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% unless @cost_revenue.blank? %>
+              <% @cost_revenue.cost_revenue_items.each do |item| %>
+                <%= render 'cost_item_fields', item: item %>
+              <% end %>
+            <% else %>
+              <tr>
+                <td colspan="7">Data Not Found</td>
+              </tr>
+            <% end %>
+          </tbody>
+          <tfoot>
+            <% unless @cost_revenue.blank? %>
+              <tr>
+                <td colspan="4">OTHER</td>
+                <td class="text-right" style="font-weight: normal;"><%= money_format @cost_revenue.buying_other %></td>
+                <td class="hidden">&nbsp;</td>
+              </tr>
+              <tr>
+                <td colspan="4">RATE</td>
+                <td class="text-right"><%= money_format @cost_revenue.buying_rate %></td>
+                <td class="hidden">&nbsp;</td>
+              </tr>
+              <tr>
+                <td colspan="4">VAT 10%</td>
+                <td class="text-right" style="font-weight: normal;"><%= money_format @cost_revenue.buying_vat_10 %></td>
+                <td class="hidden">&nbsp;</td>
+              </tr>
+              <tr>
+                <td colspan="4">VAT 1%</td>
+                <td class="text-right" style="font-weight: normal;"><%= money_format @cost_revenue.buying_vat_1 %></td>
+                <td class="hidden">&nbsp;</td>
+              </tr>
+              <tr>
+                <td colspan="4">PPH 23</td>
+                <td class="text-right" style="font-weight: normal;"><%= money_format @cost_revenue.buying_pph_23 %></td>
+                <td class="hidden">&nbsp;</td>
+              </tr>
+              <tr>
+                <td colspan="4">TOTAL INVOICE</td>
+                <td class="text-right"><%= money_format @cost_revenue.default_buying_total_invoice %></td>
+                <td class="hidden">&nbsp;</td>
+              </tr>
+            <% end %>
+          </tfoot>
+        </table>
+      </div>
+      <div class="clearfix">&nbsp;</div>
+      <div>
+        <strong>Notes :</strong>
+        <pre class="free" style="font-weight: normal;"><%= @cost_revenue.notes unless @cost_revenue.blank? %></pre>
+      </div>
+    </div>
+    <div class="span6">
+      <% @shipping_instruction.payment_invoices.each_with_index do |invoice, index| %>
+        <div class="row-fluid">
+          <div class="span12">
+            <div class="control-group">
+              <label for="" class="control-label">Payment Date</label>
+              <div class="controls padding">:
+                <%= normal_date_format(invoice.payment_date) %>
+              </div>
+            </div>
+            <div class="control-group">
+              <label for="" class="control-label">Carrier</label>
+              <div class="controls padding">:
+                <%= invoice.carrier %>
+              </div>
+            </div>
+            <div class="control-group">
+              <label for="" class="control-label">Paid</label>
+              <div class="controls padding">:
+                <%= invoice.paid_status %>
+              </div>
+            </div>
+          </div>
+          <div class="span12">
+            <table width="100%" border="1" style="margin-left: -10px">
+              <thead>
+                <tr>
+                  <th colspan="7">INVOICE</th>
+                </tr>
+                <tr style="height:43px;">
+                  <td class="hidden"></td>
+                  <th>DESCRIPTION</th>
+                  <th width="45">QTY</th>
+                  <th width="100">AMOUNT USD</th>
+                  <th width="100">AMOUNT IDR</th>
+                  <th width="100">TOTAL</th>
+                  <th width="100" class="hidden">TOTAL AFTER TAX</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% unless invoice.payment_items.blank? %>
+                  <% invoice.payment_items.each do |item| %>
+                    <tr>
+                      <td class="hidden"></td>
+                      <td><%= item.description %></td>
+                      <td class="text-right"><%= (item.description == "LCL") ? lcl_format(item.volume) : money_format(item.volume) %></td>
+                      <td class="text-right"><%= money_format item.amount_usd %></td>
+                      <td class="text-right"><%= money_format item.amount_idr %></td>
+                      <td class="text-right"><%= money_format item.total %></td>
+                      <td class="text-right hidden"><%= money_format item.total_after_tax %></td>
+                    </tr>
+                  <% end %>
+                <% else %>
+                  <tr>
+                    <td colspan="7">Data Not Found</td>
+                  </tr>
+                <% end %>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="4">OTHER</td>
+                  <td class="text-right" style="font-weight: normal;"><%= money_format invoice.other %></td>
+                  <td class="hidden">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td colspan="4">RATE</td>
+                  <td class="text-right"><%= money_format invoice.rate %></td>
+                  <td class="hidden">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td colspan="4">VAT 10%</td>
+                  <td class="text-right" style="font-weight: normal;"><%= money_format invoice.vat_10 %></td>
+                  <td class="hidden">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td colspan="4">VAT 1%</td>
+                  <td class="text-right" style="font-weight: normal;"><%= money_format invoice.vat_1 %></td>
+                  <td class="hidden">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td colspan="4">PPH 23</td>
+                  <td class="text-right" style="font-weight: normal;"><%= money_format invoice.pph_23 %></td>
+                  <td class="hidden">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td colspan="4">TOTAL INVOICE</td>
+                  <td class="text-right"><%= money_format invoice.total_invoice %></td>
+                  <td class="hidden">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td colspan="4">TOTAL INVOICE INCLUDING PPH 23</td>
+                  <td class="text-right"><%= money_format invoice.total_invoice_include_pph_23 %></td>
+                  <td class="hidden">&nbsp;</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <div class="clearfix">&nbsp;</div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

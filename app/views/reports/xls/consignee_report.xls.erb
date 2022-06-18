@@ -1,0 +1,22 @@
+<%
+  head = []
+  head.push "Company\t"
+  head.push "Address\t"
+  head.push "Phone\t"
+  head.push "Fax\t"
+  head.push "Email\t"
+  head.push "PIC\t"
+%>
+<%= head.join("").html_safe %>
+<% @results.each do |consignee| %>
+  <%
+    body = []
+    body.push "#{consignee.company_name}\t"
+    body.push "#{consignee.full_address.squish}\t"
+    body.push "#{consignee.custom_attribute('phone')}\t"
+    body.push "#{consignee.custom_attribute('fax')}\t"
+    body.push "#{consignee.custom_attribute('email')}\t"
+    body.push "#{consignee.custom_attribute('pic')}\t"
+  %>
+<%= body.join("").html_safe %>
+<% end %>

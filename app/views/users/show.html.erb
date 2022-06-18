@@ -1,0 +1,40 @@
+<div class="page-header">
+  <h3>User: <%= @user.username %></h3>
+</div>
+<% if !notice.nil? %>
+<p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+<div class="details">
+  <div>
+    <strong>Username:</strong>
+    <%= @user.username %>
+  </div>
+
+  <div>
+    <strong>Email:</strong>
+    <%= @user.email %>
+  </div>
+
+  <div>
+    <strong>Register at:</strong>
+    <%= local_date(@user.register_at) %>
+  </div>
+
+  <div>
+    <strong>Login at:</strong>
+    <%= local_date(@user.login_at) %>
+  </div>
+
+  <div>
+    <strong>Logout at:</strong>
+    <%= local_date(@user.logout_at) %>
+  </div>
+
+  <div>
+    <strong>Status:</strong>
+    <%= @user.label_status %>
+  </div>
+</div>
+<div class="clearfix"></div>
+<%= link_to 'Edit', edit_user_path(@user) %> |
+<%= link_to 'Back', users_path %>

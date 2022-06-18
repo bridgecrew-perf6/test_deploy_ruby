@@ -1,0 +1,16 @@
+<div class="page-header">
+  <h3>Bill of Landing: <%= @bill_of_landing.bl_number %></h3>
+</div>
+<% if !notice.nil? %>
+<p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+
+<div class="btn-group ">
+	<a href="<%= edit_bill_of_landing_path(@bill_of_landing) %>" class="btn btn-small" title="Edit: <%= @bill_of_landing.bl_number  %>"><i class="icon-edit-sign"></i></a>
+	<a data-no-turbolink="true" target="_blank" href="<%= bill_of_landing_path(@bill_of_landing, format: "pdf") %>" class="btn btn-small" title="Print: <%= @bill_of_landing.bl_number %>"><i class="icon-print"></i></a>
+	<a href="<%= bill_of_landings_path %>" class="btn btn-small" title="Back to Lists"><i class="icon-reply"></i></a>
+</div>
+
+<div id="size-a4-print">
+<%= render "bill_of_lading" %>
+</div>

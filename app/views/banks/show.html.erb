@@ -1,0 +1,35 @@
+<div class="page-header">
+  <h3>Bank: <%= @bank.bank_name %></h3>
+</div>
+<% if !notice.nil? %>
+<p id="notice" class="alert alert-success"><%= notice %></p>
+<% end %>
+<div class="details">
+  <div>
+    <strong>Bank Name:</strong>
+    <span><%= @bank.bank_name %></span>
+  </div>
+
+  <div>
+    <strong>Bank Address:</strong>
+    <pre><%= @bank.bank_address %></pre>
+  </div>
+
+  <div>
+    <strong>Account Name:</strong>
+    <span><%= @bank.acc_name %></span>
+  </div>
+
+  <div>
+    <strong>Account Number:</strong>
+    <span><%= @bank.acc_no %></span>
+  </div>
+
+  <div>
+    <strong>Swift code:</strong>
+    <span><%= @bank.swift_code %>&nbsp;</span>
+  </div>
+</div>
+<div class="clearfix"></div>
+<%= link_to 'Edit', edit_bank_path(@bank) %> |
+<%= link_to 'Back', banks_path %>

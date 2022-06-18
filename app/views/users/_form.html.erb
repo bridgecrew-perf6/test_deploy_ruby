@@ -1,0 +1,50 @@
+<style type="text/css">
+  label, input[type=text]{
+    text-transform: none!important;
+  }
+</style>
+<%= form_for(@user, html: { class: "form-horizontal"}) do |f| %>
+<% if @user.errors.any? %>
+<div class="alert alert-error">
+  <ul class="unstyled">
+    <% @user.errors.full_messages.each do |msg| %>
+    <li><%= msg %></li>
+    <% end %>
+  </ul>
+</div>
+<% end %>
+
+<div class="control-group">
+  <label for="" class="control-label">Username</label>
+  <div class="controls"><%= f.text_field :username %></div>
+</div>
+<div class="control-group">
+  <label for="" class="control-label">Email Address</label>
+  <div class="controls"><%= f.text_field :email %></div>
+</div>
+<div class="control-group">
+  <label for="" class="control-label">Password</label>
+  <div class="controls"><%= f.password_field :password %></div>
+</div>
+<div class="control-group">
+  <label for="" class="control-label">Password Confirmation</label>
+  <div class="controls"><%= f.password_field :password_confirmation %></div>
+</div>
+<% if current_user.role == User::ADMINISTRATOR %>
+<div class="control-group">
+  <label for="" class="control-label">Status</label>
+  <div class="controls"><%= f.check_box :status %> <span>Active</span></div>
+</div>
+<div class="control-group">
+  <label for="" class="control-label">Role</label>
+  <div class="controls"><%= f.radio_button :role, User::ADMINISTRATOR %> <span>Administrator</span></div>
+  <div class="controls"><%= f.radio_button :role, User::MODERATOR %> <span>Moderator (Can access all features, except Cost & Revenues Analysis, Control Center, & Reports (Cost & Revenues Analysis + Control Center)</span></div>
+</div>
+<% end %>
+<div class="control-group">
+  <div class="controls">
+    <button type="submit" class="btn btn-primary"><i class="icon-save"></i> Save</button>
+    <a href="<%= users_path %>" class="btn"><i class="icon-reply"></i> Back</a>
+  </div>
+</div>
+<% end %>

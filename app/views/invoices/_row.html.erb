@@ -1,0 +1,71 @@
+<% cache ["list-invoice", reference.shipping_instruction, reference] do %>
+  <% row = reference.shipping_instruction %>
+  <tr class="<%= "error cancel" if reference.is_canceled? %>">
+    <%
+       if reference.kind_of? Invoice
+         show_link, show_text = invoice_path(reference), "Show Invoice"
+         edit_link, edit_text = edit_invoice_path(reference), "Edit Invoice"
+         cancel_link, uncancel_link = cancel_invoice_path(reference), uncancel_invoice_path(reference)
+         
+         modal = '#invModal'
+         btn = 'btn-invoice'
+       elsif reference.kind_of? Note
+         show_link, show_text = note_path(reference), "Show Note"
+         edit_link, edit_text = edit_note_path(reference), "Edit Note"
+         cancel_link, uncancel_link = cancel_note_path(reference), uncancel_note_path(reference)
+         
+         modal = '#noteModal'
+         btn = 'btn-note'
+       else
+         show_link, show_text = debit_note_path(reference), "Show Debit Note"
+         edit_link, edit_text = edit_debit_note_path(reference), "Edit Debit Note"
+         cancel_link, uncancel_link = cancel_debit_note_path(reference), uncancel_debit_note_path(reference)
+         
+         modal = '#dbnModal'
+         btn = 'btn-dbn'
+       end
+    %>
+    <td>
+      <%= link_to '<i class="icon-eye-open icon-large"></i>'.html_safe, show_link, title: show_text %>
+      <% if (reference.is_uncanceled? && !reference.is_printed?) %>
+        <%= link_to '<i class="icon-edit-sign icon-large"></i>'.html_safe, edit_link, title: edit_text unless row.is_cr_completed? %>
+      <% end %>
+
+      <a href="<%= modal %>" role="button" class="btn btn-info btn-small <%= btn %>" data-toggle="modal">Tax</a>
+    </td>
+    <td>
+      <%= reference.invoice_no %>
+      <%= '<span class="label label-warning">Cancel</span>'.html_safe if reference.is_canceled? %>
+    </td>
+    <td>
+      <%= row.ibl_ref %>
+      <%= '<span class="label label-warning">Cancel</span>'.html_safe if row.is_canceled? %>
+      <%= '<span class="label label-error">Closed</span>'.html_safe if row.is_closed? %>
+    </td>
+    <td><%= reference.currency_code %></td>
+    <td style="text-align:right"><%= money_format(reference.grand_total) %></td>
+    <td><%= reference.customer_ori %></td>
+    <td><%= reference.to_shipper %></td>
+    <td><%= reference.port_of_loading %></td>
+    <td><%= reference.status_info %></td>
+    <td><%= reference.vat_10_no %></td>
+    <td style="text-align:right"><%= money_format(reference.vat_10_tax) unless reference.is_canceled? %></td>
+    <td><%= reference.vat_1_no %></td>
+    <td style="text-align:right"><%= money_format(reference.vat_1_tax) unless reference.is_canceled? %></td>
+    <td><%= reference.pph_23_no %></td>
+    <td style="text-align:right"><%= money_format(reference.pph_23_tax) unless reference.is_canceled? %></td>
+    <td><%= reference.status_tax.humanize %></td>
+    <td><%= monthly_format reference.tax_issued %></td>
+    <td><%= monthly_format reference.paid_month %></td>
+    <td class="hidden disable"><%= monthly_format reference.first_etd_date %></td>
+    <td class="hidden disable"><%= datepicker_format reference.first_etd_date %></td>
+    <td class="hidden disable row_id"><%= reference.id %></td>
+    <td class="hidden disable ibl_ref"><%= row.ibl_ref %></td>
+    <td class="hidden disable invoice_no"><%= reference.invoice_no %></td>
+    <td class="hidden disable head_letter"><%= reference.head_letter %></td>
+    <td class="hidden disable"><%= reference.add_vat_10_tax %></td>
+    <td class="hidden disable"><%= reference.add_vat_1_tax %></td>
+    <td class="hidden disable"><%= reference.add_pph_23_tax %></td>
+    <td><%= si_date_format reference.invoice_date %></td>
+  </tr>
+<% end %>

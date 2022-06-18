@@ -1,0 +1,53 @@
+<% columns = @report.columns %>
+<% base = [] %>
+<% 18.times{ |i| base.push i.to_s } %>
+<%
+  head = []
+  head.push ""
+  head.push "Invoice No\t"
+  head.push "IBL Ref\t"
+  head.push "Currency\t"
+  head.push "Amount\t"
+  head.push "Customer\t"
+  head.push "Shipper\t"
+  head.push "POL\t"
+  head.push "Invoice Status\t"
+  head.push "VAT 10% No\t"
+  head.push "VAT 10%\t"
+  head.push "VAT 1% No\t"
+  head.push "VAT 1%\t"
+  head.push "PPH 23 No\t"
+  head.push "PPH 23\t"
+  head.push "Tax Status\t"
+  head.push "Tax Issued\t"
+  head.push "Paid Month\t"
+  head.push "Invoice Date\t"
+%>
+<% (base-columns).reverse_each{ |column| head.delete_at(column.to_i) } %>
+<%= head.join("").html_safe %>
+<% @results.each do |reference| %>
+  <% body = report_list_invoice(reference, "xls") %>
+  <% (base-columns).reverse_each{ |column| body.delete_at(column.to_i) } unless body.blank? %>
+<%= body.join("").html_safe unless body.blank? %>
+<% end %>
+
+<%
+  vat_10 = []
+  vat_10_idr = @results.map{|p| p.vat_10_tax if p.currency_code == "IDR" && p.is_uncanceled?}.sum(&:to_f)
+  vat_10_usd = @results.map{|p| p.vat_10_tax if p.currency_code == "USD" && p.is_uncanceled?}.sum(&:to_f)
+  vat_10.push "#{money_with_currency_format(vat_10_idr, "IDR")}" unless vat_10_idr == 0
+  vat_10.push "#{money_with_currency_format(vat_10_usd, "USD")}" unless vat_10_usd == 0
+  vat_1 = []
+  vat_1_idr = @results.map{|p| p.vat_1_tax if p.currency_code == "IDR" && p.is_uncanceled?}.sum(&:to_f)
+  vat_1_usd = @results.map{|p| p.vat_1_tax if p.currency_code == "USD" && p.is_uncanceled?}.sum(&:to_f)
+  vat_1.push "#{money_with_currency_format(vat_1_idr, "IDR")}" unless vat_1_idr == 0
+  vat_1.push "#{money_with_currency_format(vat_1_usd, "USD")}" unless vat_1_usd == 0
+  pph_23 = []
+  pph_23_idr = @results.map{|p| p.pph_23_tax if p.currency_code == "IDR" && p.is_uncanceled?}.sum(&:to_f)
+  pph_23_usd = @results.map{|p| p.pph_23_tax if p.currency_code == "USD" && p.is_uncanceled?}.sum(&:to_f)
+  pph_23.push "#{money_with_currency_format(pph_23_idr, "IDR")}" unless pph_23_idr == 0
+  pph_23.push "#{money_with_currency_format(pph_23_usd, "USD")}" unless pph_23_usd == 0
+%>
+TOTAL VAT 10% : <%= vat_10.join(" ") %>
+TOTAL VAT 1% : <%= vat_1.join(" ") %>
+TOTAL PPH 23 : <%= pph_23.join(" ") %>

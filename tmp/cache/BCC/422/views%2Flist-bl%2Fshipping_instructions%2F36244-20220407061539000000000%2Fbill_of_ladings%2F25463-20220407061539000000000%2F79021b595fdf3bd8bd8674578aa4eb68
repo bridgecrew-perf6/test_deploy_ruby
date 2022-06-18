@@ -1,0 +1,58 @@
+o: ActiveSupport::Cache::Entry:@valueI"É  <tr class="success ">
+    <td>
+      <a href="/bill_of_ladings/25463?year=2022" title="Show Bill of Lading"><i class="icon-eye-open icon-large"></i></a>
+      &nbsp;
+
+      <a href="/bill_of_ladings/25463/edit?year=2022" title="Edit Bill of Lading"><i class="icon-edit-sign icon-large"></i></a>
+      &nbsp;
+
+            <a data-confirm="Detail sell is empty. Proceed?" href="/bill_of_ladings/calculate_invoice?sid=36244&amp;year=2022" title="Calculate Invoice"><i class="icon-file icon-large"></i></a>
+        &nbsp;
+
+
+      
+      <a href="/cost_revenues/36244/print_cover?year=2022" target="_blank" title="Print"><i class="icon-print icon-large"></i></a>
+      &nbsp;
+      
+    </td>
+    <td>
+      IBL221089
+      
+      
+      
+        <span class="label label-warning">No Status CR</span>
+    </td>
+    <td>IBL220722/0685/0692/0720</td>
+    <td>PT. MENTARI FREIGHT SERVICES</td>
+    <td>PT. INDESSO AROMA</td>
+    <td>TBA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>MBP</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+        <ul>
+            <li><a href="/invoices/33615?year=2022">IBLINV221002</a></li>
+        </ul>
+    </td>
+    <td>17.779 M3 LCL</td>
+    <td> (TRUCKING)</td>
+    <td>
+        No Payment Yet
+    </td>
+    <td>TG. PRIOK, JAKARTA, INDONESIA</td>
+    <td>10-Mar-2022</td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="25463">
+        <option selected="selected" value="Not Yet">Not Yet</option>
+<option value="Done">Done</option>
+      </select>
+    </td>
+    <td class="hidden disable">March 2022</td>
+    <td class="hidden disable">03/10/2022</td>
+    <td class="hidden disable reference_id">25463</td>
+    <td class="hidden disable ibl_ref">IBL221089</td>
+    <td class="hidden disable invoice">IBLINV221002</td>
+    <td class="hidden disable payment">No Payment Yet</td>
+    <td class="hidden disable delivery_doc">Not Yet</td>
+  </tr>
+:ET:@created_atf1649612694.1820245:@expires_in0

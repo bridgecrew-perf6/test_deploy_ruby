@@ -1,0 +1,1 @@
+<%= render partial: 'payment_taxes/reference', collection: row.payment_invoices, as: :reference, locals: { row: row } unless row.payment_invoices.blank? %>

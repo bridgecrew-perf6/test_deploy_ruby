@@ -1,0 +1,42 @@
+o: ActiveSupport::Cache::Entry:@valueI"æ  <tr class="error cancel">
+    <td>
+      <a href="/invoices/33543?year=2022" title="Show Invoice"><i class="icon-eye-open icon-large"></i></a>
+
+      <a href="#invModal" role="button" class="btn btn-info btn-small btn-invoice" data-toggle="modal">Tax</a>
+    </td>
+    <td>
+      IBLINV220930
+      <span class="label label-warning">Cancel</span>
+    </td>
+    <td>
+      IBL220756
+      
+      
+    </td>
+    <td>IDR</td>
+    <td style="text-align:right">158,479,200</td>
+    <td>PT. VAN AROMA (SHIPPER)</td>
+    <td>PT. VAN AROMA</td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>Cancel</td>
+    <td></td>
+    <td style="text-align:right"></td>
+    <td></td>
+    <td style="text-align:right"></td>
+    <td></td>
+    <td style="text-align:right"></td>
+    <td>Open</td>
+    <td></td>
+    <td></td>
+    <td class="hidden disable">March 2022</td>
+    <td class="hidden disable">03/24/2022</td>
+    <td class="hidden disable row_id">33543</td>
+    <td class="hidden disable ibl_ref">IBL220756</td>
+    <td class="hidden disable invoice_no">IBLINV220930</td>
+    <td class="hidden disable head_letter">INVOICE</td>
+    <td class="hidden disable">1</td>
+    <td class="hidden disable"></td>
+    <td class="hidden disable"></td>
+    <td>31-Mar-2022</td>
+  </tr>
+:ET:@created_atf1648819889.7767136:@expires_in0

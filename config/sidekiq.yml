@@ -1,0 +1,26 @@
+# Options here can still be overridden by cmd line args.
+# sidekiq -C config.yml
+---
+# We can use up to 5 based on the configured redis connection limit (see redis.rb). But just be frugal and increase only if necessary.
+# Concurrency doesn't seem to affect the number of instances shown on NewRelic, so it's likely to be handled by individual threads instead of processes.
+#:concurrency: 2
+:concurrency: 1
+
+:queues:
+  - si_monitoring
+  - bl_monitoring
+  - cr_monitoring
+  - payment_monitoring
+  - shipment_monitoring
+  - document_monitoring
+  - sell_cost_monitoring
+  - invoice_monitoring
+  - daily_si_monitoring
+  - daily_bl_monitoring
+  - daily_cr_monitoring
+  - daily_payment_monitoring
+  - daily_shipment_monitoring
+  - daily_document_monitoring
+  - daily_sell_cost_monitoring
+  - daily_invoice_monitoring
+  - default

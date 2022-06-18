@@ -1,0 +1,125 @@
+<%= form_for(@debit_note, html: { class: "form-horizontal"}) do |f| %>
+<div id="invoice">
+  <div class="row-fluid">
+    <div class="span12">
+      <img src="<%= assets_path('logo.jpg') %>" alt="PT. Interbenua Logistindo LOGO replace to app/assets/images/logo.jpg" id="logo" width="100%"/>
+    </div>
+  </div>
+  <div class="row-fluid">
+    <h3 align="center" style="border-bottom: solid 2px; margin-top: 20px!important">DEBIT NOTE</h3>
+  </div>
+  <table width="100%" style="margin-bottom: 20px">
+  	<tr>
+  		<td width="50%">
+  			<div class="inline-group">
+  				<label>TO <span class="pull-right">:</span></label>
+  				<div><%= @debit_note.to_shipper %></div>
+  			</div>
+        <div class="inline-group">
+          <label for="">SHIPPER REF <span class="pull-right">:</span></label>
+          <div><%= @debit_note.shipper_ref %></div>
+        </div>
+        <div class="inline-group">
+          <label for="">DESTINATION <span class="pull-right">:</span></label>
+          <div><%= @debit_note.destination %></div>
+        </div>
+        <div class="inline-group">
+          <label for="">BL NO <span class="pull-right">:</span></label>
+          <div><%= @debit_note.bl_no %></div>
+        </div>
+        <div class="inline-group">
+          <label for="">VOLUME <span class="pull-right">:</span></label>
+          <div>
+            <%= @debit_note.bill_of_lading.shipping_instruction.si_containers.map {|c| "#{c.volum}x#{c.container.container_type}"}.join(" & ")  %>
+          </div>
+        </div>
+  			<div class="inline-group">
+  				<label for="">INVOICE DATE <span class="pull-right">:</span></label>
+  				<div><%= normal_date_format(@debit_note.dbn_date).upcase %></div>
+  			</div>
+  		</td>
+  		<td width="50%">
+  			<div class="inline-group">
+  				<label for="">NO <span class="pull-right">:</span></label>
+  				<div><%= @debit_note.no_dbn %></div>
+  			</div>
+        <div class="inline-group">
+          <label for="">VESSEL <span class="pull-right">:</span></label>
+          <div><%= @debit_note.vessel %></div>
+        </div>
+  			<div class="inline-group">
+  				<label for="">ETD <span class="pull-right">:</span></label>
+  				<div><%= normal_date_format(@debit_note.etd).upcase %></div>
+  			</div>
+  			<div class="inline-group">
+  				<label for="">ETA <span class="pull-right">:</span></label>
+  				<div><%= normal_date_format(@debit_note.eta).upcase %></div>
+  			</div>
+        <div class="inline-group">
+          <label for="">IBL REF <span class="pull-right">:</span></label>
+          <div><%= @debit_note.ibl_no %></div>
+        </div>
+  			<div class="inline-group">
+  				<label for="">DUE DATE <span class="pull-right">:</span></label>
+  				<div><%= normal_date_format(@debit_note.due_date).upcase %></div>
+  			</div>
+  		</td>
+  	</tr>
+  </table>
+  <table width="100%">
+  	<tr>
+  		<th width="70%" style="border-bottom: 2px solid; border-right: 2px solid; padding: 5px 0">IN PAYMENT OF</th>
+  		<th width="30%" style="border-bottom: 2px solid; padding: 5px 0">AMOUNT</th>
+  	</tr>
+  	<tr>
+  		<td style="border-right: 2px solid; padding: 5px 0;">
+  			<div style="min-height: 180px">
+	  			<% @debit_note.debit_note_details.each do |detail| %>
+				<%= detail.description %> (<%= detail.volume %> x <%= @debit_note.currency_code %> <%= number_with_delimiter(detail.amount, precision: 2)  %>)<br/>
+	        	<% end %>
+	        </div>
+  		</td>
+  		<td align="right" style="padding: 5px 0;">
+  			<% @debit_note.debit_note_details.each do |detail| %>
+	  			<%= @debit_note.currency_code %> <%= number_with_delimiter(detail.subtotal, precision: 2) %><br/>
+        	<% end %>
+  		</td>
+  	</tr>
+  	<tr>
+  		<td style="padding: 5px 0; border-top: solid 2px; border-bottom: solid 2px; border-right: solid 2px">TOTAL AMOUNT ================================================></td>
+  		<td align="right" style="padding: 5px 0; border-top: solid 2px; border-bottom: solid 2px;"><%= @debit_note.currency_code %> <%= number_with_delimiter(@debit_note.total_invoice) %></td>
+  	</tr>
+  </table>
+  <div style="padding: 15px 0; border-bottom: solid 2px">
+  	<% currency_name = Country.where(:currency_code => @debit_note.currency_code).first.currency_name %>
+  	THE SUM OF: # <%= terbilang(@debit_note.total_invoice).split.map(&:upcase).join(' ') %> <%= currency_name.upcase %> #
+  </div>
+  <div style="border-bottom: 2px solid; min-height: 50px; line-height: normal;">
+  	<div class="inline-block" style="min-height: 100px; word-wrap:break-word;">
+  		<label>NOTES: </label>
+  		<div><pre class="free" style="font-family: Arial"><%= @debit_note.notes %></pre></div>
+  	</div>
+  </div>
+  <div style="border-bottom: 2px solid; min-height: 50px; line-height: normal;">
+  	PLEASE TRANSFER TO:
+  	<% Bank.all.each do |bank| %>
+  		<%= render "banks/bank", :bank => bank %>
+  	<% end %>
+  </div>
+  <div style="padding: 10px 0">
+  	<div style="float: left; width: 50%; line-height: 1.5">
+  		PT. INTERBENUA LOGISTINDO<br/>
+  		Jl. Muara Karang Blok C7 Utara No. 37C Jakarta Utara 14450<br/>
+  		Phone. 021 - 71040027 / 021 - 71040028<br/>
+  		Fax. 021 - 66604679<br/>
+  		www.interbenualog.com
+  	</div>
+  	<div style="float: right; width: 50%;line-height: 1.5; text-align: right">
+  		Regards,
+  		<br/><br/><br/><br/><br/>
+  		<strong>Paulina Halim</strong>
+  	</div>
+  	<div class="clearfix"></div>
+  </div>
+</div>
+<% end %>

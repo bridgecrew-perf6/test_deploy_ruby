@@ -1,0 +1,24 @@
+<!-- <tr class="<%= f.object.item_type %>"> -->
+<tr<%= " class=hidden" if f.object.marked_for_destruction? %>>
+  <td class="hidden"></td>
+  <td>
+    <%= f.text_field :description, class: "invoice_description invoice_field", autocomplete: "off" %>
+    <%# f.hidden_field :_destroy, class: "span12" %>
+    <% if f.object.marked_for_destruction? %>
+      <%= f.hidden_field :_destroy, class: "span12", value: 1 %>
+    <% else %>
+      <%= f.hidden_field :_destroy, class: "span12" %>
+    <% end %>
+    <a class="remove_invoice_description" onclick="remove_sell_cost_invoice_fields(this); return false;" tabindex="-1" href="#" title="Remove"><i class="icon-remove-sign"></i></a>
+    <%= f.hidden_field :item_type, class: "span12 item_type" %>
+  </td>
+
+  <td><%= f.text_field :volume, class: "invoice_field invoice_volume volume_text volume", autocomplete: "off" %></td>
+  <td><%= f.text_field :amount_usd, class: "invoice_field money_text amount_usd", autocomplete: "off" %></td>
+  <td><%= f.text_field :amount_idr, class: "invoice_field money_text amount_idr", autocomplete: "off" %></td>
+  <td><%= f.text_field :total, class: "invoice_field money_text total", autocomplete: "off", disabled: "disabled" %></td>
+  <td class="hidden"><%= f.text_field :total_after_tax, class: "invoice_field money_text total_after_tax", autocomplete: "off", disabled: "disabled" %></td>
+  <td class="text-center"><%= f.check_box :add_vat_10, class: "invoice_checkbox add_vat_10" %></td>
+  <td class="text-center"><%= f.check_box :add_vat_1, class: "invoice_checkbox add_vat_1" %></td>
+  <td class="text-center"><%= f.check_box :add_pph_23, class: "invoice_checkbox add_pph_23" %></td>
+</tr>

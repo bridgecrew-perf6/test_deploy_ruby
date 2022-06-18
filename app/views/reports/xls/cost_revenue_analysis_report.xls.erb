@@ -1,0 +1,186 @@
+<%
+  head = []
+  head.push "Status\t"
+  head.push "MBL No\t"
+  head.push "IBL Ref\t"
+  head.push "Shipper Ref\t"
+  head.push "Shipper\t"
+  head.push "Consignee\t"
+  head.push "Carrier\t"
+  head.push "Trade\t"
+  head.push "POL\t"
+  head.push "POD\t"
+  head.push "Destination\t"
+  head.push "ETD\t"
+  head.push "LCL\t"
+  head.push "20 FT\t"
+  head.push "40 FT\t"
+  head.push "40 HQ\t"
+  head.push "TYPE\t"
+  head.push "Sell Description\t"
+  head.push "Rate\t"
+  head.push "Other\t"
+  head.push "VAT 10%\t"
+  head.push "VAT 1%\t"
+  head.push "PPH 23\t"
+  head.push "Total Sell\t"
+  head.push "Cost Description\t"
+  head.push "Rate\t"
+  head.push "Other\t"
+  head.push "VAT 10%\t"
+  head.push "VAT 1%\t"
+  head.push "PPH 23\t"
+  head.push "Total Cost\t"
+  head.push "GPT\t"
+  head.push "ADDA\t"
+  head.push "ADDB\t"
+  head.push "ADDC\t"
+  head.push "ADDT\t"
+  head.push "NPT\t"
+  head.push "Owner\t"
+  head.push "Notes\t"
+%>
+<%= head.join("").html_safe %>
+<% @results.reverse.each do |row| %>
+  <%# cache ["report-cost-revenue-analysis-xls", row, row.cost_revenue] do %>
+    <%
+      body = []
+      cost_revenue = row.cost_revenue
+      unless cost_revenue.blank?
+        body.push "#{row.status_cra_text}\t"
+        body.push "#{cost_revenue.master_bl_no}\t"
+        body.push "#{cost_revenue.ibl_ref}\t"
+        body.push "#{cost_revenue.shipper_reference}\t"
+        body.push "#{cost_revenue.shipper_company_name}\t"
+        body.push "#{cost_revenue.consignee_company_name}\t"
+        body.push "#{cost_revenue.carrier_name}\t"
+        body.push "#{cost_revenue.trade}\t"
+        body.push "#{cost_revenue.port_of_loading}\t"
+        body.push "#{cost_revenue.port_of_discharge}\t"
+        body.push "#{cost_revenue.final_destination}\t"
+        body.push "#{si_date_format cost_revenue.etd_date}\t"
+        body.push "#{lcl_format cost_revenue.volume_lcl}\t"
+        body.push "#{money_format cost_revenue.volume_20ft}\t"
+        body.push "#{money_format cost_revenue.volume_40ft}\t"
+        body.push "#{money_format cost_revenue.volume_40hq}\t"
+        body.push "#{cost_revenue.volume_type}\t"
+        body.push "#{sell_description(row)}\t"
+        body.push "#{money_cra_format cost_revenue.selling_rate}\t"
+        body.push "#{money_cra_format cost_revenue.selling_other}\t"
+        body.push "#{money_cra_format cost_revenue.selling_vat_10}\t"
+        body.push "#{money_cra_format cost_revenue.is_completed? ? cost_revenue.selling_vat_1 : cost_revenue.default_selling_vat_1}\t"
+        body.push "#{money_cra_format cost_revenue.is_completed? ? cost_revenue.selling_pph_23 : cost_revenue.default_selling_pph_23}\t"
+        body.push "#{money_cra_format(cost_revenue.is_completed? ? cost_revenue.selling_total_invoice : cost_revenue.default_selling_total_invoice).presence || 0}\t"
+        body.push "#{cost_description(row)}\t"
+        body.push "#{money_cra_format cost_revenue.buying_rate}\t"
+        body.push "#{money_cra_format cost_revenue.buying_other}\t"
+        body.push "#{money_cra_format cost_revenue.buying_vat_10}\t"
+        body.push "#{money_cra_format cost_revenue.buying_vat_1}\t"
+        body.push "#{money_cra_format cost_revenue.buying_pph_23}\t"
+        body.push "#{money_cra_format(cost_revenue.is_completed? ? cost_revenue.buying_total_invoice : cost_revenue.default_buying_total_invoice).presence || 0}\t"
+        body.push "#{money_cra_format cost_revenue.gpt}\t"
+        body.push "#{money_cra_format cost_revenue.adda}\t"
+        body.push "#{money_cra_format cost_revenue.addb}\t"
+        body.push "#{money_cra_format cost_revenue.addc}\t"
+        body.push "#{money_cra_format cost_revenue.addt}\t"
+        body.push "#{money_cra_format(cost_revenue.is_completed? ? cost_revenue.npt : cost_revenue.default_npt).presence || 0}\t"
+        body.push "#{cost_revenue.owner_name}\t"
+        body.push "#{cost_revenue.notes.squish unless cost_revenue.notes.blank?}\t"
+      else
+        body.push "#{row.status_cra_text}\t"
+        body.push "#{row.master_bl_no}\t"
+        body.push "#{row.ibl_ref}\t"
+        body.push "#{row.shipper_reference}\t"
+        body.push "#{row.shipper_company_name}\t"
+        body.push "#{row.consignee_company_name}\t"
+        body.push "#{row.carrier}\t"
+        body.push "#{row.trade}\t"
+        body.push "#{row.port_of_loading}\t"
+        body.push "#{row.port_of_discharge}\t"
+        body.push "#{row.final_destination}\t"
+        body.push "#{si_date_format row.first_etd_date}\t"
+        body.push "#{lcl_format row.volume_lcl}\t"
+        body.push "#{money_format row.volume_20ft}\t"
+        body.push "#{money_format row.volume_40ft}\t"
+        body.push "#{money_format row.volume_40hq}\t"
+        body.push "#{row.volume_type}\t"
+        body.push "#{}\t"
+        body.push "#{}\t"
+        body.push "#{}\t"
+        body.push "#{}\t"
+        body.push "#{}\t"
+        body.push "#{}\t"
+        body.push "#{0}\t"
+        body.push "#{}\t"
+        body.push "#{}\t"
+        body.push "#{}\t"
+        body.push "#{}\t"
+        body.push "#{}\t"
+        body.push "#{}\t"
+        body.push "#{0}\t"
+        body.push "#{}\t"
+        body.push "#{}\t"
+        body.push "#{}\t"
+        body.push "#{}\t"
+        body.push "#{}\t"
+        body.push "#{0}\t"
+        body.push "#{}\t"
+        body.push "#{}\t"
+      end
+    %>
+<%= body.join("").html_safe unless body.blank? %>
+  <%# end %>    
+<% end %>
+<%
+  foot = []
+  foot.push "TOTAL\t"
+  18.times{ foot.push "\t" }
+  foot.push "#{money_cra_format(@results.map{|p| p.cost_revenue.try(:selling_other)}.sum(&:to_f)).presence || 0}\t"
+  foot.push "#{money_cra_format(@results.map{|p| p.cost_revenue.try(:selling_vat_10)}.sum(&:to_f)).presence || 0}\t"
+  foot.push "#{money_cra_format(@results.map{|p| p.is_cr_completed? ? p.cost_revenue.try(:selling_vat_1) : p.cost_revenue.try(:default_selling_vat_1)}.sum(&:to_f)).presence || 0}\t"
+  foot.push "#{money_cra_format(@results.map{|p| p.is_cr_completed? ? p.cost_revenue.try(:selling_pph_23) : p.cost_revenue.try(:default_selling_pph_23)}.sum(&:to_f)).presence || 0}\t"
+  3.times{ foot.push "\t" }
+  foot.push "#{money_cra_format(@results.map{|p| p.cost_revenue.try(:buying_other)}.sum(&:to_f)).presence || 0}\t"
+  foot.push "#{money_cra_format(@results.map{|p| p.cost_revenue.try(:buying_vat_10)}.sum(&:to_f)).presence || 0}\t"
+  foot.push "#{money_cra_format(@results.map{|p| p.cost_revenue.try(:buying_vat_1)}.sum(&:to_f)).presence || 0}\t"
+  foot.push "#{money_cra_format(@results.map{|p| p.cost_revenue.try(:buying_pph_23)}.sum(&:to_f)).presence || 0}\t"
+  foot.push "\t"
+  foot.push "#{money_cra_format(@results.map{|p| p.cost_revenue.try(:gpt)}.sum(&:to_f)).presence || 0}\t"
+  foot.push "#{money_cra_format(@results.map{|p| p.cost_revenue.try(:adda)}.sum(&:to_f)).presence || 0}\t"
+  foot.push "#{money_cra_format(@results.map{|p| p.cost_revenue.try(:addb)}.sum(&:to_f)).presence || 0}\t"
+  foot.push "#{money_cra_format(@results.map{|p| p.cost_revenue.try(:addc)}.sum(&:to_f)).presence || 0}\t"
+  foot.push "#{money_cra_format(@results.map{|p| p.cost_revenue.try(:addt)}.sum(&:to_f)).presence || 0}\t"
+  foot.push "#{money_cra_format(@results.map{|p| p.is_cr_completed? ? p.cost_revenue.try(:npt) : p.cost_revenue.try(:default_npt)}.sum(&:to_f)).presence || 0}\t"
+%>
+<%= foot.join("").html_safe %>
+<%= "Total SI: \t#{@results.count}" %>
+<%= "Cancel SI: \t#{@results.map{|p| p.is_canceled? ? 1 : 0}.sum(&:to_i)}" %>
+<%= "Total Shipment: \t#{@results.map{|p| p.is_canceled? ? 0 : 1}.sum(&:to_i)}" %>
+<%= "Completed SI: \t#{@results.map{|p| (p.is_cr_completed?) ? 1 : 0}.sum(&:to_i)}" %>
+<%
+  volum1 = 0
+  volum2 = 0
+  volum3 = 0
+  volum4 = 0
+  @results.each do |si|
+    if si.is_uncanceled?
+      cr = si.cost_revenue
+      unless cr.blank?
+        volum1 += cr.volume_lcl.to_f
+        volum2 += cr.volume_20ft.to_f
+        volum3 += cr.volume_40ft.to_f
+        volum4 += cr.volume_40hq.to_f
+      else
+        volum1 += si.volume_lcl.to_f
+        volum2 += si.volume_20ft.to_f
+        volum3 += si.volume_40ft.to_f
+        volum4 += si.volume_40hq.to_f
+      end
+    end
+  end
+%>
+QUANTITY
+<%= "LCL: \t#{lcl_format(volum1).presence || 0}" %>
+<%= "20 FT: \t#{money_format(volum2).presence || 0}" %>
+<%= "40 FT: \t#{money_format(volum3).presence || 0}" %>
+<%= "40 HQ: \t#{money_format(volum4).presence || 0}" %>

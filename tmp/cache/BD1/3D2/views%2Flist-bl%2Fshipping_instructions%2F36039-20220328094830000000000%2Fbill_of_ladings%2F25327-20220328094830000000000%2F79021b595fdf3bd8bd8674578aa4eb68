@@ -1,0 +1,65 @@
+o: ActiveSupport::Cache::Entry:@valueI"Ð	  <tr class="success ">
+    <td>
+      <a href="/bill_of_ladings/25327?year=2022" title="Show Bill of Lading"><i class="icon-eye-open icon-large"></i></a>
+      &nbsp;
+
+      <a href="/bill_of_ladings/25327/edit?year=2022" title="Edit Bill of Lading"><i class="icon-edit-sign icon-large"></i></a>
+      &nbsp;
+
+            <a data-confirm="Detail sell is empty. Proceed?" href="/bill_of_ladings/calculate_invoice?sid=36039&amp;year=2022" title="Calculate Invoice"><i class="icon-file icon-large"></i></a>
+        &nbsp;
+
+
+      
+      <a href="/cost_revenues/36039/print_cover?year=2022" target="_blank" title="Print"><i class="icon-print icon-large"></i></a>
+      &nbsp;
+      
+    </td>
+    <td>
+      IBL220928
+      
+      
+      
+        <span class="label label-warning">No Status CR</span>
+    </td>
+    <td>-</td>
+    <td>PT. INDOLOGISTIK SAKTI TEGUH</td>
+    <td>PT. SURI NUSANTARA JAYA LOGISTIK</td>
+    <td>TBA</td>
+    <td>SAME AS CONSIGNEE</td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>
+      <!-- # Revisi 1 Dec 2015 -->
+        <ul>
+            <li><a href="/invoices/33503?year=2022">IBLINV220890</a></li>
+            <li><a href="/debit_notes/13995?year=2022">IBLDBN220310</a></li>
+        </ul>
+    </td>
+    <td>11x40HQ</td>
+    <td> (TRUCKING)</td>
+    <td>
+        <ul>
+            <li><a href="/payments/22069?year=2022">607/IDR/2022</a></li>
+            <li><a href="/payments/22069?year=2022">607/IDR/2022</a></li>
+            <li><a href="/payments/22070?year=2022">608/IDR/2022</a></li>
+            <li><a href="/payments/22070?year=2022">608/IDR/2022</a></li>
+            <li><a href="/payments/22070?year=2022">608/IDR/2022</a></li>
+        </ul>
+    </td>
+    <td>JAKARTA, INDONESIA</td>
+    <td>25-Mar-2022</td>
+    <td>
+      <select name="delivery_doc_status" class="delivery_doc_status" style="margin-bottom: 0;width: 100%;padding: 3px;box-sizing: border-box;" size="1" data-id="25327">
+        <option selected="selected" value="Not Yet">Not Yet</option>
+<option value="Done">Done</option>
+      </select>
+    </td>
+    <td class="hidden disable">March 2022</td>
+    <td class="hidden disable">03/25/2022</td>
+    <td class="hidden disable reference_id">25327</td>
+    <td class="hidden disable ibl_ref">IBL220928</td>
+    <td class="hidden disable invoice">IBLINV220890<br>IBLDBN220310</td>
+    <td class="hidden disable payment">607/IDR/2022<br>607/IDR/2022<br>608/IDR/2022<br>608/IDR/2022<br>608/IDR/2022</td>
+    <td class="hidden disable delivery_doc">Not Yet</td>
+  </tr>
+:ET:@created_atf1648485062.8060215:@expires_in0

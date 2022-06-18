@@ -1,0 +1,14 @@
+<tr<%= ' class=hidden' if f.object.marked_for_destruction? %>>
+	<td><%= f.text_field :ibl_deposit, class: "span12 deposit_ibl_deposit", autocomplete: "off" %></td>
+	<td class="hidden"><%= f.hidden_field :master_bl_no, class: "span12 deposit_mbl_no", autocomplete: "off" %></td>
+	<td><%= f.text_field :amount, class: "span12 deposit_amount money_text", autocomplete: "off", style: "text-align: right" %></td>
+	<td><%= f.text_field :ibl_ref, class: "span12 deposit_ibl_ref", autocomplete: "off" %></td>
+	<td>
+    <% if f.object.marked_for_destruction? %>
+			<%= f.hidden_field :_destroy, class: "span12",  value: 1 %>
+		<% else %>
+			<%= f.hidden_field :_destroy, class: "span12" %>
+		<% end %>
+		<a onclick="remove_deposit_fields(this); return false;" tabindex="-1" href="#" title="Remove"><i class="icon-remove-sign"></i></a>
+	</td>
+</tr>

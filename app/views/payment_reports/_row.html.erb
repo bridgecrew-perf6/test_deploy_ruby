@@ -1,0 +1,17 @@
+<%# cache payment do %>
+  <%# render partial: 'payment_references/payment_reference_plan', collection: payment.payment_references, as: :payment_reference, locals: { payment: payment } %>
+<%# end %>
+<tr>
+  <td><%= row.si_no %></td>
+  <td><%= row.booking_no %></td>
+  <td><%= row.master_bl_no %></td>
+  <td><%= row.volume %></td>
+  <td><%= row.carrier %></td>
+  <td><%= row.shipper_company_name %></td>
+  <td><%= row.port_of_loading %></td>
+  <td><%= row.final_destination %></td>
+  <td style="text-align: right;"><%= money_format row.total_invoice %></td>
+  <td><%= si_date_format row.payment_date %></td>
+  <td><%= si_date_format row.first_etd_date %></td>
+  <td><%= row.bl_status %></td>
+</tr>

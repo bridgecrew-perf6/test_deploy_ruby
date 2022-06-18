@@ -1,0 +1,14 @@
+<tr<%= " class=hidden" if f.object.marked_for_destruction? %>>
+	<td><%= f.text_field :invoice_deposit, class: "invoice_deposit_field invoice_deposit", autocomplete: "off" %></td>
+	<td><%= f.text_field :amount, class: "invoice_deposit_field amount money_text", autocomplete: "off", style: "text-align: right" %></td>
+	<td><%= f.text_field :invoice_no, class: "invoice_deposit_field invoice_no", autocomplete: "off" %></td>
+	<td>
+    <%= f.hidden_field :ibl_deposit, class: "invoice_deposit_field ibl_deposit", autocomplete: "off" %>
+    <% if f.object.marked_for_destruction? %>
+			<%= f.hidden_field :_destroy, class: "invoice_deposit_field",  value: 1 %>
+		<% else %>
+			<%= f.hidden_field :_destroy, class: "invoice_deposit_field" %>
+		<% end %>
+		<a onclick="remove_deposit_fields(this); return false;" tabindex="-1" href="#" title="Remove"><i class="icon-remove-sign"></i></a>
+	</td>
+</tr>
